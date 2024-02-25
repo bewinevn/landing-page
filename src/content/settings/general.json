@@ -1,0 +1,9 @@
+{
+  "title": "Bewine",
+  "description": "BeWine Landing Page",
+  "base_url": "/",
+  "keywords": ["astro", "template"],
+  "logo": "assets/b.jpg",
+  "favicon": "assets/m_w.png",
+  "url": "/"
+}
