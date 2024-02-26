@@ -9,3 +9,11 @@
     font-style: normal;
     font-display: swap; */
   } 
+
+@font-face {
+  font-family: 'Bw Beto Grande';
+  src: url('/fonts/Bw Beto Grande Regular.otf') format('opentype');
+  /* font-weight: normal;
+  font-style: normal;
+  font-display: swap; */
+  } 
