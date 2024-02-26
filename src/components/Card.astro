@@ -16,6 +16,6 @@ const { slug, title, image, tags } = Astro.props;
     <h3 class="text-black text-xl my-2">
       <a href={`/project/${slug}`} class="no-underline relative inline-block" aria-label={title}>{title}</a>
     </h3>
-    <p class="text-sm mb-6 m-0 text-sirah-800 relative">{tags.join(', ')}</p>
+    <p class="text-sm font-serif mb-6 m-0 text-sirah-800 relative">{tags.join(', ')}</p>
   </div>
 </figure>

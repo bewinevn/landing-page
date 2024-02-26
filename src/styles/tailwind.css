@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Bw Beto';
+    src: url('/fonts/Bw Beto Regular.otf') format('opentype');
+    /* font-weight: normal;
+    font-style: normal;
+    font-display: swap; */
+  } 

@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ["Inconsolata", ...defaultTheme.fontFamily.serif],
+        mono: ["Space Mono", ...defaultTheme.fontFamily.mono],
+        serif: ["Bw Beto", ...defaultTheme.fontFamily.serif]
       },
       colors: {
         'sirah': {
