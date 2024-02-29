@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       fontFamily: {
         mono: ["Space Mono", ...defaultTheme.fontFamily.mono],
-        serif: ["Bw Beto Grande", ...defaultTheme.fontFamily.serif]
+        serif: ["Yeseva One", ...defaultTheme.fontFamily.serif]
       },
       colors: {
         'sirah': {
