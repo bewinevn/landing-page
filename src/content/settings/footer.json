@@ -2,12 +2,12 @@
   "socials": [
     {
       "target": "_blank",
-      "name": "Facebook",
+      "name": "facebook",
       "link": "https://www.facebook.com/bewinevn/"
     },
     {
       "target": "_blank",
-      "name": "Instagram",
+      "name": "instagram",
       "link": "https://www.instagram.com/bewinevn/"
     }
   ]
