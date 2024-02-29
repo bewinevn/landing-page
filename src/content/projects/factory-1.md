@@ -1,7 +1,7 @@
 ---
 tag: 
     - Factory
-title: It's not just about wine.
+title: it's not just about wine
 image: assets/L1460302.JPG
 date: 2023-10-03
 ---

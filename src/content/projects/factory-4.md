@@ -1,7 +1,7 @@
 ---
 tag: 
     - Factory
-title: For Vietnamese.
+title: for Vietnamese
 image: assets/L1460435.JPG
 date: 2023-10-01
 ---

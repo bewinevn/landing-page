@@ -1,7 +1,7 @@
 ---
 tag: 
     - Factory
-title: It's an experience.
+title: it's an experience
 image: assets/L1460361.JPG
 date: 2023-10-02
 ---

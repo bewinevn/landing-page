@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import Hero from '../components/Hero.astro';
+import WhereToFind from '../components/WhereToFind.astro';
 
 const allProjects = await getCollection('projects');
 const projects = allProjects.sort((a,b)=>{return b.data.date - a.data.date});
@@ -112,6 +113,7 @@ const projects = allProjects.sort((a,b)=>{return b.data.date - a.data.date});
           </div>
         </div>
       </div>
+      <WhereToFind />
     </div>
   </div>
 </Layout>
