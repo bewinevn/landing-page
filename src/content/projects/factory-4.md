@@ -1,7 +1,7 @@
 ---
 tag: 
     - Factory
-title: for Vietnamese
+title: làm tại Việt Nam cho người Việt Nam 
 image: assets/L1460435.JPG
 date: 2023-10-01
 ---
