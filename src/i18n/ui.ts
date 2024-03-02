@@ -1,8 +1,9 @@
 export const languages = {
     en: 'English',
-    vn: 'Vietnamese',
+    vn: 'Tiếng Việt',
   };
-  
+
+  export const showDefaultLang = false;  
   export const defaultLang = 'vn';
   
   export const ui = {
@@ -15,7 +16,8 @@ export const languages = {
         'hero.cta': 'Nên là, làm một lon cho vang lừng tuổi trẻ nhé?',
         'tag.1': 'vang xịn - giá yêu thương',
         'tag.2': 'dễ uống - dễ mang đi',
-        'tag.3': 'làm tại Việt Nam cho người Việt Nam'
+        'tag.3': 'làm tại Việt Nam cho người Việt Nam',
+        'footer.cta': 'theo dõi chúng mình nhé'
 
     },
     en: {
@@ -27,6 +29,7 @@ export const languages = {
       'hero.cta': 'So, wanna go nhậu with us?',
       'tag.1': 'quality wine that’s doesn\'t break the bank',
       'tag.2': 'any time, any where ',
-      'tag.3': 'proudly Viet'
+      'tag.3': 'proudly Viet',
+      'footer.cta': 'follow us on socials'
     }
   } as const;
