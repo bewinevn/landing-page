@@ -1,13 +1,31 @@
 ---
-import { getCollection } from 'astro:content';
-
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import Hero from '../components/Hero.astro';
 import WhereToFind from '../components/WhereToFind.astro';
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import tag_1 from '../assets/L1460302.JPG';
+import tag_2 from '../assets/L1460361.JPG';
+import tag_3 from '../assets/L1460435.JPG';
 
-const allProjects = await getCollection('projects');
-const projects = allProjects.sort((a,b)=>{return b.data.date - a.data.date});
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const projects = [
+    {
+        title: t('tag.1'),
+        image: tag_1
+    },
+    {
+      title: t('tag.2'),
+      image: tag_2
+    },
+    {
+      title: t('tag.3'),
+      image: tag_3
+    }
+]
+
 ---
 
 <Layout title="bewine">
@@ -109,7 +127,7 @@ const projects = allProjects.sort((a,b)=>{return b.data.date - a.data.date});
       <div class="relative w-full mt-5 mb-10">
         <div class="clear-both relative">
           <div class="grid flex-wrap items-start grid-cols-1 gap-4 lg:grid-cols-3 md:grid-cols-2 portfolio gap-8 ">
-            {projects.map((project,index)=><Card index={index+1} slug={project.slug} title={project.data.title} image={project.data.image} tags={project.data.tag} />)}
+            {projects.map((project,index)=><Card index={index+1} image={project.image} title={project.title} />)}
           </div>
         </div>
       </div>

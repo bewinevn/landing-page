@@ -1,23 +1,28 @@
+---
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
 
 <div class="flex items-end">
   <div class="max-w-xl pr-5">
     <div class="relative mt-5 mb-0">
       <h2 class="font-light font-serif text-4xl leading-none -tracking-wider mt-0 mb-8 mx-0">
         <p class="mb-6 text-pretty">
-          <div><span class="text-[1.5em]">vang Việt</span></div>
-          <span class="text-[1.5em]">cho người trẻ Việt</span>
+          <div><span class="text-[1.5em]">{t('hero.title')}</span></div>
+          <span class="text-[1.5em]">{t('hero.subtitle')}</span>
         </p>
-        <p class="tracking-tighter text-[0.75em] text-pretty"><span>first Vietnamese wine </span><span>for the young</span></p>
       </h2>
       <h4 class="leading-7 text-base mt-0 mb-4 mx-0 text-sauvignon-800">
         <div>          
           <span class="opacity-80">
-            Người Việt mình hay làm thân trên bàn nhậu. Từ lạ thành quen và từ quen thành thân, rượu khi uống vừa đủ, trở thành chất dẫn cho những mối tương giao thú vị; có khi là để đời. Vậy nên, từ 2024, Be-wine hân hạnh mang sản phẩm vang đóng lon đầu tiên tại Việt Nam đến khắp mọi phố phường ngõ hẻm. 
+            {t('hero.description')}
           </span>
         </div>
         <div>
           <span class="opacity-80">
-            Nên là, làm một lon cho vang lừng tuổi trẻ nhé? 
+            {t('hero.cta')}
           </span>
         </div>
       </h4>

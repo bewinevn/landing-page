@@ -1,8 +1,11 @@
 ---
-import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { getEntry } from 'astro:content';
 
 const general = await getEntry('settings','general');
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <header class="block relative">
@@ -18,7 +21,7 @@ const general = await getEntry('settings','general');
               alt={general.data.title}>
           </span> -->
           <span class="text-2xl font-light -tracking-wider">
-            <span class="font-sans font-medium">tìm chúng mình nhé</span>
+            <span class="font-sans font-medium">{t('wheretofind.nav')}</span>
               <!-- <span class="font-serif italic">be</span>
               <span class="text-sauvignon-950 font-black">-</span>
               <span class="font-mono">wine</span> -->
