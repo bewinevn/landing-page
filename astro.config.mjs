@@ -7,9 +7,16 @@ import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://minimma.vercel.app",
+  site: "https://bewinevn.com",
   image: {
     service: squooshImageService(),
+  },
+  i18n: {
+    defaultLocale: "vn",
+    locales: ["vn", "en"],
+    routing: {
+      prefixDefaultLocale: false // No /vn URL
+    }
   },
   integrations: [tailwind(), sitemap(), robots()],
   output: "server",

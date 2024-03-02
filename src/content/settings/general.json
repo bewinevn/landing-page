@@ -2,8 +2,7 @@
   "title": "bewine",
   "description": "bewine landing page",
   "base_url": "/",
-  "keywords": ["astro", "template"],
-  "logo": "assets/logo_square.png",
+  "keywords": ["bewine", "craft wine"],
   "favicon": "assets/favicon-32x32.png",
   "url": "/"
 }
