@@ -7,7 +7,7 @@ import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://minimma.vercel.app",
+  site: "https://bewinevn.com",
   image: {
     service: squooshImageService(),
   },

@@ -3,7 +3,6 @@
   "description": "bewine landing page",
   "base_url": "/",
   "keywords": ["bewine", "craft wine"],
-  "logo": "assets/logo_square.png",
   "favicon": "assets/favicon-32x32.png",
   "url": "/"
 }
