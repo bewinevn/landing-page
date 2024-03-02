@@ -11,6 +11,13 @@ export default defineConfig({
   image: {
     service: squooshImageService(),
   },
+  i18n: {
+    defaultLocale: "vn",
+    locales: ["vn", "en"],
+    routing: {
+      prefixDefaultLocale: false // No /vn URL
+    }
+  },
   integrations: [tailwind(), sitemap(), robots()],
   output: "server",
   adapter: netlify(),
