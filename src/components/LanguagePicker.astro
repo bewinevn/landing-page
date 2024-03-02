@@ -7,8 +7,8 @@ const translatePath = useTranslatedPath(lang);
 
 ---
 <ul>
-    {Object.entries(languages).map(([lang, label]) => (
-      <li>
+    {Object.entries(languages).filter((cur) => cur[0] !== lang ).map(([lang, label]) => (
+      <li class="text-sauvignon-700 hover:underline">
         <a href={translatePath('/', lang)}>{label}</a>
       </li>
     ))}

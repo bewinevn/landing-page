@@ -1,7 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import LanguagePicker from '../components/LanguagePicker.astro'
 
 const general = await getEntry('settings','general');
 const footer = await getEntry('settings','footer');
@@ -30,7 +29,6 @@ const t = useTranslations(lang);
             </a>
         )}
     </div>
-    <LanguagePicker />
     <p class="m-0 opacity-60">
       <span>&copy; copyright&nbsp;</span>
       <span>{general.data.title}&nbsp;</span>
