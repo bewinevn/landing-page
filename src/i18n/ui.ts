@@ -27,7 +27,7 @@ export const languages = {
       'hero.subtitle': 'for the young',
       'hero.description': 'We Vietnamese have always been bonding through “nhậu” - which means “to have to drink” with each other. Drinking (moderately) helps convert strangers to friends and friends to soulmates. That\'s why for the first time, we introduce to you Be-wine - the first Vietnamese wine for the young.',
       'hero.cta': 'So, wanna go nhậu with us?',
-      'tag.1': 'quality wine that’s doesn\'t break the bank',
+      'tag.1': 'quality wine that doesn\'t break the bank',
       'tag.2': 'any time, any where ',
       'tag.3': 'proudly Viet',
       'footer.cta': 'follow us on socials'
