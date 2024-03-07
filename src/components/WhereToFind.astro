@@ -1,8 +1,11 @@
 ---
+import { getEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const venuesList = await getEntry('venues', 'venues');
 ---
 
 <div class="flex items-end mb-8" id="WhereToFind">
@@ -11,13 +14,21 @@ const t = useTranslations(lang);
         <h2 class="font-light font-serif text-4xl text-pretty leading-none -tracking-wider mt-0 mb-8 mx-0">
           <span class="text-[1.5em]">{t('wheretofind.title')}</span>
         </h2>
-        <h4 class="leading-7 text-base mt-0 mb-4 mx-0 text-sauvignon-800">
-          <p class="opacity-80"><span class="text-[1.5em]">- </span>Đồi Llum</p>
-          <p class="opacity-80"><span class="text-[1.5em]">- </span>Tần Mần</p>
-          <p class="opacity-80"><span class="text-[1.5em]">- </span>Montauk</p>
-          <p class="opacity-80"><span class="text-[1.5em]">- </span>Goodtimes Burger</p>
-          <p class="opacity-80"><span class="text-[1.5em]">- </span>Polygon Musik</p>
-        </h4>
+        {venuesList.data.list.map(
+          venue => 
+          <h4 class="leading-7 text-base mt-0 mx-0 text-sauvignon-800 opacity-80">
+            <span class="text-[1.5em]">- </span>
+            <a 
+              href={venue.link} 
+              class="hover:underline" 
+              title={venue.name} 
+              aria-label={venue.name}
+              target="_blank" 
+              rel="noopener">
+                <span set:html={venue.name}></span>
+            </a>
+          </h4>
+        )}
       </div>
     </div>
   </div>

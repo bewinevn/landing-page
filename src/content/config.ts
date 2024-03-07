@@ -22,6 +22,19 @@ const settings = defineCollection({
     }),
 });
 
+const venues = defineCollection({
+  type: "data",
+  schema: z.object({
+    list: z.array(
+      z.object({
+        name: z.string(),
+        link: z.string()
+      })
+    )
+  })
+})
+
 export const collections = {
   settings,
+  venues
 };
