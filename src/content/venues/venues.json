@@ -2,51 +2,75 @@
     "list":[
         {
         "name": "Tròn - Tondo",
-        "link": "https://www.facebook.com/tron.tondo"
+        "subtitle": "restaurant",
+        "link": "https://www.facebook.com/tron.tondo",
+        "image": "../../assets/venues/tron_tondo.jpeg"
         },
         {
         "name": "Quán Hông Đê",
-        "link": "https://www.instagram.com/quan.hongde/"
+        "subtitle": "bar",
+        "link": "https://www.instagram.com/quan.hongde/",
+        "image": "../../assets/venues/quan_hongde.jpeg"
         },
         {
         "name": "Long Waits a modest jazz club",
-        "link": "https://www.facebook.com/Longwaitsjazz/"
+        "subtitle": "music venue",
+        "link": "https://www.facebook.com/Longwaitsjazz/",
+        "image": "../../assets/venues/longwaits.jpeg"
         },
         {
         "name": "Câu Lạc Bộ Hai Ba",
-        "link": "https://www.facebook.com/thongbaogiaitanclb/"
+        "subtitle": "coffee",
+        "link": "https://www.facebook.com/thongbaogiaitanclb/",
+        "image": "../../assets/venues/clbhaiba.png"
         },
         {
-        "name": "Ngạc - Gallery and Coffee",
-        "link": "https://www.instagram.com/ngac.galleryandcoffee/"
+        "name": "Ngạc",
+        "subtitle": "coffee/art",
+        "link": "https://www.instagram.com/ngac.galleryandcoffee/",
+        "image": "../../assets/venues/ngac.jpeg"
         },
         {
         "name": "Tần Mần",
-        "link": "https://www.facebook.com/manmetan.man"
+        "subtitle": "bakery",
+        "link": "https://www.facebook.com/manmetan.man",
+        "image": "../../assets/venues/tanman.jpeg"
         },
         {
         "name": "Polygon Musik",
-        "link": "https://www.facebook.com/polygon.cafe/"
+        "subtitle": "music venue",
+        "link": "https://www.facebook.com/polygon.cafe/",
+        "image": "../../assets/venues/polygon.jpeg"
         },
         {
         "name": "Montauk by LP Club",
-        "link": "https://www.facebook.com/montaukLPClub/"
+        "subtitle": "coffee/bar",
+        "link": "https://www.facebook.com/montaukLPClub/",
+        "image": "../../assets/venues/montauk.png"
         },
         {
         "name": "Tonkin Express",
-        "link": "https://www.facebook.com/tonkinexpress.hn"
+        "subtitle": "restaurant",
+        "link": "https://www.facebook.com/tonkinexpress.hn",
+        "image": "../../assets/venues/tonkin.jpeg"
         },
         {
         "name": "Đồi Llum",
-        "link": "https://www.facebook.com/DoiLlum/"
+        "subtitle": "homestay",
+        "link": "https://www.facebook.com/DoiLlum/",
+        "image": "../../assets/venues/doillum.jpeg"
         },
         {
         "name": "OUR.hanoi",
-        "link": "https://www.facebook.com/our.hnvn/"
+        "subtitle": "art space",
+        "link": "https://www.facebook.com/our.hnvn/",
+        "image": "../../assets/venues/ourhanoi.jpeg"
         },
         {
         "name": "Hanoi Rock City",
-        "link": "https://www.facebook.com/hanoirockcity.welive/"
+        "subtitle": "music venue",
+        "link": "https://www.facebook.com/hanoirockcity.welive/",
+        "image":"../../assets/venues/hanoirockcity.jpeg"
         }
     ]
 }

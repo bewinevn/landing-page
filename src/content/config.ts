@@ -24,11 +24,13 @@ const settings = defineCollection({
 
 const venues = defineCollection({
   type: "data",
-  schema: z.object({
+  schema: ({ image }) => z.object({
     list: z.array(
       z.object({
         name: z.string(),
-        link: z.string()
+        link: z.string(),
+        subtitle: z.string().optional(),
+        image: image()
       })
     )
   })

@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import Card from './Card.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -9,27 +10,24 @@ const venuesList = await getEntry('venues', 'venues');
 ---
 
 <div class="flex items-end mb-8" id="WhereToFind">
-    <div class="max-w-xl pr-5">
-      <div class="relative mt-5 mb-0">
+    <div class="pr-5">
+      <div class="max-w-xl relative mt-5 mb-0">
         <h2 class="font-light font-serif text-4xl text-pretty leading-none -tracking-wider mt-0 mb-8 mx-0">
           <span class="text-[1.5em]">{t('wheretofind.title')}</span>
         </h2>
-        {venuesList.data.list.map(
-          venue => 
-          <h4 class="leading-7 text-base mt-0 mx-0 text-sauvignon-800 opacity-80">
-            <span class="text-[1.5em]">- </span>
-            <a 
-              href={venue.link} 
-              class="hover:underline" 
-              title={venue.name} 
-              aria-label={venue.name}
-              target="_blank" 
-              rel="noopener">
-                <span set:html={venue.name}></span>
-            </a>
-          </h4>
-        )}
       </div>
+      <div class="grid flex-wrap items-start grid-cols-1 lg:grid-cols-5 md:grid-cols-3 portfolio gap-10 ">
+          {venuesList.data.list.map(
+            (venue, index) => 
+            <Card 
+              index={index+1} 
+              image={venue.image} 
+              title={venue.name} 
+              subtitle={venue.subtitle} 
+              link={venue.link}
+              imageStyle="aspect-square object-cover" /> 
+          )}
+        </div>
     </div>
   </div>
   

@@ -125,30 +125,7 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"projects": {
-"factory-1.md": {
-	id: "factory-1.md";
-  slug: "factory-1";
-  body: string;
-  collection: "projects";
-  data: InferEntrySchema<"projects">
-} & { render(): Render[".md"] };
-"factory-2.md": {
-	id: "factory-2.md";
-  slug: "factory-2";
-  body: string;
-  collection: "projects";
-  data: InferEntrySchema<"projects">
-} & { render(): Render[".md"] };
-"factory-4.md": {
-	id: "factory-4.md";
-  slug: "factory-4";
-  body: string;
-  collection: "projects";
-  data: InferEntrySchema<"projects">
-} & { render(): Render[".md"] };
-};
-
+		
 	};
 
 	type DataEntryMap = {
@@ -163,10 +140,12 @@ declare module 'astro:content' {
   collection: "settings";
   data: InferEntrySchema<"settings">
 };
-"project": {
-	id: "project";
-  collection: "settings";
-  data: InferEntrySchema<"settings">
+};
+"venues": {
+"venues": {
+	id: "venues";
+  collection: "venues";
+  data: InferEntrySchema<"venues">
 };
 };
 

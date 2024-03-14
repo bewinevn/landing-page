@@ -1,16 +1,29 @@
 ---
 import { Image } from 'astro:assets';
 
-const { title, image } = Astro.props;
+const { title, subtitle, image, link, imageStyle } = Astro.props;
 ---
 
 <figure class="shrink-0 w-full relative">
   <div class="relative">
+    <a href={link} target="_blank" class:list={["no-underline relative block", link && "hover:scale-105"]} aria-label={title}>
       <span class="relative block transition duration-500 ease-in-out transform rounded">
-        <Image width={384} class="relative block object-contain object-center w-full h-full grayscale" loading="lazy" alt={title} src={image} />
+        <Image 
+          width={384} 
+          class:list={["relative block object-contain object-center w-full h-full", imageStyle]} 
+          loading="lazy" 
+          alt={title} src={image} />
       </span>
+      </a>
   </div>
-  <div class="pb-0 px-0 py-2">
-    <h3 class="text-sauvignon-800 text-xl my-2">{title}</h3>
+  <div class="px-0">
+    <h3 class="text-sauvignon-800 text-xl mt-2">{title}</h3>
   </div>
+  {
+    subtitle && (
+      <div class="px-0 pb-2 opacity-80">
+        <h4>{subtitle}</h4>
+      </div>
+    )
+  }
 </figure>
