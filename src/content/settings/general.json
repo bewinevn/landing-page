@@ -1,8 +1,8 @@
 {
-  "title": "bewine",
-  "description": "bewine landing page",
+  "title": "be-wine",
+  "description": "be-wine landing page",
   "base_url": "/",
-  "keywords": ["bewine", "craft wine"],
+  "keywords": ["be-wine", "craft wine"],
   "favicon": "assets/favicon-32x32.png",
   "url": "/"
 }
