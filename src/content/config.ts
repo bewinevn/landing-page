@@ -36,7 +36,24 @@ const venues = defineCollection({
   })
 })
 
+const wines = defineCollection({
+  type: "data",
+  schema: ({ image }) => z.object({
+    list: z.array(
+      z.object({
+        name: z.string(),
+        alcoholContent: z.number(),
+        type: z.string(),
+        description: z.string(),
+        pairing: z.string(),
+        image: image()
+      })
+    )
+  })
+})
+
 export const collections = {
   settings,
-  venues
+  venues,
+  wines
 };

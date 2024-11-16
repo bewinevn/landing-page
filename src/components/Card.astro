@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 
-const { title, subtitle, image, link, imageStyle } = Astro.props;
+const { title, subtitle, image, link, imageStyle, description } = Astro.props;
 ---
 
 <figure class="shrink-0 w-full relative">
@@ -23,6 +23,13 @@ const { title, subtitle, image, link, imageStyle } = Astro.props;
     subtitle && (
       <div class="px-0 pb-2 opacity-80">
         <h4>{subtitle}</h4>
+      </div>
+    )
+  }
+  {
+    description && (
+      <div>
+        <p>{description}</p>
       </div>
     )
   }

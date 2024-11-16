@@ -1,0 +1,42 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import Card from './Card.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const getLocalizedWineList = () => {
+    if (!lang || lang === 'vn') {
+        return 'wines';
+    }
+
+    return lang + '/' + 'wines';
+}
+
+const wineList = await getEntry('wines', getLocalizedWineList());
+
+---
+
+<div class="flex items-end mb-8" id="WineList">
+    <div class="pr-5">
+      <div class="max-w-xl relative mt-5 mb-0">
+        <h2 class="font-light font-serif text-4xl text-pretty leading-none -tracking-wider mt-0 mb-8 mx-0">
+          <span class="text-[1.5em]">{t('winelist.title')}</span>
+        </h2>
+      </div>
+      <div class="grid flex-wrap items-start grid-cols-1 lg:grid-cols-2 md:grid-cols-3 portfolio gap-10 ">
+          {wineList.data.list.map(
+            (wine, index) => 
+            <Card 
+              index={index+1} 
+              image={wine.image} 
+              title={wine.name} 
+              description={wine.description}
+              subtitle={wine.pairing} 
+              imageStyle="aspect-square object-cover" /> 
+          )}
+        </div>
+    </div>
+  </div>
+  

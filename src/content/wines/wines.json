@@ -6,7 +6,7 @@
             "type": "Vang Đỏ Classic",
             "description": "PS là một giống nho có độ chát cao và độ chua tốt, khả năng lưu giữ được lâu dài tương đương họ nho Cabernet Sauvignon. PS tạo ra các dòng rượu vang có màu sẫm hoặc màu tím đậm, mang hương vị của hạt tiêu đen, quả mâm xôi, quả việt quất, gia vị và cam thảo.",
             "pairing": "Phù hợp với các món âu như beefsteak, thịt cừu; hoặc các món á như thịt quay, xá xíu",
-            "image": "../../assets/placeholder.png"
+            "image": "../../assets/wines/petite_sirah.png"
         }, 
         {
             "name": "Cabernet Sauvignon (CS)",
@@ -14,15 +14,15 @@
             "type": "Vang Đỏ Classic",
             "description": "CS là giống nho ra rượu vang có màu đậm, cấu trúc tannin tuyệt vời, vị chua vừa phải và hương thơm của quả lý chua đen, mận, gia vị đậm và gỗ tuyết tùng. Rượu vang có khả năng lưu giữ lâu dài.",
             "pairing": "Phù hợp với các món âu như beefsteak, thịt cừu; hoặc các món á đậm khói như thịt quay, chả nướng, bún chả",
-            "image": "../../assets/placeholder.png"
+            "image": "../../assets/wines/cabernet_sauvignon.png"
         },
         {
             "name": "Concord (CC)",
             "alcoholContent": 13.5,
             "type": "Vang Hồng, Đậm",
             "description": "CC là một loại rượu có mùi hương đặc biệt đậm mùi hoa và quả chín, mật, sáp và rễ thảo mộc. Rượu vang CC có hương vị trẻ trung và tràn sức sống.",
-            "pairing": " phù hợp uống thật lạnh cuối bữa thay cho tráng miệng và pha chế đồ uống (sangria, punch)",
-            "image": "../../assets/placeholder.png"   
+            "pairing": " Phù hợp uống thật lạnh cuối bữa thay cho tráng miệng và pha chế đồ uống (sangria, punch)",
+            "image": "../../assets/wines/concord.png"   
         },
         {
             "name": "Chardonnay (CH)",
@@ -30,7 +30,7 @@
             "type": "Vang Trắng",
             "description": "CH là một loại rượu có mùi hương đặc biệt. Phổ hương từ hoa trắng tới quả đào, dứa và kem sữa.  Rượu vang CH có hương vị thanh túy và lịch lãm. Trên thị trường rượu vang nói chung tất cả các chai vang trắng giá thành và giá trị cao nhất đều sản xuất từ giống nho này.",
             "pairing": "Phù hợp đi cùng các món thịt trắng và hải sản có kém sauce trắng và kem, sữa, phô mai; hoặc món á như bún bò, bánh cuốn, bánh bột lọc",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../assets/wines/chardonnay.png"   
         },
         {
             "name": "Sauvignon Blanc (SB)",
@@ -38,7 +38,7 @@
             "type": "Vang Trắng",
             "description": "SH có phổ hương vị rộng tùy theo khu vực trồng và kỹ thuật sản xuất. Sản phẩm mang hương cỏ cắt, dưa gang, chanh dây và hoa quả nhiệt đới. Hương vị tươi mát nhẹ nhàng phù hợp với những ngày hè nóng nực ở Việt Nam.",
             "pairing": "Phù hợp với món âu nhẹ nhàng salade, cá nói chung; các món gỏi hải sản, sushi; hoặc phở gà nhiều hành",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../assets/wines/sauvignon_blanc.png"   
         },
         {
             "name": "Zinfandel (ZI)",
@@ -46,7 +46,7 @@
             "type": "Vang Đỏ Phá Cách",
             "description": "ZI là giống nho có độ cồn cao và độ chua tốt, độ ngọt sâu cùng độ chát vừa. ZI tạo ra các dòng rượu vang có màu đỏ sẫm ngả tím, mang hương vị của mứt quả mọng đen, hạt tiêu đen, quả việt quất và cam thảo. Kết vị phảng hương khói thuốc lá.",
             "pairing": "Các món âu có sauce đỏ (pan sauce, sauce cà chua) cùng mỳ ý, món hầm ý; hoặc các món á nền vị ngọt (thịt kho, xốt vang…), sườn xào chua ngọt",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../assets/wines/zinfandel.png"   
         },
         {
             "name": "Pinot Noir (PN)",
@@ -54,7 +54,7 @@
             "type": "Vang Đỏ Phá Cách",
             "description": "PN là giống nho có độ cồn thấp và độ chua rất tốt, độ ngọt không nổi trội cùng chất chát mượt mà. PN tạo ra các dòng rượu vang có màu đỏ hồng hơi nhạt, mang hương vị của quả mọng đỏ cherry, dâu tây, phúc bồn tử. Khi để lên tuổi có thể mang theo hương đất, mùi trang trại và “mùi xanh” và mùi nấm. Đặc biệt giống nho này rất ngấm gỗ sồi, có thể thể hiện mùi gỗ tốt, vanilla và cả mùi khói.",
             "pairing": "Các món âu trang trọng như beefsteak, thịt chim, thịt rừng; sushi “chín”; thịt lợn quay giòn bì, nem lụi, bún bò Huế, bún đậu",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../assets/wines/pinot_noir.png"   
         }
     ]
 }

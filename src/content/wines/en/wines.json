@@ -6,7 +6,7 @@
             "type": "Classic Red Wine",
             "description": "PS is a grape variety with high astringency and good acidity. Its ability for long storage/aging is equivalent to the Cabernet Sauvignon grape family. PS produces dark and deep purple wines with flavors of black pepper, raspberries, blueberries, spices and licorice.",
             "pairing": "Suitable for European dishes such as beefsteak, lamb; or Asian dishes such as crispy roasted pork and char siu.",
-            "image": "../../assets/placeholder.png"
+            "image": "../../../assets/wines/petite_sirah.png"
         }, 
         {
             "name": "Cabernet Sauvignon (CS)",
@@ -14,7 +14,7 @@
             "type": "Classic Red Wine",
             "description": "CS is a wine grape variety with deep color, excellent tannin structure, moderate high acidity and aromas of blackcurrants, plums, warm spices and cedar. Wine has the ability to be stored for a long time.",
             "pairing": "Suitable for European dishes such as beefsteak, lamb; or smoky Asian dishes such as glazed roasted meat, glazed grilled pork, and bun cha.",
-            "image": "../../assets/placeholder.png"
+            "image": "../../../assets/wines/cabernet_sauvignon.png"
         },
         {
             "name": "Concord (CC)",
@@ -22,7 +22,7 @@
             "type": "Pink Wine",
             "description": "CC is a type of wine with special aromas rich in flowers and ripe fruits, honey, wax and herbal roots. CC wines have a youthful flavor and are full of vitality.",
             "pairing": "Suitable for drinking cold at the end of a meal as dessert and for mixing drinks (sangria, punch)",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../../assets/wines/concord.png"   
         },
         {
             "name": "Chardonnay (CH)",
@@ -30,7 +30,7 @@
             "type": "White Wine",
             "description": "CH is a type of wine with special aromas. Spectrum ranges from white flowers to peach, pineapple and milk cream.  CH wine brings a pure and elegant sensation. Per wine market traditions, all white wines with the highest price and value are produced from this grape variety.",
             "pairing": "Suitable with white meat and seafood dishes with white and cream sauce, milk, cheese; or Asian dishes such as beef noodle soup, banh cuon, banh bot loc",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../../assets/wines/chardonnay.png"   
         },
         {
             "name": "Sauvignon Blanc (SB)",
@@ -38,7 +38,7 @@
             "type": "White Wine",
             "description": "SH has a wide flavor spectrum depending on growing areas and production techniques. The product has the bouquet of cut grass, melon, passion fruit and tropical fruits. The light, fresh flavor is most suitable for hot summer days in Vietnam.",
             "pairing": "Suitable for light dishes such as salads, fish in general; seafood salads, sushi; or chicken pho with lots of scallions",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../../assets/wines/sauvignon_blanc.png"   
         },
         {
             "name": "Zinfandel (ZI)",
@@ -46,7 +46,7 @@
             "type": "Disruptive Red Wine",
             "description": "ZI is a grape variety with high alcohol and good acidity, deep sweetness and moderate low astringency. ZI creates wines that are dark red to purple in color, with flavors of black berry jam, black pepper, blueberries and licorice. The taste has reminiscence of cigarette smoke.",
             "pairing": "European dishes with red sauce, pan sauce, tomato sauce; with pasta, Italian stews; or sweet side dishes (braised meat, wine sauce...), sweet and sour stir-fried ribs",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../../assets/wines/zinfandel.png"   
         },
         {
             "name": "Pinot Noir (PN)",
@@ -54,7 +54,7 @@
             "type": "Disruptive Red Wine",
             "description": "PN is a grape variety with low alcohol content and very good acidity, slight sweetness and smooth tannins. PN creates wines with a raw garnet-like color and flavors of red cherries, strawberries, and raspberries. As it ages, PN can bring about earthy, farmhouse and mushroom scents. In particular, this grape variety is very oak- infusible, being able to express fine woody, vanilla and even smoky aromas.",
             "pairing": "Formal European dishes such as beefsteak, birds and pheasants, wild games; sushi with a touch of fire; crispy roasted pork, nem lui, bun bo Hue",
-            "image": "../../assets/placeholder.png"   
+            "image": "../../../assets/wines/pinot_noir.png"   
         }
     ]
 }

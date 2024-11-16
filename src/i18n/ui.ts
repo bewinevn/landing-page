@@ -8,6 +8,7 @@ export const languages = {
   
   export const ui = {
     vn: {
+        'winelist.title': 'các sản phẩm',
         'wheretofind.title': 'tìm chúng mình ở đâu',
         'wheretofind.nav':'tìm chúng mình nhé',
         'hero.title': 'vang việt',
@@ -21,6 +22,7 @@ export const languages = {
 
     },
     en: {
+      'winelist.title': 'our products',
       'wheretofind.title': 'where to find us',
       'wheretofind.nav': 'find us',
       'hero.title': 'first Vietnamese wine',

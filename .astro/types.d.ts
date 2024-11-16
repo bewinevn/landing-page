@@ -148,6 +148,18 @@ declare module 'astro:content' {
   data: InferEntrySchema<"venues">
 };
 };
+"wines": {
+"en/wines": {
+	id: "en/wines";
+  collection: "wines";
+  data: InferEntrySchema<"wines">
+};
+"wines": {
+	id: "wines";
+  collection: "wines";
+  data: InferEntrySchema<"wines">
+};
+};
 
 	};
 
