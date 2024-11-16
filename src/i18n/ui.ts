@@ -10,7 +10,7 @@ export const languages = {
     vn: {
         'winelist.title': 'các sản phẩm',
         'wheretofind.title': 'tìm chúng mình ở đâu',
-        'wheretofind.nav':'tìm chúng mình nhé',
+        'wheretofind.nav':'đặt mua ngay thôi',
         'hero.title': 'vang việt',
         'hero.subtitle': 'cho người trẻ việt',
         'hero.description': 'Người Việt mình hay làm thân trên bàn nhậu. Từ lạ thành quen và từ quen thành thân, rượu khi uống vừa đủ, trở thành chất dẫn cho những mối tương giao thú vị; có khi là để đời. Vậy nên, từ 2024, be-wine hân hạnh mang sản phẩm vang đóng lon đầu tiên tại Việt Nam đến khắp mọi phố phường ngõ hẻm.',
@@ -24,7 +24,7 @@ export const languages = {
     en: {
       'winelist.title': 'our products',
       'wheretofind.title': 'where to find us',
-      'wheretofind.nav': 'find us',
+      'wheretofind.nav': 'order now',
       'hero.title': 'first Vietnamese wine',
       'hero.subtitle': 'for the young',
       'hero.description': 'We Vietnamese have always been bonding through “nhậu” - which means “to have to drink” with each other. Drinking (moderately) helps convert strangers to friends and friends to soulmates. That\'s why for the first time, we introduce to you be-wine - the first Vietnamese wine for the young.',
