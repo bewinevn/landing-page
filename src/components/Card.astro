@@ -9,7 +9,7 @@ const { title, subtitle, image, link, imageStyle, description } = Astro.props;
     <a href={link} target="_blank" class:list={["no-underline relative block", link && "hover:scale-105"]} aria-label={title}>
       <span class="relative block transition duration-500 ease-in-out transform rounded">
         <Image 
-          width={384} 
+
           class:list={["relative block object-contain object-center w-full h-full", imageStyle]} 
           loading="lazy" 
           alt={title} src={image} />
