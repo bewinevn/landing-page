@@ -15,6 +15,13 @@ const t = useTranslations(lang);
       {t('footer.cta')}
     </div>
     <div class="flex justify-center gap-8 mb-8">
+      <a href="tel:+84367189989" 
+        class="no-underline relative inline-block hover:underline"
+        title="telephone"
+        aria-lable="telephone"
+        rel="noopener">
+          <span set:html="hotline"></span>
+      </a>  
       {footer
         .data
         .socials
