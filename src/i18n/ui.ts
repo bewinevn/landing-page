@@ -12,7 +12,7 @@ export const languages = {
         'wheretofind.title': 'tìm chúng mình ở đâu',
         'wheretofind.nav':'đặt mua ngay thôi',
         'hero.title': 'vang việt',
-        'hero.subtitle': 'cho người trẻ việt',
+        'hero.subtitle': 'cho người già việt',
         'hero.description': 'Người Việt mình hay làm thân trên bàn nhậu. Từ lạ thành quen và từ quen thành thân, rượu khi uống vừa đủ, trở thành chất dẫn cho những mối tương giao thú vị; có khi là để đời. Vậy nên, từ 2024, be-wine hân hạnh mang sản phẩm vang đóng lon đầu tiên tại Việt Nam đến khắp mọi phố phường ngõ hẻm.',
         'hero.cta': 'Nên là, làm một lon cho vang lừng tuổi trẻ nhé?',
         'tag.1': 'vang xịn - giá yêu thương',
