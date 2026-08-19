@@ -9,6 +9,14 @@
             "image": "../../assets/wines/petite_sirah.png"
         }, 
         {
+            "name": "sauvignon blanc (SB)",
+            "alcoholContent": 11.5,
+            "type": "vang trắng",
+            "description": "SH có phổ hương vị rộng tùy theo khu vực trồng và kỹ thuật sản xuất. Sản phẩm mang hương cỏ cắt, dưa gang, chanh dây và hoa quả nhiệt đới. Hương vị tươi mát nhẹ nhàng phù hợp với những ngày hè nóng nực ở Việt Nam.",
+            "pairing": "ghép món: phù hợp với món âu nhẹ nhàng salade, cá nói chung; các món gỏi hải sản, sushi; hoặc phở gà nhiều hành",
+            "image": "../../assets/wines/sauvignon_blanc.png"   
+        },
+        {
             "name": "cabernet sauvignon (CS)",
             "alcoholContent": 13.5,
             "type": "vang đỏ classic",
@@ -31,14 +39,6 @@
             "description": "CH là một loại rượu có mùi hương đặc biệt. Phổ hương từ hoa trắng tới quả đào, dứa và kem sữa.  Rượu vang CH có hương vị thanh túy và lịch lãm. Trên thị trường rượu vang nói chung tất cả các chai vang trắng giá thành và giá trị cao nhất đều sản xuất từ giống nho này.",
             "pairing": "ghép món: phù hợp đi cùng các món thịt trắng và hải sản có kém sauce trắng và kem, sữa, phô mai; hoặc món á như bún bò, bánh cuốn, bánh bột lọc",
             "image": "../../assets/wines/chardonnay.png"   
-        },
-        {
-            "name": "sauvignon blanc (SB)",
-            "alcoholContent": 11.5,
-            "type": "vang trắng",
-            "description": "SH có phổ hương vị rộng tùy theo khu vực trồng và kỹ thuật sản xuất. Sản phẩm mang hương cỏ cắt, dưa gang, chanh dây và hoa quả nhiệt đới. Hương vị tươi mát nhẹ nhàng phù hợp với những ngày hè nóng nực ở Việt Nam.",
-            "pairing": "ghép món: phù hợp với món âu nhẹ nhàng salade, cá nói chung; các món gỏi hải sản, sushi; hoặc phở gà nhiều hành",
-            "image": "../../assets/wines/sauvignon_blanc.png"   
         },
         {
             "name": "zinfandel (ZI)",
