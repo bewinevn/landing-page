@@ -2,6 +2,9 @@
 import { Image } from 'astro:assets';
 
 const { title, subtitle, image, link, imageStyle, description } = Astro.props;
+
+const isSoldOut = /sold out/i.test(title);
+const displayTitle = title.replace(/\s*sold out/i, '');
 ---
 
 <figure class="shrink-0 w-full relative">
@@ -17,7 +20,10 @@ const { title, subtitle, image, link, imageStyle, description } = Astro.props;
       </a>
   </div>
   <div class="px-0">
-    <h3 class="text-sauvignon-800 text-xl mt-2">{title}</h3>
+    <h3 class="text-sauvignon-800 text-xl mt-2">
+  {displayTitle}
+  {isSoldOut && <span class="text-sirah-600 font-semibold"> sold out</span>}
+</h3>
   </div>
   {
     subtitle && (
