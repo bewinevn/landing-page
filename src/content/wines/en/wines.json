@@ -17,14 +17,6 @@
             "image": "../../../assets/wines/cabernet_sauvignon.png"
         },
         {
-            "name": "concord (CC)",
-            "alcoholContent": 13.5,
-            "type": "pink wine",
-            "description": "CC is a type of wine with special aromas rich in flowers and ripe fruits, honey, wax and herbal roots. CC wines have a youthful flavor and are full of vitality.",
-            "pairing": "pairing: suitable for drinking cold at the end of a meal as dessert and for mixing drinks (sangria, punch)",
-            "image": "../../../assets/wines/concord.png"   
-        },
-        {
             "name": "chardonnay (CH)",
             "alcoholContent": 11.5,
             "type": "white wine",
