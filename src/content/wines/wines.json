@@ -33,14 +33,6 @@
             "image": "../../assets/wines/cabernet_sauvignon.png"
         },
         {
-            "name": "concord (CC) sold out",
-            "alcoholContent": 13.5,
-            "type": "vang hồng, đậm",
-            "description": "CC là một loại rượu có mùi hương đặc biệt đậm mùi hoa và quả chín, mật, sáp và rễ thảo mộc. Rượu vang CC có hương vị trẻ trung và tràn sức sống.",
-            "pairing": "ghép món: phù hợp uống thật lạnh cuối bữa thay cho tráng miệng và pha chế đồ uống (sangria, punch)",
-            "image": "../../assets/wines/concord.png"   
-        },
-        {
             "name": "chardonnay (CH) sold out",
             "alcoholContent": 11.5,
             "type": "vang trắng",
