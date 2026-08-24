@@ -1,0 +1,51 @@
+---
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const text = t('announcement.text');
+---
+
+<div class="announcement-bar bg-sirah-700 text-white font-sans font-medium overflow-hidden select-none" role="region" aria-label={text}>
+  <div class="announcement-track flex items-center whitespace-nowrap py-2.5">
+    <!-- Repeat the text so the marquee loops without a visible gap -->
+    {Array.from({ length: 8 }).map(() => (
+      <span class="announcement-item inline-flex items-center px-8 text-sm md:text-base">
+        {text}
+        <span class="mx-8 opacity-60" aria-hidden="true">•</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .announcement-track {
+    width: max-content;
+    animation: announcement-scroll 22s linear infinite;
+  }
+
+  @keyframes announcement-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* Half the track is one full copy of the repeated items (8 -> 4),
+         so translating by 50% loops seamlessly. */
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Pause on hover/focus so the message can be read */
+  .announcement-bar:hover .announcement-track,
+  .announcement-bar:focus-within .announcement-track {
+    animation-play-state: paused;
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-track {
+      animation: none;
+    }
+  }
+</style>
