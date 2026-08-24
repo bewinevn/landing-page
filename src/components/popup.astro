@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+
+import discountImg from '../assets/discount.png';
+
+const zaloLink = "https://zalo.me/3836034200863507097";
+---
+
+<dialog id="discount-popup" class="rounded-2xl backdrop:bg-black/50 backdrop:backdrop-blur-md p-0 border-0 max-w-sm w-[90vw]">
+    <div class="relative bg-sirah-50 rounded-2xl overflow-hidden">
+        <button type="button" id="discount-popup-close" aria-label="Đóng" class="absolute top-2 right-2 z-10 flex items-center justify-center w-8 h-8 rounded-full bg-black/15 text-white text-lg hover:bg-black/30 focus:outline-none">
+            &times;
+        </button>
+
+        <a href={zaloLink} target="_blank" rel="noopener noreferrer" class="block">
+            <Image src={discountImg} alt="be-wine khuyến mãi" class="w-full h-auto" />
+        </a>
+    </div>
+</dialog>
+
+<script is:inline>
+    const discountDialog = document.querySelector("#discount-popup");
+    const discountClose = document.querySelector("#discount-popup-close");
+
+    window.addEventListener("load", () => {
+        if (discountDialog && !discountDialog.open && sessionStorage.getItem("discountPopupSeen") !== "true") {
+            setTimeout(() => discountDialog.showModal(), 800);
+        }
+    });
+
+    discountClose?.addEventListener("click", (event) => {
+        event.preventDefault();
+        sessionStorage.setItem("discountPopupSeen", "true");
+        discountDialog.close();
+    });
+
+    discountDialog?.addEventListener("click", (event) => {
+        const rect = discountDialog.getBoundingClientRect();
+        const clickedOutside =
+            event.clientY < rect.top ||
+            event.clientY > rect.top + rect.height ||
+            event.clientX < rect.left ||
+            event.clientX > rect.left + rect.width;
+        if (clickedOutside) {
+            sessionStorage.setItem("discountPopupSeen", "true");
+            discountDialog.close();
+        }
+    });
+</script>
