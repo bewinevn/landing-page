@@ -24,10 +24,10 @@ const displayTitle = title.replace(/[\s-]*coming soon/i, '').trim();
         {isComingSoon && <span class="text-sirah-600 font-semibold"> coming soon</span>}
 </h3>
   </div>
-  {
+    {
     subtitle && (
       <div class="px-0 pb-2 opacity-80">
-        <h4>{subtitle}</h4>
+        <h4 class="whitespace-pre-line">{subtitle}</h4>
       </div>
     )
   }
