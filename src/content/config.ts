@@ -45,7 +45,7 @@ const wines = defineCollection({
         alcoholContent: z.number(),
         type: z.string(),
         description: z.string(),
-        pairing: z.string(),
+        pairing: z.string().optional(),
         image: image()
       })
     )
