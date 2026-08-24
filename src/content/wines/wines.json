@@ -9,7 +9,7 @@
             "image": "../../assets/wines/petite_sirah.png"
         }, 
         {
-            "name": "sauvignon blanc (SB) - sold out",
+            "name": "sauvignon blanc (SB) - coming soon",
             "alcoholContent": 11.5,
             "type": "vang trắng",
             "description": "SH có phổ hương vị rộng tùy theo khu vực trồng và kỹ thuật sản xuất. Sản phẩm mang hương cỏ cắt, dưa gang, chanh dây và hoa quả nhiệt đới. Hương vị tươi mát nhẹ nhàng phù hợp với những ngày hè nóng nực ở Việt Nam.",
@@ -17,7 +17,7 @@
             "image": "../../assets/wines/sauvignon_blanc.png"   
         },
         {
-            "name": "zinfandel (ZI) - sold out",
+            "name": "zinfandel (ZI) - coming soon",
             "alcoholContent": 13.5,
             "type": "vang đỏ phá cách",
             "description": "ZI là giống nho có độ cồn cao và độ chua tốt, độ ngọt sâu cùng độ chát vừa. ZI tạo ra các dòng rượu vang có màu đỏ sẫm ngả tím, mang hương vị của mứt quả mọng đen, hạt tiêu đen, quả việt quất và cam thảo. Kết vị phảng hương khói thuốc lá.",
@@ -25,7 +25,7 @@
             "image": "../../assets/wines/zinfandel.png"   
         },
         {
-            "name": "cabernet sauvignon (CS) - sold out",
+            "name": "cabernet sauvignon (CS) - coming soon",
             "alcoholContent": 13.5,
             "type": "vang đỏ classic",
             "description": "CS là giống nho ra rượu vang có màu đậm, cấu trúc tannin tuyệt vời, vị chua vừa phải và hương thơm của quả lý chua đen, mận, gia vị đậm và gỗ tuyết tùng. Rượu vang có khả năng lưu giữ lâu dài.",
@@ -33,7 +33,7 @@
             "image": "../../assets/wines/cabernet_sauvignon.png"
         },
         {
-            "name": "chardonnay (CH) - sold out",
+            "name": "chardonnay (CH) - coming soon",
             "alcoholContent": 11.5,
             "type": "vang trắng",
             "description": "CH là một loại rượu có mùi hương đặc biệt. Phổ hương từ hoa trắng tới quả đào, dứa và kem sữa.  Rượu vang CH có hương vị thanh túy và lịch lãm. Trên thị trường rượu vang nói chung tất cả các chai vang trắng giá thành và giá trị cao nhất đều sản xuất từ giống nho này.",
@@ -41,7 +41,7 @@
             "image": "../../assets/wines/chardonnay.png"   
         },
         {
-            "name": "pinot noir (PN) - sold out",
+            "name": "pinot noir (PN) - coming soon",
             "alcoholContent": 13.5,
             "type": "vang đỏ phá cách",
             "description": "PN là giống nho có độ cồn thấp và độ chua rất tốt, độ ngọt không nổi trội cùng chất chát mượt mà. PN tạo ra các dòng rượu vang có màu đỏ hồng hơi nhạt, mang hương vị của quả mọng đỏ cherry, dâu tây, phúc bồn tử. Khi để lên tuổi có thể mang theo hương đất, mùi trang trại và “mùi xanh” và mùi nấm. Đặc biệt giống nho này rất ngấm gỗ sồi, có thể thể hiện mùi gỗ tốt, vanilla và cả mùi khói.",
