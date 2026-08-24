@@ -23,7 +23,7 @@ const zaloLink = "https://zalo.me/3836034200863507097";
     const discountClose = document.querySelector("#discount-popup-close");
 
     window.addEventListener("load", () => {
-        if (discountDialog && !discountDialog.open && sessionStorage.getItem("discountPopupSeen") !== "true") {
+                if (discountDialog && !discountDialog.open) {
             setTimeout(() => discountDialog.showModal(), 800);
         }
     });
