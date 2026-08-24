@@ -9,7 +9,7 @@
             "image": "../../assets/wines/petite_sirah.png"
         }, 
         {
-            "name": "sauvignon blanc (SB)",
+            "name": "sauvignon blanc (SB) - sold out",
             "alcoholContent": 11.5,
             "type": "vang trắng",
             "description": "SH có phổ hương vị rộng tùy theo khu vực trồng và kỹ thuật sản xuất. Sản phẩm mang hương cỏ cắt, dưa gang, chanh dây và hoa quả nhiệt đới. Hương vị tươi mát nhẹ nhàng phù hợp với những ngày hè nóng nực ở Việt Nam.",
@@ -17,7 +17,7 @@
             "image": "../../assets/wines/sauvignon_blanc.png"   
         },
         {
-            "name": "zinfandel (ZI)",
+            "name": "zinfandel (ZI) - sold out",
             "alcoholContent": 13.5,
             "type": "vang đỏ phá cách",
             "description": "ZI là giống nho có độ cồn cao và độ chua tốt, độ ngọt sâu cùng độ chát vừa. ZI tạo ra các dòng rượu vang có màu đỏ sẫm ngả tím, mang hương vị của mứt quả mọng đen, hạt tiêu đen, quả việt quất và cam thảo. Kết vị phảng hương khói thuốc lá.",
