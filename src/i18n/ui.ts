@@ -18,7 +18,7 @@ export const languages = {
         'tag.2': 'dễ uống - dễ mang đi',
         'tag.3': 'làm tại Việt Nam cho người Việt Nam',
         'footer.cta': 'theo dõi chúng mình nhé',
-        'announcement.text': 'Mua 1 tặng 1 Petit Syrah chỉ 50k/lon'
+        'announcement.text': 'Mua 1 tặng 1 Petite Sirah chỉ 50k/lon'
 
     },
     en: {
@@ -32,6 +32,6 @@ export const languages = {
       'tag.2': 'any time, any where ',
       'tag.3': 'proudly Viet',
       'footer.cta': 'follow us on socials',
-      'announcement.text': 'Buy 1 Get 1 Free — Petit Sirah, only 50k/can'
+      'announcement.text': 'Buy 1 Get 1 Free — Petite Sirah, only 50k/can'
     }
   } as const;
