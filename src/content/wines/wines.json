@@ -23,30 +23,7 @@
            
             "image": "../../assets/wines/zinfandel.png"   
         },
-        {
-            "name": "cabernet sauvignon (CS) - coming soon",
-            "alcoholContent": 13.5,
-            "type": "vang đỏ classic",
-            "description": "Vang đỏ, 13.5%\nAnh đào, mận, chocolate, gỗ sồi\nĐộ chát 4/5 - Độ chua 2/5 - Độ ngọt 1/5",
-           
-            "image": "../../assets/wines/cabernet_sauvignon.png"
-        },
-        {
-            "name": "chardonnay (CH) - coming soon",
-            "alcoholContent": 11.5,
-            "type": "vang trắng",
-            "description": "Vang trắng, 11.5%\nChanh dây, đào, bánh quy\nĐộ chát 1/5 - Độ chua 3/5 - Độ ngọt 2/5",
-          
-            "image": "../../assets/wines/chardonnay.png"   
-        },
-        {
-            "name": "pinot noir (PN) - coming soon",
-            "alcoholContent": 13.5,
-            "type": "vang đỏ phá cách",
-            "description": "Vang đỏ, 13.5%\nAnh đào, dâu tây, gỗ sồi, vanilla\nĐộ chát 2/5 - Độ chua 3/5 - Độ ngọt 3/5",
-            
-            "image": "../../assets/wines/pinot_noir.png"   
-        }
+    
     ]
 }
   
