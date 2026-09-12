@@ -1,41 +1,74 @@
 ---
 import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
 
-const { title, subtitle, image, link, imageStyle, description } = Astro.props;
+const { title, subtitle, image } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 const isComingSoon = /coming soon/i.test(title);
-const displayTitle = title.replace(/[\s-]*coming soon/i, '').trim();
+const abbrevMatch = title.match(/\(([^)]+)\)/);
+const abbrev = abbrevMatch ? abbrevMatch[1] : '';
+const displayTitle = title
+  .replace(/\([^)]*\)/, '')
+  .replace(/[\s-]*coming soon/i, '')
+  .trim();
+const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
 ---
 
-<figure class="shrink-0 w-full relative">
-  <div class="relative">
-    <a href={link} target="_blank" class:list={["no-underline relative block", link && "hover:scale-105"]} aria-label={title}>
-      <span class="relative block transition duration-500 ease-in-out transform rounded">
-        <Image 
+<style>
+  .card-texture {
+    background-image: url("../assets/topography.svg");
+    background-size: 384px 384px;
+    background-position: top left;
+    opacity: 0.5;
+  }
+</style>
 
-          class:list={["relative block object-contain object-center w-full h-full", imageStyle]} 
-          loading="lazy" 
-          alt={title} src={image} />
+<figure class="relative flex flex-col gap-3 items-start p-4 rounded-lg bg-[#EFEDE9] overflow-hidden m-0">
+  <div class="card-texture absolute inset-0 pointer-events-none"></div>
+
+  <div class="relative w-full">
+    {isComingSoon ? (
+      <div class="flex h-[30px] w-full items-center justify-center rounded bg-white border border-[#d1d5db]">
+        <p class="font-sans font-bold text-[#A71E22] text-lg md:text-xl m-0">{t('winelist.comingsoon')}</p>
+      </div>
+    ) : (
+      <div class="flex h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db]">
+        <p class="font-sans font-bold text-[#EFEDE9] text-lg md:text-xl m-0">{t('winelist.promo')}</p>
+      </div>
+    )}
+  </div>
+
+  <div class="relative w-full h-[260px] md:h-[300px] flex items-center justify-center">
+    <Image class="w-auto h-full object-contain" loading="lazy" alt={title} src={image} />
+  </div>
+
+  <div class="relative flex gap-2 items-center w-full">
+    <p class="font-sans font-bold text-[#A71E22] text-2xl md:text-4xl m-0 capitalize">{displayTitle}</p>
+    {abbrev && (
+      <span class="inline-flex items-center justify-center h-[30px] w-[43px] shrink-0 rounded bg-white border border-[#d1d5db] font-sans font-bold text-[#A71E22] text-lg">
+        {abbrev}
       </span>
-      </a>
+    )}
   </div>
-    <h3 class="text-sauvignon-800 text-xl mt-2">
-        {displayTitle}
-        {isComingSoon && <span class="text-sirah-600 font-semibold"> coming soon</span>}
-</h3>
+
+  <div class="relative w-full h-[195px] p-2 rounded bg-[#f0f0f0] border border-[#ccc] overflow-y-auto">
+    {notes.map(line => <p class="m-0 text-[#666] text-base uppercase leading-normal">{line}</p>)}
+    <p class="m-0 text-base">&nbsp;</p>
+    <p class="m-0 font-bold text-[#A71E22] text-sm uppercase">{t('winelist.ingredients')}</p>
+    <p class="m-0 text-[#A71E22] text-sm uppercase">
+      <span class="font-bold">{t('winelist.hsdLabel')} </span>
+      <span>{t('winelist.hsdText')}</span>
+    </p>
   </div>
-    {
-    subtitle && (
-      <div class="px-0 pb-2 opacity-80">
-        <h4 class="whitespace-pre-line">{subtitle}</h4>
-      </div>
-    )
-  }
-  {
-    description && (
-      <div>
-        <p>{description}</p>
-      </div>
-    )
-  }
+
+  {!isComingSoon && (
+    <div class="relative flex min-h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db] px-2 py-1.5">
+      <p class="m-0 text-[#f0f0f0] text-xs md:text-sm text-center leading-snug">
+        {t('winelist.disclaimerPrefix')} <span class="underline">{t('winelist.disclaimerLimited')}</span> {t('winelist.disclaimerMiddle')} <span class="underline">{t('winelist.disclaimerArea')}</span>
+      </p>
+    </div>
+  )}
 </figure>

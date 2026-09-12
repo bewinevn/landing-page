@@ -1,0 +1,22 @@
+---
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const paragraphs = t('hero.description').split('\n').filter(Boolean);
+---
+
+<section class="relative w-full bg-sirah-50 px-6 py-12 md:px-20 md:py-24">
+  <div class="max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-9 lg:items-center">
+    <h1 class="font-serif font-normal text-[#86181b] text-4xl md:text-6xl lg:text-8xl leading-tight lg:w-2/5 lg:shrink-0 m-0">
+      <span class="block">{t('about.title.line1')}</span>
+      <span class="block">{t('about.title.line2')}</span>
+    </h1>
+    <div class="flex-1 min-w-0 text-[#252525] text-base md:text-2xl leading-relaxed">
+      {paragraphs.map((p, i) => (
+        <p class:list={["m-0 mb-4 last:mb-0", i === paragraphs.length - 1 && "font-bold text-[#A71E22]"]}>{p}</p>
+      ))}
+    </div>
+  </div>
+</section>

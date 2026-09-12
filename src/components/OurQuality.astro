@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import quality1 from '../assets/figma/quality-1.png';
+import quality2 from '../assets/figma/quality-2.png';
+import quality3 from '../assets/figma/quality-3.png';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const items = [
+  { image: quality1, caption: t('tag.1') },
+  { image: quality2, caption: t('tag.2') },
+  { image: quality3, caption: t('tag.3') },
+];
+---
+
+<section class="relative w-full bg-sirah-50 pb-10 md:pb-20 flex flex-col items-center gap-8 md:gap-20">
+  <a
+    href="https://zalo.me/3836034200863507097"
+    target="_blank"
+    class="hidden md:inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-2xl rounded-xl px-10 py-6 hover:brightness-110 transition"
+  >
+    {t('wheretofind.nav')}
+  </a>
+
+  <div class="w-full max-w-[1440px] flex md:grid md:grid-cols-3 overflow-x-auto snap-x snap-mandatory gap-0 md:gap-0 px-5 md:px-0 -mx-5 md:mx-0">
+    {items.map((item) => (
+      <div class="relative shrink-0 w-[85vw] md:w-auto h-[420px] md:h-[617px] snap-center p-4 flex items-end justify-center overflow-hidden">
+        <Image src={item.image} alt="" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(134,24,27,0.5) 67.788%)"></div>
+        <h2 class="relative text-sirah-50 text-lg md:text-2xl font-medium uppercase text-center m-0 pb-2" style="text-shadow: 0px 4px 4px rgba(0,0,0,0.25)">
+          {item.caption}
+        </h2>
+      </div>
+    ))}
+  </div>
+</section>

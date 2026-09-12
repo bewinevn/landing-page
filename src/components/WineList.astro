@@ -1,5 +1,5 @@
 ---
-import { getEntry, getCollection } from 'astro:content';
+import { getEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import Card from './Card.astro';
 
@@ -18,25 +18,19 @@ const wineList = await getEntry('wines', getLocalizedWineList());
 
 ---
 
-<div class="flex items-end mb-8" id="WineList">
-    <div class="pr-5">
-      <div class="max-w-xl relative mt-5 mb-0">
-        <h2 class="font-light font-serif text-4xl text-pretty leading-none -tracking-wider mt-0 mb-8 mx-0">
-          <span class="text-[1.5em]">{t('winelist.title')}</span>
-        </h2>
+<section id="WineList" class="relative w-full bg-sirah-50 px-5 py-16 md:px-[120px] md:py-20">
+  <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+    <h2 class="text-xl md:text-3xl uppercase font-bold tracking-wide text-[#86181b] m-0">
+      {t('winelist.title')}
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {wineList.data.list.map(
+          (wine) =>
+          <Card
+            image={wine.image}
+            title={wine.name}
+            subtitle={wine.description} />
+        )}
       </div>
-      <div class="grid flex-wrap items-start grid-cols-1 lg:grid-cols-2 md:grid-cols-3 portfolio gap-10 ">
-          {wineList.data.list.map(
-            (wine, index) => 
-            <Card 
-              index={index+1} 
-              image={wine.image} 
-              title={wine.name} 
-              description={wine.pairing}
-              subtitle={wine.description} 
-              imageStyle="aspect-square object-cover" /> 
-          )}
-        </div>
-    </div>
   </div>
-  
+</section>

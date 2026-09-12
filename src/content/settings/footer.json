@@ -2,13 +2,13 @@
   "socials": [
     {
       "target": "_blank",
-      "name": "facebook",
-      "link": "https://www.facebook.com/bewinevietnam/"
+      "name": "instagram",
+      "link": "https://www.instagram.com/bewinevn/"
     },
     {
       "target": "_blank",
-      "name": "instagram",
-      "link": "https://www.instagram.com/bewinevn/"
+      "name": "facebook",
+      "link": "https://www.facebook.com/bewinevietnam/"
     }
   ]
 }

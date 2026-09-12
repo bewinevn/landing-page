@@ -4,25 +4,22 @@
             "name": "petite sirah (PS)",
             "alcoholContent": 13.5,
             "type": "vang đỏ classic",
-            "description": "Vang đỏ, 13.5%\nQuả mọng chín, gỗ sồi, hoa violet, hạt tiêu đen\nĐộ chát 3/5 - Độ chua 2/5 - Độ ngọt 3/5",
-            "image": "../../assets/wines/petite_sirah.png"
-        }, 
+            "description": "Vang đỏ, 13.5%\nQuả mọng chín, gỗ sồi, hoa violet, hạt tiêu đen",
+            "image": "../../assets/figma/can-petite-sirah.png"
+        },
         {
             "name": "sauvignon blanc (SB) - coming soon",
             "alcoholContent": 11.5,
             "type": "vang trắng",
-            "description": "Vang trắng, 11.5%\nTáo xanh, chanh dây, cỏ cắt\nĐộ chát 1/5 - Độ chua 4/5 - Độ ngọt 1/5",
-        
-            "image": "../../assets/wines/sauvignon_blanc.png"   
+            "description": "Vang trắng, 11.5%\nTáo xanh, chanh dây, cỏ cắt",
+            "image": "../../assets/figma/can-sauvignon-blanc.png"
         },
         {
-            "name": "zinfandel (ZI) - coming soon",
+            "name": "zinfandel (ZL) - coming soon",
             "alcoholContent": 13.5,
             "type": "vang đỏ phá cách",
-            "description": "Vang đỏ, 13.5%\nMứt mận, cam thảo, vanilla\nĐộ chát 2/5 - Độ chua 2/5 - Độ ngọt 4/5",
-           
-            "image": "../../assets/wines/zinfandel.png"   
+            "description": "Vang đỏ, 13.5%\nMứt mận, cam thảo, vanilla",
+            "image": "../../assets/figma/can-zinfandel.png"
         }
     ]
 }
-  

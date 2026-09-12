@@ -4,23 +4,22 @@
             "name": "petite sirah (PS)",
             "alcoholContent": 13.5,
             "type": "classic red wine",
-            "description": "Red wine, 13.5%\nRipe berries, oak, violet, black pepper\nTannin 3/5 - Acidity 2/5 - Sweetness 3/5",
-            "image": "../../../assets/wines/petite_sirah.png"
+            "description": "Red wine, 13.5%\nRipe berries, oak, violet, black pepper",
+            "image": "../../../assets/figma/can-petite-sirah.png"
         },
         {
             "name": "sauvignon blanc (SB) - coming soon",
             "alcoholContent": 11.5,
             "type": "white wine",
-            "description": "White wine, 11.5%\nGreen apple, passion fruit, cut grass\nTannin 1/5 - Acidity 4/5 - Sweetness 1/5",
-            "image": "../../../assets/wines/sauvignon_blanc.png"
+            "description": "White wine, 11.5%\nGreen apple, passion fruit, cut grass",
+            "image": "../../../assets/figma/can-sauvignon-blanc.png"
         },
         {
-            "name": "zinfandel (ZI) - coming soon",
+            "name": "zinfandel (ZL) - coming soon",
             "alcoholContent": 13.5,
             "type": "disruptive red wine",
-            "description": "Red wine, 13.5%\nPlum jam, licorice, vanilla\nTannin 2/5 - Acidity 2/5 - Sweetness 4/5",
-            "image": "../../../assets/wines/zinfandel.png"
+            "description": "Red wine, 13.5%\nPlum jam, licorice, vanilla",
+            "image": "../../../assets/figma/can-zinfandel.png"
         }
     ]
 }
-  

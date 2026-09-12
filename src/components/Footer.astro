@@ -9,38 +9,35 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<footer class="block relative bg-sauvignon-800/30 w-full text-center py-32">
-  <div class="mx-auto px-8 md:max-w-7xl">
-    <div class="flex justify-center mb-4">
-      {t('footer.cta')}
-    </div>
-    <div class="flex justify-center gap-8 mb-8">
-      <a href="tel:+84367189989" 
-        class="no-underline relative inline-block hover:underline"
-        title="telephone"
-        aria-lable="telephone"
-        rel="noopener">
-          <span set:html="hotline"></span>
-      </a>  
-      {footer
-        .data
-        .socials
-        .map(
+<footer class="relative w-full bg-[#A71E22] px-5 py-10 md:px-[120px] md:py-12">
+  <div class="max-w-[1200px] mx-auto flex items-center">
+    <div class="w-full flex flex-col items-center text-center gap-6 md:flex-row md:flex-wrap md:text-left">
+      <p class="text-2xl md:text-xl font-bold text-sirah-50 whitespace-nowrap m-0">
+        {t('footer.cta')}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 md:contents">
+        {footer.data.socials.map(
           social =>
-            <a href={social.link} 
-            class="no-underline relative inline-block hover:underline" 
-            title={social.name} 
-            aria-label={social.name} 
+            <a href={social.link}
+            target={social.target}
+            class="inline-flex items-center justify-center w-32 md:w-40 h-12 border border-white/40 rounded text-sirah-50 font-medium text-sm text-center capitalize whitespace-nowrap underline hover:bg-white/10"
             rel="noopener">
-              <span set:html={social.name}></span>
+              {social.name}
             </a>
         )}
+
+        <a href="https://zalo.me/3836034200863507097"
+          target="_blank"
+          class="inline-flex items-center justify-center w-32 md:w-40 h-12 border border-white/40 rounded text-sirah-50 font-medium text-sm text-center whitespace-nowrap underline hover:bg-white/10"
+          rel="noopener">
+          {t('footer.hotline')}
+        </a>
+      </div>
+
+      <p class="text-sm text-sirah-50 md:ml-auto whitespace-nowrap m-0">
+        &copy; Copyright {general.data.title} {new Date().getFullYear()}. All rights reserved
+      </p>
     </div>
-    <p class="m-0 opacity-60">
-      <span>&copy; copyright&nbsp;</span>
-      <span>{general.data.title}&nbsp;</span>
-      <span set:html={new Date().getFullYear()}></span>
-      <span>. all rights reserved</span>
-    </p>
   </div>
 </footer>

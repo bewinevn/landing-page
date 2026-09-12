@@ -1,43 +1,50 @@
 ---
-import { getLangFromUrl, useTranslations } from "src/i18n/utils";
 import { Image } from 'astro:assets';
-import promoImage from '../assets/mua1-tang1-mua-thu.png';
+import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import hero1 from '../assets/figma/hero-1.png';
+import hero2 from '../assets/figma/hero-2.png';
+import hero3 from '../assets/figma/hero-3.png';
+import heroMobile from '../assets/figma/hero-mobile.jpg';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-  <div class="order-2 lg:order-1 max-w-xl pr-5">
-    <div class="relative mt-5 mb-0">
-      <h2 class="font-light font-serif text-4xl leading-none -tracking-wider mt-0 mb-8 mx-0">
-        <p class="mb-6 text-pretty">
-          <div><span class="text-[1.5em]">{t('hero.title')}</span></div>
-          <span class="text-[1.5em] whitespace-pre-line">{t('hero.subtitle')}</span>
-        </p>
-      </h2>
-      <h4 class="leading-7 text-base mt-0 mb-4 mx-0 text-sauvignon-800">
-        <div>
-          <span class="opacity-85 whitespace-pre-line">
-            {t('hero.description')}
-        </span>
-        </div>
-        <div class="mt-3">
-          <span class="opacity-85">
-            {t('hero.cta')}
-          </span>
-        </div>
-      </h4>
+<div>
+  <div class="relative left-1/2 right-1/2 -mx-[50vw] w-screen h-screen md:h-[903px] overflow-hidden">
+    <div class="relative h-full md:hidden overflow-hidden">
+      <Image src={heroMobile} alt="be-wine" class="w-full h-full object-cover object-[center_25%]" loading="eager" />
     </div>
-  </div>
+    <div class="hidden md:grid grid-cols-3 h-full">
+      <div class="relative h-full overflow-hidden">
+        <Image src={hero1} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+      </div>
+      <div class="relative h-full overflow-hidden">
+        <Image src={hero2} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+      </div>
+      <div class="relative h-full overflow-hidden">
+        <Image src={hero3} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+      </div>
+    </div>
+    <div class="hidden md:block absolute inset-0 pointer-events-none" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(134,24,27,0.8) 67.788%)"></div>
+    <div class="md:hidden absolute inset-0 pointer-events-none" style="background: linear-gradient(to bottom, rgba(120,60,30,0) 0%, rgba(120,60,30,0.55) 70%, rgba(120,60,30,0.75) 100%)"></div>
 
-  <div class="order-1 lg:order-2 lg:flex-1 flex items-center justify-center">
-    <Image
-      src={promoImage}
-      alt="be-wine chương trình mùa thu - mua 1 tặng 1"
-      width={900}
-            class="w-72 sm:w-80 lg:w-96 h-auto drop-shadow-xl"
-      loading="eager"
+    <img
+      src="/figma/hero-wave-logo.svg"
+      alt="be-wine"
+      class="md:hidden absolute top-2 left-2 w-[95%] h-auto pointer-events-none drop-shadow-md"
     />
+
+    <img
+      src="/figma/hero-wave-logo.svg"
+      alt="be-wine"
+      class="hidden md:block absolute bottom-0 left-4 w-[97.8%] h-auto pointer-events-none"
+    />
+
+    <div class="md:hidden absolute inset-x-0 bottom-10 flex justify-center z-10">
+      <a href="https://zalo.me/3836034200863507097" target="_blank" class="inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg">
+        {t('wheretofind.nav')}
+      </a>
+    </div>
   </div>
 </div>
