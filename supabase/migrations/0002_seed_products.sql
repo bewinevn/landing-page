@@ -24,7 +24,7 @@ insert into products (
   E'Vang trắng, 11.5%\nTáo xanh, chanh dây, cỏ cắt',
   E'White wine, 11.5%\nGreen apple, passion fruit, cut grass',
   11.5, 100000,
-  '/images/products/sauvignon-blanc.png', 0, false, true,
+  '/images/products/sauvignon-blanc.png', 0, true, true,
   false, null, null, null
 ),
 (
@@ -33,6 +33,6 @@ insert into products (
   E'Vang đỏ, 13.5%\nMứt mận, cam thảo, vanilla',
   E'Red wine, 13.5%\nPlum jam, licorice, vanilla',
   13.5, 100000,
-  '/images/products/zinfandel.png', 0, false, true,
+  '/images/products/zinfandel.png', 0, true, true,
   false, null, null, null
 );
