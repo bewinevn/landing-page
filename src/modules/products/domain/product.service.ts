@@ -2,9 +2,18 @@ import { NotFoundError } from "../../../shared/errors/app-error";
 import * as productRepository from "../data/product.repository";
 import { toProduct, type Locale, type Product, type ProductRow } from "./product.types";
 
+// Petite Sirah is the only wine actually purchasable today and should
+// always lead the catalog, wherever products are listed.
+const FEATURED_SLUG = "petite-sirah";
+
 export async function listProducts(locale: Locale): Promise<Product[]> {
   const rows = await productRepository.findActiveProducts();
-  return rows.map((row) => toProduct(row, locale));
+  const products = rows.map((row) => toProduct(row, locale));
+  return products.sort((a, b) => {
+    if (a.slug === FEATURED_SLUG) return -1;
+    if (b.slug === FEATURED_SLUG) return 1;
+    return 0;
+  });
 }
 
 export async function getProductBySlug(slug: string, locale: Locale): Promise<Product> {
