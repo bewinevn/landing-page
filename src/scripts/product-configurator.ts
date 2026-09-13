@@ -6,23 +6,20 @@ function formatVnd(amount: number): string {
 
 function init() {
   const wineOptions = document.querySelectorAll<HTMLButtonElement>("[data-wine-option]");
-  const packOptions = document.querySelectorAll<HTMLButtonElement>("[data-pack-option]");
+  const qtyOptions = document.querySelectorAll<HTMLButtonElement>("[data-qty-option]");
+  const giftTags = document.querySelectorAll<HTMLElement>("[data-gift-tag]");
   const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
   const titleEl = document.getElementById("configurator-title");
   const unitPriceEl = document.getElementById("configurator-unit-price");
-  const countEl = document.getElementById("configurator-count");
   const totalEl = document.getElementById("configurator-total");
-  const decrementBtn = document.getElementById("configurator-decrement");
-  const incrementBtn = document.getElementById("configurator-increment");
   const checkoutBtn = document.getElementById("configurator-checkout") as HTMLButtonElement | null;
-  if (!countEl || !totalEl || !checkoutBtn) return;
+  if (!totalEl || !checkoutBtn) return;
 
   let selectedWine = Array.from(wineOptions).find((b) => b.dataset.selected === "true") ?? wineOptions[0];
-  let packSize = parseInt(
-    Array.from(packOptions).find((b) => b.dataset.selected === "true")?.dataset.packSize ?? "6",
+  let selectedQty = parseInt(
+    Array.from(qtyOptions).find((b) => b.dataset.selected === "true")?.dataset.qty ?? "3",
     10
   );
-  let count = 1;
 
   function currentUnitPrice(): number {
     return parseInt(selectedWine?.dataset.unitPrice ?? "0", 10);
@@ -33,15 +30,20 @@ function init() {
   }
 
   function render() {
-    const quantity = packSize * count;
-    const total = currentUnitPrice() * quantity;
-    countEl!.textContent = String(count);
+    const total = currentUnitPrice() * selectedQty;
     totalEl!.textContent = `${formatVnd(total)} ₫`;
 
-    const exceedsStock = quantity > currentAvailableQty();
-    checkoutBtn!.disabled = !selectedWine || exceedsStock;
-    if (decrementBtn) (decrementBtn as HTMLButtonElement).disabled = count <= 1;
-    if (incrementBtn) (incrementBtn as HTMLButtonElement).disabled = exceedsStock;
+    qtyOptions.forEach((btn) => {
+      const qty = parseInt(btn.dataset.qty ?? "0", 10);
+      btn.dataset.selected = qty === selectedQty ? "true" : "false";
+      btn.disabled = qty > currentAvailableQty();
+    });
+    giftTags.forEach((tag) => {
+      const qty = parseInt(tag.dataset.qty ?? "0", 10);
+      tag.dataset.selected = qty === selectedQty ? "true" : "false";
+    });
+
+    checkoutBtn!.disabled = !selectedWine || selectedQty > currentAvailableQty();
   }
 
   function selectWine(btn: HTMLButtonElement) {
@@ -50,14 +52,12 @@ function init() {
     if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
     if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
     if (unitPriceEl) unitPriceEl.textContent = formatVnd(currentUnitPrice());
-    count = 1;
     render();
   }
 
-  function selectPack(btn: HTMLButtonElement) {
-    packSize = parseInt(btn.dataset.packSize ?? "6", 10);
-    packOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
-    count = 1;
+  function selectQty(btn: HTMLButtonElement) {
+    if (btn.disabled) return;
+    selectedQty = parseInt(btn.dataset.qty ?? "3", 10);
     render();
   }
 
@@ -66,23 +66,13 @@ function init() {
     btn.addEventListener("click", () => selectWine(btn));
   });
 
-  packOptions.forEach((btn) => {
-    btn.addEventListener("click", () => selectPack(btn));
-  });
-
-  decrementBtn?.addEventListener("click", () => {
-    if (count > 1) count -= 1;
-    render();
-  });
-
-  incrementBtn?.addEventListener("click", () => {
-    if (packSize * (count + 1) <= currentAvailableQty()) count += 1;
-    render();
+  qtyOptions.forEach((btn) => {
+    btn.addEventListener("click", () => selectQty(btn));
   });
 
   checkoutBtn.addEventListener("click", () => {
     if (!selectedWine) return;
-    setCart([{ productId: selectedWine.dataset.productId!, quantity: packSize * count }]);
+    setCart([{ productId: selectedWine.dataset.productId!, quantity: selectedQty }]);
     window.location.href = "/checkout";
   });
 

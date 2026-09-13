@@ -39,8 +39,8 @@ export const languages = {
         'product.viewDetail': 'xem chi tiết',
         'product.wineType': 'loại rượu',
         'product.packageLabel': 'số lượng',
-        'product.pack6': 'hộp 6 lon',
-        'product.pack12': 'thùng 12 lon',
+        'product.canUnit': 'lon',
+        'product.giftPrefix': 'tặng',
         'product.perCan': '/ lon',
 
         'cart.title': 'giỏ hàng của bạn',
@@ -108,8 +108,8 @@ export const languages = {
       'product.viewDetail': 'view detail',
       'product.wineType': 'wine type',
       'product.packageLabel': 'quantity',
-      'product.pack6': 'box of 6 cans',
-      'product.pack12': 'case of 12 cans',
+      'product.canUnit': 'cans',
+      'product.giftPrefix': 'free',
       'product.perCan': '/ can',
 
       'cart.title': 'your cart',

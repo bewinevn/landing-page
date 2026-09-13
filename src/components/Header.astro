@@ -9,14 +9,21 @@ const t = useTranslations(lang)
 const translatePath = useTranslatedPath(lang)
 ---
 
-<header class="sticky top-0 z-40 flex items-center justify-between pointer-events-none">
-  <a href={translatePath('/')} class="pointer-events-auto bg-sirah-50/90 backdrop-blur-sm rounded-br-lg px-4 py-2 md:px-6 md:py-3">
-    <Image src={logo} alt="be-wine" class="h-5 md:h-6 w-auto" />
-  </a>
-  <div class="pointer-events-auto flex items-center gap-4 bg-sirah-50/90 backdrop-blur-sm rounded-bl-lg px-4 py-2 md:px-6 md:py-3">
-    <a href={translatePath('/products')} class="font-sans font-bold text-sm md:text-base text-sauvignon-700 whitespace-nowrap hover:underline">
+<header class="sticky top-0 z-40 grid grid-cols-3 items-center pointer-events-none px-4 py-3 md:px-8">
+  <div class="justify-self-start">
+    <a
+      href={translatePath('/products')}
+      class="pointer-events-auto inline-flex items-center justify-center rounded border-2 border-[#A71E22] bg-[#A71E22] text-white font-sans font-bold text-xs md:text-base px-3 py-2 md:px-5 md:py-2.5 whitespace-nowrap hover:brightness-110 transition"
+    >
       {t('nav.orderNow')}
     </a>
+  </div>
+
+  <a href={translatePath('/')} class="pointer-events-auto justify-self-center bg-sirah-50/90 backdrop-blur-sm rounded-lg px-4 py-2">
+    <Image src={logo} alt="be-wine" class="h-5 md:h-6 w-auto" />
+  </a>
+
+  <div class="pointer-events-auto justify-self-end bg-sirah-50/90 backdrop-blur-sm rounded-lg px-4 py-2">
     <LanguagePicker />
   </div>
 </header>

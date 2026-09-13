@@ -9,13 +9,24 @@ const locale = lang === 'en' ? 'en' : 'vn';
 
 const products = await listProducts(locale);
 const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
+const quantityTiers = [3, 6, 12, 24];
 ---
+
+<style>
+  .card-texture {
+    background-image: url("../../assets/topography.svg");
+    background-size: 384px 384px;
+    background-position: top left;
+    opacity: 0.5;
+  }
+</style>
 
 <Layout title="be-wine">
   <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1100px]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-      <div class="rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
-        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="max-h-full w-auto object-contain" />
+      <div class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
+        <div class="card-texture absolute inset-0 pointer-events-none"></div>
+        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
       </div>
 
       <div class="flex flex-col gap-6">
@@ -42,7 +53,6 @@ const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
                 data-unit-price={product.effectivePriceVnd}
                 data-available-qty={product.availableQty}
                 disabled={product.isComingSoon}
-                aria-pressed={product.id === defaultProduct?.id}
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 data-selected={product.id === defaultProduct?.id ? 'true' : 'false'}
               >
@@ -54,29 +64,39 @@ const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
 
         <div>
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" data-pack-option data-pack-size="6" data-selected="true" class="px-4 py-2 rounded-full border-2 border-[#A71E22] text-[#A71E22] font-sans font-bold text-sm data-[selected=false]:border-[#d1d5db] data-[selected=false]:text-black">
-              {t('product.pack6')}
-            </button>
-            <button type="button" data-pack-option data-pack-size="12" data-selected="false" class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm data-[selected=false]:border-[#d1d5db] data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]">
-              {t('product.pack12')}
-            </button>
+          <div class="grid grid-cols-4 gap-2">
+            {quantityTiers.map((qty, i) => (
+              <button
+                type="button"
+                data-qty-option
+                data-qty={qty}
+                data-selected={i === 0 ? 'true' : 'false'}
+                class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+              >
+                {`${qty} ${t('product.canUnit')}`}
+              </button>
+            ))}
+          </div>
+          <div class="grid grid-cols-4 gap-2 mt-2">
+            {quantityTiers.map((qty, i) => (
+              <span
+                data-gift-tag
+                data-qty={qty}
+                data-selected={i === 0 ? 'true' : 'false'}
+                class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+              >
+                {`${t('product.giftPrefix')} ${qty} ${t('product.canUnit')}`}
+              </span>
+            ))}
           </div>
         </div>
 
-        <div class="flex items-center gap-4">
-          <div class="flex items-center border border-[#d1d5db] rounded-full overflow-hidden">
-            <button type="button" id="configurator-decrement" class="w-10 h-10 flex items-center justify-center font-bold text-lg hover:bg-[#f0f0f0]">&minus;</button>
-            <span id="configurator-count" class="w-10 text-center font-bold">1</span>
-            <button type="button" id="configurator-increment" class="w-10 h-10 flex items-center justify-center font-bold text-lg hover:bg-[#f0f0f0]">+</button>
-          </div>
-          <p class="font-bold text-[#A71E22] text-xl m-0" id="configurator-total"></p>
-        </div>
+        <p class="font-bold text-[#A71E22] text-xl m-0" id="configurator-total"></p>
 
         <button
           type="button"
           id="configurator-checkout"
-          class="w-full inline-flex items-center justify-center rounded-full bg-black text-white font-sans font-bold text-base px-8 py-4 hover:brightness-110 transition disabled:bg-[#ccc] disabled:cursor-not-allowed"
+          class="w-full inline-flex items-center justify-center rounded-full bg-[#A71E22] text-white font-sans font-bold text-base px-8 py-4 hover:brightness-110 transition disabled:bg-[#ccc] disabled:cursor-not-allowed"
         >
           {t('product.buyNow')}
         </button>
