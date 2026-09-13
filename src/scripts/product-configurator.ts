@@ -1,53 +1,92 @@
 import { setCart } from "./cart-client";
 
 function formatVnd(amount: number): string {
-  return `${amount.toLocaleString("vi-VN")} ₫`;
+  return amount.toLocaleString("vi-VN");
 }
 
 function init() {
-  const options = document.querySelectorAll<HTMLButtonElement>("[data-product-option]");
-  const qtyInput = document.getElementById("configurator-qty") as HTMLInputElement | null;
+  const wineOptions = document.querySelectorAll<HTMLButtonElement>("[data-wine-option]");
+  const packOptions = document.querySelectorAll<HTMLButtonElement>("[data-pack-option]");
+  const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
+  const titleEl = document.getElementById("configurator-title");
+  const unitPriceEl = document.getElementById("configurator-unit-price");
+  const countEl = document.getElementById("configurator-count");
   const totalEl = document.getElementById("configurator-total");
+  const decrementBtn = document.getElementById("configurator-decrement");
+  const incrementBtn = document.getElementById("configurator-increment");
   const checkoutBtn = document.getElementById("configurator-checkout") as HTMLButtonElement | null;
-  if (!qtyInput || !checkoutBtn || !totalEl) return;
+  if (!countEl || !totalEl || !checkoutBtn) return;
 
-  let selected: HTMLButtonElement | null = null;
+  let selectedWine = Array.from(wineOptions).find((b) => b.dataset.selected === "true") ?? wineOptions[0];
+  let packSize = parseInt(
+    Array.from(packOptions).find((b) => b.dataset.selected === "true")?.dataset.packSize ?? "6",
+    10
+  );
+  let count = 1;
 
-  function updateTotal() {
-    if (!selected) {
-      totalEl!.textContent = "";
-      return;
-    }
-    const price = parseInt(selected.dataset.price ?? "0", 10);
-    const qty = Math.max(1, parseInt(qtyInput!.value, 10) || 1);
-    totalEl!.textContent = formatVnd(price * qty);
+  function currentUnitPrice(): number {
+    return parseInt(selectedWine?.dataset.unitPrice ?? "0", 10);
   }
 
-  function selectProduct(btn: HTMLButtonElement) {
-    selected = btn;
-    options.forEach((o) => o.classList.toggle("border-[#A71E22]", o === btn));
-    const maxQty = parseInt(btn.dataset.availableQty ?? "0", 10);
-    qtyInput!.disabled = false;
-    qtyInput!.max = String(maxQty > 0 ? maxQty : 999);
-    qtyInput!.value = "1";
-    checkoutBtn!.disabled = false;
-    updateTotal();
+  function currentAvailableQty(): number {
+    return parseInt(selectedWine?.dataset.availableQty ?? "0", 10);
   }
 
-  options.forEach((btn) => {
+  function render() {
+    const quantity = packSize * count;
+    const total = currentUnitPrice() * quantity;
+    countEl!.textContent = String(count);
+    totalEl!.textContent = `${formatVnd(total)} ₫`;
+
+    const exceedsStock = quantity > currentAvailableQty();
+    checkoutBtn!.disabled = !selectedWine || exceedsStock;
+    if (decrementBtn) (decrementBtn as HTMLButtonElement).disabled = count <= 1;
+    if (incrementBtn) (incrementBtn as HTMLButtonElement).disabled = exceedsStock;
+  }
+
+  function selectWine(btn: HTMLButtonElement) {
+    selectedWine = btn;
+    wineOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
+    if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
+    if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
+    if (unitPriceEl) unitPriceEl.textContent = formatVnd(currentUnitPrice());
+    count = 1;
+    render();
+  }
+
+  function selectPack(btn: HTMLButtonElement) {
+    packSize = parseInt(btn.dataset.packSize ?? "6", 10);
+    packOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
+    count = 1;
+    render();
+  }
+
+  wineOptions.forEach((btn) => {
     if (btn.disabled) return;
-    btn.addEventListener("click", () => selectProduct(btn));
+    btn.addEventListener("click", () => selectWine(btn));
   });
 
-  qtyInput.addEventListener("input", updateTotal);
+  packOptions.forEach((btn) => {
+    btn.addEventListener("click", () => selectPack(btn));
+  });
+
+  decrementBtn?.addEventListener("click", () => {
+    if (count > 1) count -= 1;
+    render();
+  });
+
+  incrementBtn?.addEventListener("click", () => {
+    if (packSize * (count + 1) <= currentAvailableQty()) count += 1;
+    render();
+  });
 
   checkoutBtn.addEventListener("click", () => {
-    if (!selected) return;
-    const productId = selected.dataset.productId!;
-    const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
-    setCart([{ productId, quantity: qty }]);
+    if (!selectedWine) return;
+    setCart([{ productId: selectedWine.dataset.productId!, quantity: packSize * count }]);
     window.location.href = "/checkout";
   });
+
+  render();
 }
 
 init();
