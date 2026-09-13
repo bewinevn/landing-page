@@ -32,6 +32,11 @@ export function getCart(): CartLine[] {
   return readCart();
 }
 
+export function setCart(lines: CartLine[]): CartLine[] {
+  writeCart(lines);
+  return lines;
+}
+
 export function addToCart(productId: string, quantity = 1): CartLine[] {
   const lines = readCart();
   const existing = lines.find((l) => l.productId === productId);

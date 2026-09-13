@@ -31,8 +31,10 @@ try {
       productId={product.id}
       priceVnd={product.effectivePriceVnd}
       availableQty={product.availableQty}
-      showAddToCart={!product.isComingSoon} />
+      showAddToCart={!product.isComingSoon}
+      showBuyNow={!product.isComingSoon} />
   </div>
 </Layout>
 
 <script src="../../scripts/add-to-cart-buttons.ts"></script>
+<script src="../../scripts/buy-now-buttons.ts"></script>

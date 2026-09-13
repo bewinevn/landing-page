@@ -1,4 +1,4 @@
-import { addToCart } from "./cart-client";
+import { setCart } from "./cart-client";
 
 function readQuantity(productId: string): number {
   const input = document.querySelector<HTMLInputElement>(
@@ -9,21 +9,17 @@ function readQuantity(productId: string): number {
 }
 
 function bind() {
-  document.querySelectorAll<HTMLButtonElement>("[data-add-to-cart]").forEach((btn) => {
+  document.querySelectorAll<HTMLButtonElement>("[data-buy-now]").forEach((btn) => {
     if (btn.dataset.bound) return;
     btn.dataset.bound = "1";
     btn.addEventListener("click", () => {
       const productId = btn.dataset.productId;
       if (!productId) return;
-      addToCart(productId, readQuantity(productId));
-      const original = btn.textContent;
-      btn.textContent = "✓";
-      setTimeout(() => {
-        btn.textContent = original;
-      }, 900);
+      setCart([{ productId, quantity: readQuantity(productId) }]);
+      window.location.href = "/checkout";
     });
   });
 }
 
 bind();
-document.addEventListener("astro:page-load", bind); // re-bind after Astro view transitions, if any
+document.addEventListener("astro:page-load", bind);

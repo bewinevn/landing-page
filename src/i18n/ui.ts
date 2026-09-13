@@ -33,6 +33,7 @@ export const languages = {
         'announcement.text': 'Mua 1 tặng 1 Petite Sirah chỉ 50k/lon',
 
         'product.addToCart': 'thêm vào giỏ',
+        'product.buyNow': 'mua ngay',
         'product.outOfStock': 'hết hàng',
         'product.viewDetail': 'xem chi tiết',
 
@@ -95,6 +96,7 @@ export const languages = {
       'announcement.text': 'Buy 1 Get 1 Free — Petite Sirah, only 50k/can',
 
       'product.addToCart': 'add to cart',
+      'product.buyNow': 'buy now',
       'product.outOfStock': 'out of stock',
       'product.viewDetail': 'view detail',
 
