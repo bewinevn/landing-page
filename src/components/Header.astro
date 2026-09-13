@@ -1,25 +1,22 @@
 ---
 import LanguagePicker from '../components/LanguagePicker.astro'
-import { getLangFromUrl, useTranslatedPath } from '../i18n/utils'
+import { Image } from 'astro:assets'
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils'
+import logo from '../assets/bewinelogo.png'
 
 const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 const translatePath = useTranslatedPath(lang)
 ---
 
-<header class="sticky top-0 z-40 flex justify-end pointer-events-none">
+<header class="sticky top-0 z-40 flex items-center justify-between pointer-events-none">
+  <a href={translatePath('/')} class="pointer-events-auto bg-sirah-50/90 backdrop-blur-sm rounded-br-lg px-4 py-2 md:px-6 md:py-3">
+    <Image src={logo} alt="be-wine" class="h-5 md:h-6 w-auto" />
+  </a>
   <div class="pointer-events-auto flex items-center gap-4 bg-sirah-50/90 backdrop-blur-sm rounded-bl-lg px-4 py-2 md:px-6 md:py-3">
-    <a href={translatePath('/cart')} class="relative inline-flex items-center text-sauvignon-700 hover:opacity-70" aria-label="cart">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
-      <span data-cart-count hidden class="absolute -top-2 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-sirah-700 px-1 text-[10px] font-bold leading-none text-sirah-50"></span>
+    <a href={translatePath('/products')} class="font-sans font-bold text-sm md:text-base text-sauvignon-700 whitespace-nowrap hover:underline">
+      {t('nav.orderNow')}
     </a>
     <LanguagePicker />
   </div>
 </header>
-
-<script>
-  import "../scripts/cart-badge";
-</script>

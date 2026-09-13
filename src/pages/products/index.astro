@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Card from '../../components/Card.astro';
 import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { listProducts } from '../../modules/products';
 
@@ -12,29 +11,62 @@ const products = await listProducts(locale);
 ---
 
 <Layout title="be-wine">
-  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1440px]">
+  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1000px]">
     <h1 class="text-2xl md:text-4xl uppercase font-bold tracking-wide text-[#86181b] m-0 mb-8">
       {t('winelist.title')}
     </h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="product-options">
       {products.map((product) => (
-        <a href={`/products/${product.slug}`} class="no-underline block">
-          <figure class="relative flex flex-col gap-3 items-start p-4 rounded-lg bg-[#EFEDE9] overflow-hidden m-0">
-            <img class="w-full h-[220px] object-contain" loading="lazy" alt={product.name} src={product.imageUrl ?? ''} />
-            <div class="flex items-center gap-2 w-full">
-              <p class="font-sans font-bold text-[#A71E22] text-xl m-0 capitalize">{product.name}</p>
-              {product.abbreviation && (
-                <span class="inline-flex items-center justify-center h-[26px] w-[38px] rounded bg-white border border-[#d1d5db] font-sans font-bold text-[#A71E22] text-sm">
-                  {product.abbreviation}
-                </span>
-              )}
-            </div>
-            <p class="text-[#A71E22] font-bold text-lg m-0">
-              {product.isComingSoon ? t('winelist.comingsoon') : `${product.effectivePriceVnd.toLocaleString('vi-VN')} ₫`}
-            </p>
-          </figure>
-        </a>
+        <button
+          type="button"
+          data-product-option
+          data-product-id={product.id}
+          data-product-name={product.name}
+          data-available-qty={product.availableQty}
+          data-price={product.effectivePriceVnd}
+          disabled={product.isComingSoon}
+          class="flex flex-col items-center gap-3 p-4 rounded-lg bg-[#EFEDE9] border-2 border-transparent text-left disabled:opacity-60 disabled:cursor-not-allowed hover:border-[#A71E22]/40 transition"
+        >
+          <img class="w-full h-[160px] object-contain" loading="lazy" alt={product.name} src={product.imageUrl ?? ''} />
+          <div class="flex items-center gap-2 w-full">
+            <p class="font-sans font-bold text-[#A71E22] text-lg m-0 capitalize">{product.name}</p>
+            {product.abbreviation && (
+              <span class="inline-flex items-center justify-center h-[24px] w-[34px] rounded bg-white border border-[#d1d5db] font-sans font-bold text-[#A71E22] text-xs">
+                {product.abbreviation}
+              </span>
+            )}
+          </div>
+          <p class="text-[#A71E22] font-bold text-base m-0 w-full">
+            {product.isComingSoon ? t('winelist.comingsoon') : `${product.effectivePriceVnd.toLocaleString('vi-VN')} ₫`}
+          </p>
+        </button>
       ))}
+    </div>
+
+    <div class="mt-10 flex flex-col sm:flex-row sm:items-end gap-4">
+      <label class="flex flex-col gap-1 text-sm text-[#666]">
+        {t('cart.quantity')}
+        <input
+          type="number"
+          id="configurator-qty"
+          min="1"
+          value="1"
+          disabled
+          class="w-24 border border-[#d1d5db] rounded px-3 py-2 disabled:bg-[#f0f0f0]"
+        />
+      </label>
+      <p class="font-bold text-[#A71E22] text-xl m-0 flex-1" id="configurator-total"></p>
+      <button
+        type="button"
+        id="configurator-checkout"
+        disabled
+        class="inline-flex items-center justify-center rounded bg-[#A71E22] disabled:bg-[#ccc] disabled:cursor-not-allowed text-white font-sans font-bold text-base px-8 py-3 hover:brightness-110 transition"
+      >
+        {t('cart.checkout')}
+      </button>
     </div>
   </div>
 </Layout>
+
+<script src="../../scripts/product-configurator.ts"></script>
