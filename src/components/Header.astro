@@ -1,29 +1,27 @@
 ---
 import LanguagePicker from '../components/LanguagePicker.astro'
-import { Image } from 'astro:assets'
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils'
-import logo from '../assets/bewinelogo.png'
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 const translatePath = useTranslatedPath(lang)
 ---
 
-<header class="sticky top-0 z-40 grid grid-cols-3 items-center pointer-events-none px-4 py-3 md:px-8">
+<header class="sticky top-0 z-40 grid grid-cols-3 items-center bg-[#A71E22] px-4 py-3 md:px-8">
   <div class="justify-self-start">
     <a
       href={translatePath('/products')}
-      class="pointer-events-auto inline-flex items-center justify-center rounded border-2 border-[#A71E22] bg-[#A71E22] text-white font-sans font-bold text-xs md:text-base px-3 py-2 md:px-5 md:py-2.5 whitespace-nowrap hover:brightness-110 transition"
+      class="inline-flex items-center justify-center rounded border-2 border-white text-white font-sans font-bold text-xs md:text-base px-3 py-2 md:px-5 md:py-2.5 whitespace-nowrap hover:bg-white/10 transition"
     >
       {t('nav.orderNow')}
     </a>
   </div>
 
-  <a href={translatePath('/')} class="pointer-events-auto justify-self-center bg-sirah-50/90 backdrop-blur-sm rounded-lg px-4 py-2">
-    <Image src={logo} alt="be-wine" class="h-5 md:h-6 w-auto" />
+  <a href={translatePath('/')} class="justify-self-center">
+    <img src="/figma/hero-wave-logo.svg" alt="be-wine" class="h-5 md:h-7 w-auto" />
   </a>
 
-  <div class="pointer-events-auto justify-self-end bg-sirah-50/90 backdrop-blur-sm rounded-lg px-4 py-2">
+  <div class="justify-self-end">
     <LanguagePicker />
   </div>
 </header>
