@@ -6,6 +6,7 @@ import { getEnv } from "../../../shared/config/env";
 import { NotFoundError, ValidationError } from "../../../shared/errors/app-error";
 import { generateOrderReference } from "../../../shared/utils/reference";
 import * as orderRepository from "../data/order.repository";
+import { canTransition } from "./order.state-machine";
 import type { CheckoutInput, OrderItemRow, OrderRow, OrderStatus } from "./order.types";
 
 export interface CheckoutResult {
@@ -150,4 +151,32 @@ export async function getOrderStatus(reference: string): Promise<{ orderStatus: 
 export async function expireStaleOrders(): Promise<{ expiredCount: number }> {
   const expiredCount = await orderRepository.runExpireStaleOrders();
   return { expiredCount };
+}
+
+export interface AdminOrderListFilter {
+  status?: OrderStatus;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export async function listOrdersForAdmin(
+  filter: AdminOrderListFilter,
+): Promise<{ orders: OrderRow[]; total: number }> {
+  return orderRepository.findOrders({
+    status: filter.status,
+    search: filter.search,
+    limit: filter.limit ?? 50,
+    offset: filter.offset ?? 0,
+  });
+}
+
+/** Admin-only fulfillment status change (processing/shipped/completed) — payment status is untouched. */
+export async function advanceOrderStatus(reference: string, toStatus: OrderStatus): Promise<OrderRow> {
+  const order = await orderRepository.findByReference(reference);
+  if (!order) throw new NotFoundError(`Order "${reference}" not found`);
+  if (!canTransition(order.status, toStatus)) {
+    throw new ValidationError(`Cannot move order from "${order.status}" to "${toStatus}"`);
+  }
+  return orderRepository.updateStatus(order.id, toStatus);
 }

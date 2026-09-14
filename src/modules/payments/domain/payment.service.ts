@@ -78,6 +78,12 @@ export async function getPaymentByReference(reference: string): Promise<PaymentV
   return toPaymentView(row);
 }
 
+/** Keyed by order_id, for the admin order list (one query instead of one per order). */
+export async function getPaymentsByOrderIds(orderIds: string[]): Promise<Map<string, PaymentView>> {
+  const rows = await paymentRepository.findByOrderIds(orderIds);
+  return new Map(rows.map((row) => [row.order_id, toPaymentView(row)]));
+}
+
 type ApplyResult = { resultStatus: string; orderReference: string | null };
 
 /**

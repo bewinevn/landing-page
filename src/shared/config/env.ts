@@ -10,6 +10,8 @@ const envSchema = z.object({
   BEWINE_BANK_NAME: z.string().min(1),
   VIETQR_TEMPLATE: z.string().default("compact2"),
   ORDER_PAYMENT_WINDOW_MINUTES: z.coerce.number().int().positive().default(30),
+  ADMIN_PASSWORD: z.string().min(1),
+  ADMIN_SESSION_SECRET: z.string().min(1),
 });
 
 export type Env = z.infer<typeof envSchema>;

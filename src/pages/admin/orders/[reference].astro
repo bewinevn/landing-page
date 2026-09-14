@@ -1,0 +1,126 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { getOrderDetail, ORDER_TRANSITIONS, type OrderStatus } from '../../../modules/orders';
+import { getPaymentByReference } from '../../../modules/payments';
+
+const { reference } = Astro.params;
+
+let order, items, payment;
+try {
+  ({ order, items } = await getOrderDetail(reference!));
+  payment = await getPaymentByReference(reference!);
+} catch {
+  return Astro.redirect('/admin/orders');
+}
+
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  pending_payment: 'Chờ thanh toán',
+  paid: 'Đã thanh toán',
+  processing: 'Đang xử lý',
+  shipped: 'Đã giao vận chuyển',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
+  refunded: 'Đã hoàn tiền',
+};
+
+// "paid" must only ever be reached via the mark-paid RPC (it also flips
+// payments.status and commits inventory) — never via the plain status
+// PATCH, which only touches orders.status. cancelled/refunded are left
+// out of the quick-action buttons as rare, deliberate admin actions.
+const nextStatuses = ORDER_TRANSITIONS[order.status].filter(
+  (s) => s !== 'cancelled' && s !== 'refunded' && s !== 'paid',
+);
+const isCod = payment.provider === 'manual';
+---
+
+<AdminLayout title={`be-wine admin — đơn ${order.reference}`}>
+  <a href="/admin/orders" style="font-size: 13px;">&larr; Danh sách đơn hàng</a>
+
+  <h1 style="font-size: 22px; margin: 12px 0 4px;">{order.reference}</h1>
+  <p style="margin: 0 0 20px; color: #666;">
+    Trạng thái: <strong id="current-status">{STATUS_LABELS[order.status]}</strong>
+    &middot; Thanh toán: <strong>{isCod ? 'COD' : 'Chuyển khoản QR'}</strong> ({payment.status})
+  </p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 8px;">Giao đến</h2>
+      <p style="margin: 0 0 2px; font-weight: 700;">{order.delivery_full_name}</p>
+      <p style="margin: 0 0 2px;">{order.delivery_phone}</p>
+      <p style="margin: 0;">{order.delivery_address_line}, {order.delivery_city}</p>
+      {order.delivery_note && <p style="margin: 8px 0 0; color: #666; font-size: 13px;">Ghi chú: {order.delivery_note}</p>}
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 8px;">Sản phẩm</h2>
+      {items.map((item) => (
+        <p style="display: flex; justify-content: space-between; margin: 0 0 4px; font-size: 14px;">
+          <span>{item.product_name_snapshot} &times; {item.quantity}</span>
+          <span>{item.line_total_vnd.toLocaleString('vi-VN')} ₫</span>
+        </p>
+      ))}
+      <p style="display: flex; justify-content: space-between; margin: 8px 0 0; padding-top: 8px; border-top: 1px solid #eee; font-weight: 700;">
+        <span>Tổng cộng</span>
+        <span>{order.total_vnd.toLocaleString('vi-VN')} ₫</span>
+      </p>
+    </div>
+  </div>
+
+  <div style="background: white; border-radius: 8px; padding: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+    {order.status === 'pending_payment' && (
+      <button id="mark-paid-btn" data-reference={order.reference} style="background: #16a34a; color: white; border: none; border-radius: 6px; padding: 10px 16px; font-weight: 700; cursor: pointer;">
+        Đánh dấu đã thanh toán
+      </button>
+    )}
+    {nextStatuses.map((s) => (
+      <button
+        class="advance-status-btn"
+        data-reference={order.reference}
+        data-status={s}
+        style="background: #f0f0f0; border: 1px solid #d1d5db; border-radius: 6px; padding: 10px 16px; font-weight: 700; cursor: pointer;"
+      >
+        Chuyển sang: {STATUS_LABELS[s]}
+      </button>
+    ))}
+    <a href={`/orders/${order.reference}/packing-slip`} target="_blank" style="margin-left: auto; font-weight: 700;">In phiếu đơn &rarr;</a>
+  </div>
+
+  <p id="action-error" hidden style="color: #A71E22; margin-top: 12px;">Có lỗi xảy ra, vui lòng thử lại.</p>
+</AdminLayout>
+
+<script>
+  const errorEl = document.getElementById('action-error')!;
+
+  document.getElementById('mark-paid-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    btn.disabled = true;
+    errorEl.hidden = true;
+    try {
+      const res = await fetch(`/api/admin/orders/${btn.dataset.reference}/mark-paid`, { method: 'POST' });
+      if (!res.ok) throw new Error('failed');
+      window.location.reload();
+    } catch {
+      errorEl.hidden = false;
+      btn.disabled = false;
+    }
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('.advance-status-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      errorEl.hidden = true;
+      try {
+        const res = await fetch(`/api/admin/orders/${btn.dataset.reference}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: btn.dataset.status }),
+        });
+        if (!res.ok) throw new Error('failed');
+        window.location.reload();
+      } catch {
+        errorEl.hidden = false;
+        btn.disabled = false;
+      }
+    });
+  });
+</script>

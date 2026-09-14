@@ -54,3 +54,45 @@ export async function getStatus(reference: string): Promise<{ status: OrderStatu
 export async function runExpireStaleOrders(): Promise<number> {
   return callRpc<number>("expire_stale_orders", {});
 }
+
+export interface OrderListFilter {
+  status?: OrderStatus;
+  search?: string;
+  limit: number;
+  offset: number;
+}
+
+/** Admin order list. delivery_full_name/delivery_phone are already denormalized on orders, so no customer join is needed. */
+export async function findOrders(filter: OrderListFilter): Promise<{ orders: OrderRow[]; total: number }> {
+  const supabase = getSupabaseServerClient();
+  let query = supabase.from("orders").select("*", { count: "exact" }).order("created_at", { ascending: false });
+
+  if (filter.status) {
+    query = query.eq("status", filter.status);
+  }
+  if (filter.search) {
+    // .or() takes a raw PostgREST filter string (unlike .eq()/.ilike()), so
+    // strip the characters that are syntactically meaningful to it before
+    // interpolating user input.
+    const term = filter.search.trim().replace(/[,()]/g, "");
+    if (term) {
+      query = query.or(`reference.ilike.%${term}%,delivery_phone.ilike.%${term}%`);
+    }
+  }
+
+  const { data, error, count } = await query.range(filter.offset, filter.offset + filter.limit - 1);
+  if (error) throw new Error(`findOrders failed: ${error.message}`);
+  return { orders: (data as OrderRow[]) ?? [], total: count ?? 0 };
+}
+
+export async function updateStatus(orderId: string, status: OrderStatus): Promise<OrderRow> {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .update({ status })
+    .eq("id", orderId)
+    .select("*")
+    .single();
+  if (error) throw new Error(`updateStatus failed: ${error.message}`);
+  return data as OrderRow;
+}

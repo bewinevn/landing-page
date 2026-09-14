@@ -2,6 +2,7 @@ export {
   createPaymentForOrder,
   createCodPaymentForOrder,
   getPaymentByReference,
+  getPaymentsByOrderIds,
   applyIncomingTransaction,
   getPaymentProvider,
 } from "./domain/payment.service";
