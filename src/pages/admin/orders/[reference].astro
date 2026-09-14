@@ -2,6 +2,7 @@
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { getOrderDetail, ORDER_TRANSITIONS, type OrderStatus } from '../../../modules/orders';
 import { getPaymentByReference } from '../../../modules/payments';
+import { listWarehouses } from '../../../modules/inventory';
 
 const { reference } = Astro.params;
 
@@ -12,6 +13,8 @@ try {
 } catch {
   return Astro.redirect('/admin/orders');
 }
+
+const warehouses = await listWarehouses();
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: 'Chờ thanh toán',
@@ -24,11 +27,12 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 };
 
 // "paid" must only ever be reached via the mark-paid RPC (it also flips
-// payments.status and commits inventory) — never via the plain status
-// PATCH, which only touches orders.status. cancelled/refunded are left
-// out of the quick-action buttons as rare, deliberate admin actions.
+// payments.status and commits inventory), and "processing" only via the
+// fulfill RPC below (it deducts warehouse stock) — never via the plain
+// status PATCH, which only touches orders.status. cancelled/refunded are
+// left out of the quick-action buttons as rare, deliberate admin actions.
 const nextStatuses = ORDER_TRANSITIONS[order.status].filter(
-  (s) => s !== 'cancelled' && s !== 'refunded' && s !== 'paid',
+  (s) => s !== 'cancelled' && s !== 'refunded' && s !== 'paid' && s !== 'processing',
 );
 const isCod = payment.provider === 'manual';
 ---
@@ -72,6 +76,16 @@ const isCod = payment.provider === 'manual';
         Đánh dấu đã thanh toán
       </button>
     )}
+    {order.status === 'paid' && (
+      <>
+        <select id="fulfill-warehouse-select" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {warehouses.map((w) => <option value={w.id}>{w.name}</option>)}
+        </select>
+        <button id="fulfill-btn" data-reference={order.reference} style="background: #16a34a; color: white; border: none; border-radius: 6px; padding: 10px 16px; font-weight: 700; cursor: pointer;">
+          Xác nhận xuất kho
+        </button>
+      </>
+    )}
     {nextStatuses.map((s) => (
       <button
         class="advance-status-btn"
@@ -91,16 +105,42 @@ const isCod = payment.provider === 'manual';
 <script>
   const errorEl = document.getElementById('action-error')!;
 
+  function showError(message: string) {
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+
   document.getElementById('mark-paid-btn')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget as HTMLButtonElement;
     btn.disabled = true;
     errorEl.hidden = true;
     try {
       const res = await fetch(`/api/admin/orders/${btn.dataset.reference}/mark-paid`, { method: 'POST' });
-      if (!res.ok) throw new Error('failed');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra, vui lòng thử lại.');
       window.location.reload();
-    } catch {
-      errorEl.hidden = false;
+    } catch (err) {
+      showError(err instanceof Error ? err.message : 'Có lỗi xảy ra, vui lòng thử lại.');
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('fulfill-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const warehouseSelect = document.getElementById('fulfill-warehouse-select') as HTMLSelectElement;
+    btn.disabled = true;
+    errorEl.hidden = true;
+    try {
+      const res = await fetch(`/api/admin/orders/${btn.dataset.reference}/fulfill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ warehouseId: warehouseSelect.value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra, vui lòng thử lại.');
+      window.location.reload();
+    } catch (err) {
+      showError(err instanceof Error ? err.message : 'Có lỗi xảy ra, vui lòng thử lại.');
       btn.disabled = false;
     }
   });
@@ -115,10 +155,11 @@ const isCod = payment.provider === 'manual';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: btn.dataset.status }),
         });
-        if (!res.ok) throw new Error('failed');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra, vui lòng thử lại.');
         window.location.reload();
-      } catch {
-        errorEl.hidden = false;
+      } catch (err) {
+        showError(err instanceof Error ? err.message : 'Có lỗi xảy ra, vui lòng thử lại.');
         btn.disabled = false;
       }
     });

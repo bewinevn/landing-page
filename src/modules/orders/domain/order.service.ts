@@ -1,5 +1,5 @@
 import { findOrCreateByPhone } from "../../customers";
-import { releaseAll, reserveAll, type ReservationRequest } from "../../inventory";
+import { fulfillOrderFromWarehouse, releaseAll, reserveAll, type ReservationRequest } from "../../inventory";
 import { createCodPaymentForOrder, createPaymentForOrder, toPaymentView, type PaymentView } from "../../payments";
 import { getProductRowsByIds, type ProductRow } from "../../products";
 import { getEnv } from "../../../shared/config/env";
@@ -171,7 +171,7 @@ export async function listOrdersForAdmin(
   });
 }
 
-/** Admin-only fulfillment status change (processing/shipped/completed) — payment status is untouched. */
+/** Admin-only fulfillment status change (shipped/completed) — payment status is untouched. */
 export async function advanceOrderStatus(reference: string, toStatus: OrderStatus): Promise<OrderRow> {
   const order = await orderRepository.findByReference(reference);
   if (!order) throw new NotFoundError(`Order "${reference}" not found`);
@@ -179,6 +179,24 @@ export async function advanceOrderStatus(reference: string, toStatus: OrderStatu
     throw new ValidationError(`Cannot move order from "${order.status}" to "${toStatus}"`);
   }
   return orderRepository.updateStatus(order.id, toStatus);
+}
+
+/**
+ * Packing-time warehouse allocation: the paid -> processing transition.
+ * Deducts the chosen warehouse's physical stock for every line item
+ * (all-or-nothing, via fulfill_order_from_warehouse) and records which
+ * warehouse serviced the order. products.stock_quantity (the grand
+ * total) is untouched here — it was already committed at payment time.
+ */
+export async function fulfillOrder(reference: string, warehouseId: string): Promise<OrderRow> {
+  const order = await orderRepository.findByReference(reference);
+  if (!order) throw new NotFoundError(`Order "${reference}" not found`);
+  if (order.status !== "paid") {
+    throw new ValidationError(`Order "${reference}" is not paid (status: ${order.status})`);
+  }
+  await fulfillOrderFromWarehouse(order.id, warehouseId);
+  const updated = await orderRepository.findByReference(reference);
+  return updated!;
 }
 
 // Orders in these statuses represent money actually collected/committed —

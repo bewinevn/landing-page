@@ -5,6 +5,7 @@ export {
   expireStaleOrders,
   listOrdersForAdmin,
   advanceOrderStatus,
+  fulfillOrder,
   getSalesSummary,
 } from "./domain/order.service";
 export { canTransition, ORDER_TRANSITIONS } from "./domain/order.state-machine";
