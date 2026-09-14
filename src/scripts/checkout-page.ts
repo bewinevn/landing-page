@@ -78,13 +78,13 @@ function bindForm(): void {
           customer: {
             fullName: formData.get("fullName"),
             phone: formData.get("phone"),
-            email: formData.get("email") || undefined,
             addressLine: formData.get("addressLine"),
             city: formData.get("city"),
             note: formData.get("note") || undefined,
           },
           items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity })),
           locale: window.__BEWINE_LOCALE__ ?? "vn",
+          paymentMethod: formData.get("paymentMethod") || "vietqr",
         }),
       });
 

@@ -49,6 +49,29 @@ export async function createPaymentForOrder(input: CreatePaymentForOrderInput): 
   });
 }
 
+/**
+ * Cash-on-delivery has no upfront transfer to detect, so this skips
+ * the PaymentProvider entirely: no QR, no bank details, no expiry
+ * (the order isn't waiting on a bank transfer, so the expiry sweep
+ * must not cancel it). The shop marks it paid manually on delivery.
+ */
+export async function createCodPaymentForOrder(input: Omit<CreatePaymentForOrderInput, "expiresAt">): Promise<PaymentRow> {
+  return paymentRepository.insert({
+    order_id: input.orderId,
+    reference: input.orderReference,
+    provider: "manual",
+    amount_expected_vnd: input.amountVnd,
+    amount_received_vnd: null,
+    bank_account_number: null,
+    bank_account_holder: null,
+    bank_name: null,
+    qr_code_url: null,
+    qr_payload: null,
+    expires_at: null,
+    paid_at: null,
+  });
+}
+
 export async function getPaymentByReference(reference: string): Promise<PaymentView> {
   const row = await paymentRepository.findByReference(reference);
   if (!row) throw new NotFoundError(`Payment for order "${reference}" not found`);

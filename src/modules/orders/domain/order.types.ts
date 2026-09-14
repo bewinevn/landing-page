@@ -47,11 +47,11 @@ export interface CheckoutInput {
   customer: {
     fullName: string;
     phone: string;
-    email?: string;
     addressLine: string;
     city: string;
     note?: string;
   };
   items: CheckoutItemInput[];
   locale: Locale;
+  paymentMethod: "vietqr" | "cod";
 }

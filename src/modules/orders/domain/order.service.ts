@@ -1,6 +1,6 @@
 import { findOrCreateByPhone } from "../../customers";
 import { releaseAll, reserveAll, type ReservationRequest } from "../../inventory";
-import { createPaymentForOrder, toPaymentView, type PaymentView } from "../../payments";
+import { createCodPaymentForOrder, createPaymentForOrder, toPaymentView, type PaymentView } from "../../payments";
 import { getProductRowsByIds, type ProductRow } from "../../products";
 import { getEnv } from "../../../shared/config/env";
 import { NotFoundError, ValidationError } from "../../../shared/errors/app-error";
@@ -59,7 +59,10 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
 
     const reference = await generateUniqueReference();
     const env = getEnv();
-    const expiresAt = new Date(Date.now() + env.ORDER_PAYMENT_WINDOW_MINUTES * 60_000);
+    // COD isn't waiting on a bank transfer, so it gets no expiry — the
+    // stale-order sweep only cancels orders with a non-null expires_at.
+    const expiresAt =
+      input.paymentMethod === "cod" ? null : new Date(Date.now() + env.ORDER_PAYMENT_WINDOW_MINUTES * 60_000);
 
     const subtotalVnd = lineItems.reduce((sum, li) => sum + li.lineTotalVnd, 0);
 
@@ -76,7 +79,7 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       delivery_city: input.customer.city,
       delivery_note: input.customer.note ?? null,
       locale: input.locale,
-      expires_at: expiresAt.toISOString(),
+      expires_at: expiresAt ? expiresAt.toISOString() : null,
     });
 
     const items = await orderRepository.insertOrderItems(
@@ -90,12 +93,19 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       })),
     );
 
-    const paymentRow = await createPaymentForOrder({
-      orderId: order.id,
-      orderReference: order.reference,
-      amountVnd: order.total_vnd,
-      expiresAt,
-    });
+    const paymentRow =
+      input.paymentMethod === "cod"
+        ? await createCodPaymentForOrder({
+            orderId: order.id,
+            orderReference: order.reference,
+            amountVnd: order.total_vnd,
+          })
+        : await createPaymentForOrder({
+            orderId: order.id,
+            orderReference: order.reference,
+            amountVnd: order.total_vnd,
+            expiresAt: expiresAt!,
+          });
 
     return { order, items, payment: toPaymentView(paymentRow) };
   } catch (err) {

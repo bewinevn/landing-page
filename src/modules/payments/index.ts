@@ -1,5 +1,6 @@
 export {
   createPaymentForOrder,
+  createCodPaymentForOrder,
   getPaymentByReference,
   applyIncomingTransaction,
   getPaymentProvider,

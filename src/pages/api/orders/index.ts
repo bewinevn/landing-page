@@ -8,7 +8,6 @@ const checkoutSchema = z.object({
   customer: z.object({
     fullName: z.string().min(1),
     phone: z.string().min(8),
-    email: z.string().email().optional(),
     addressLine: z.string().min(1),
     city: z.string().min(1),
     note: z.string().optional(),
@@ -22,6 +21,7 @@ const checkoutSchema = z.object({
     )
     .min(1),
   locale: z.enum(["vn", "en"]).default("vn"),
+  paymentMethod: z.enum(["vietqr", "cod"]).default("vietqr"),
 });
 
 export const POST: APIRoute = async ({ request }) => {

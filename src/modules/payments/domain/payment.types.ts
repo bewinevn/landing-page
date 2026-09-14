@@ -18,6 +18,7 @@ export interface PaymentRow {
 /** Presentation-ready payment/QR block returned by the API. */
 export interface PaymentView {
   reference: string;
+  provider: string;
   status: PaymentRow["status"];
   amountExpectedVnd: number;
   bankAccountNumber: string;
@@ -30,6 +31,7 @@ export interface PaymentView {
 export function toPaymentView(row: PaymentRow): PaymentView {
   return {
     reference: row.reference,
+    provider: row.provider,
     status: row.status,
     amountExpectedVnd: row.amount_expected_vnd,
     bankAccountNumber: row.bank_account_number ?? "",
