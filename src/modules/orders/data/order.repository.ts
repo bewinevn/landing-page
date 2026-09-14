@@ -96,3 +96,31 @@ export async function updateStatus(orderId: string, status: OrderStatus): Promis
   if (error) throw new Error(`updateStatus failed: ${error.message}`);
   return data as OrderRow;
 }
+
+export interface SalesOrderRow {
+  id: string;
+  total_vnd: number;
+}
+
+/** Order volume/revenue is small enough at this stage to aggregate in-process rather than via SQL. */
+export async function findOrdersByStatuses(statuses: OrderStatus[]): Promise<SalesOrderRow[]> {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from("orders").select("id, total_vnd").in("status", statuses);
+  if (error) throw new Error(`findOrdersByStatuses failed: ${error.message}`);
+  return data as SalesOrderRow[];
+}
+
+export async function findAllOrderStatuses(): Promise<OrderStatus[]> {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from("orders").select("status");
+  if (error) throw new Error(`findAllOrderStatuses failed: ${error.message}`);
+  return (data as { status: OrderStatus }[]).map((r) => r.status);
+}
+
+export async function findItemsByOrderIds(orderIds: string[]): Promise<OrderItemRow[]> {
+  if (orderIds.length === 0) return [];
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from("order_items").select("*").in("order_id", orderIds);
+  if (error) throw new Error(`findItemsByOrderIds failed: ${error.message}`);
+  return data as OrderItemRow[];
+}

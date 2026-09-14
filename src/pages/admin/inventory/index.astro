@@ -1,0 +1,96 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listProductsForAdmin } from '../../../modules/products';
+
+const products = await listProductsForAdmin();
+---
+
+<AdminLayout title="be-wine admin — kho">
+  <h1 style="font-size: 20px; margin: 0 0 16px;">Quản lý kho</h1>
+
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: white; border-radius: 8px;">
+      <thead>
+        <tr style="text-align: left; border-bottom: 2px solid #eee;">
+          <th style="padding: 10px;">Sản phẩm</th>
+          <th style="padding: 10px;">Giá / lon</th>
+          <th style="padding: 10px;">Tồn kho</th>
+          <th style="padding: 10px;">Đang giữ</th>
+          <th style="padding: 10px;">Có thể bán</th>
+          <th style="padding: 10px;">Đang bán</th>
+          <th style="padding: 10px;">Sắp ra mắt</th>
+          <th style="padding: 10px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((p) => (
+          <tr style="border-bottom: 1px solid #f0f0f0;" data-product-row data-product-id={p.id}>
+            <td style="padding: 10px; font-weight: 700;">{p.name_vn} <span style="color: #999; font-weight: 400;">({p.abbreviation})</span></td>
+            <td style="padding: 10px;">{(p.is_promo && p.promo_price_vnd != null ? p.promo_price_vnd : p.price_vnd).toLocaleString('vi-VN')} ₫</td>
+            <td style="padding: 10px;">
+              <input data-field="stockQuantity" type="number" min="0" value={p.stock_quantity} style="width: 80px; padding: 6px; border: 1px solid #d1d5db; border-radius: 6px;" />
+            </td>
+            <td style="padding: 10px; color: #999;">{p.reserved_quantity}</td>
+            <td style="padding: 10px; color: #999;">{p.stock_quantity - p.reserved_quantity}</td>
+            <td style="padding: 10px;">
+              <input data-field="isActive" type="checkbox" checked={p.is_active} />
+            </td>
+            <td style="padding: 10px;">
+              <input data-field="isComingSoon" type="checkbox" checked={p.is_coming_soon} />
+            </td>
+            <td style="padding: 10px;">
+              <button
+                class="save-product-btn"
+                style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer;"
+              >
+                Lưu
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <p id="inventory-error" hidden style="color: #A71E22; margin-top: 12px;"></p>
+  <p id="inventory-success" hidden style="color: #16a34a; margin-top: 12px;">Đã lưu.</p>
+</AdminLayout>
+
+<script>
+  const errorEl = document.getElementById('inventory-error')!;
+  const successEl = document.getElementById('inventory-success')!;
+
+  document.querySelectorAll<HTMLButtonElement>('.save-product-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const row = btn.closest('[data-product-row]') as HTMLElement;
+      const productId = row.dataset.productId;
+      const stockInput = row.querySelector<HTMLInputElement>('[data-field="stockQuantity"]')!;
+      const activeInput = row.querySelector<HTMLInputElement>('[data-field="isActive"]')!;
+      const comingSoonInput = row.querySelector<HTMLInputElement>('[data-field="isComingSoon"]')!;
+
+      errorEl.hidden = true;
+      successEl.hidden = true;
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/admin/products/${productId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            stockQuantity: Number(stockInput.value),
+            isActive: activeInput.checked,
+            isComingSoon: comingSoonInput.checked,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error?.message ?? 'failed');
+        successEl.hidden = false;
+        window.location.reload();
+      } catch (err) {
+        errorEl.textContent = err instanceof Error ? err.message : 'Có lỗi xảy ra.';
+        errorEl.hidden = false;
+        btn.disabled = false;
+      }
+    });
+  });
+</script>

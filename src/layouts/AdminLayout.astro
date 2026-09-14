@@ -4,6 +4,7 @@ interface Props {
   showNav?: boolean;
 }
 const { title, showNav = true } = Astro.props;
+const pathname = Astro.url.pathname;
 ---
 
 <!DOCTYPE html>
@@ -30,7 +31,9 @@ const { title, showNav = true } = Astro.props;
         background: #A71E22;
         color: white;
       }
+      .admin-nav .admin-nav-links { display: flex; align-items: center; gap: 20px; }
       .admin-nav a { color: white; text-decoration: none; font-weight: 700; }
+      .admin-nav a.active { text-decoration: underline; }
       .admin-nav button {
         background: transparent;
         border: 1px solid white;
@@ -47,7 +50,11 @@ const { title, showNav = true } = Astro.props;
   <body>
     {showNav && (
       <div class="admin-nav">
-        <a href="/admin/orders">be-wine admin — đơn hàng</a>
+        <div class="admin-nav-links">
+          <a href="/admin" class={pathname === '/admin' ? 'active' : ''}>Tổng quan</a>
+          <a href="/admin/orders" class={pathname.startsWith('/admin/orders') ? 'active' : ''}>Đơn hàng</a>
+          <a href="/admin/inventory" class={pathname.startsWith('/admin/inventory') ? 'active' : ''}>Kho</a>
+        </div>
         <button id="admin-logout-btn" type="button">Đăng xuất</button>
       </div>
     )}

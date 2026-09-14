@@ -46,7 +46,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         body: JSON.stringify({ password }),
       });
       if (!res.ok) throw new Error("login_failed");
-      window.location.href = "/admin/orders";
+      window.location.href = "/admin";
     } catch {
       errorEl.hidden = false;
       submitBtn.disabled = false;

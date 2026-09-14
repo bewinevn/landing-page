@@ -180,3 +180,53 @@ export async function advanceOrderStatus(reference: string, toStatus: OrderStatu
   }
   return orderRepository.updateStatus(order.id, toStatus);
 }
+
+// Orders in these statuses represent money actually collected/committed —
+// pending_payment (nothing received yet) and cancelled/refunded are excluded.
+const REVENUE_STATUSES: OrderStatus[] = ["paid", "processing", "shipped", "completed"];
+const ALL_STATUSES: OrderStatus[] = [
+  "pending_payment",
+  "paid",
+  "processing",
+  "shipped",
+  "completed",
+  "cancelled",
+  "refunded",
+];
+
+export interface SalesSummary {
+  totalRevenueVnd: number;
+  totalOrders: number;
+  totalCansSold: number;
+  byProduct: { name: string; quantity: number; revenueVnd: number }[];
+  statusCounts: Record<OrderStatus, number>;
+}
+
+export async function getSalesSummary(): Promise<SalesSummary> {
+  const [revenueOrders, allStatuses] = await Promise.all([
+    orderRepository.findOrdersByStatuses(REVENUE_STATUSES),
+    orderRepository.findAllOrderStatuses(),
+  ]);
+  const items = await orderRepository.findItemsByOrderIds(revenueOrders.map((o) => o.id));
+
+  const byProductMap = new Map<string, { quantity: number; revenueVnd: number }>();
+  for (const item of items) {
+    const entry = byProductMap.get(item.product_name_snapshot) ?? { quantity: 0, revenueVnd: 0 };
+    entry.quantity += item.quantity;
+    entry.revenueVnd += item.line_total_vnd;
+    byProductMap.set(item.product_name_snapshot, entry);
+  }
+
+  const statusCounts = Object.fromEntries(ALL_STATUSES.map((s) => [s, 0])) as Record<OrderStatus, number>;
+  for (const status of allStatuses) statusCounts[status] += 1;
+
+  return {
+    totalRevenueVnd: revenueOrders.reduce((sum, o) => sum + o.total_vnd, 0),
+    totalOrders: revenueOrders.length,
+    totalCansSold: items.reduce((sum, i) => sum + i.quantity, 0),
+    byProduct: Array.from(byProductMap.entries())
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.quantity - a.quantity),
+    statusCounts,
+  };
+}
