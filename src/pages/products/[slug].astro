@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
+import { getProductBySlug } from '../../modules/products';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
+
+const { slug } = Astro.params;
+let product;
+try {
+  product = await getProductBySlug(slug!, locale);
+} catch {
+  return Astro.redirect('/products');
+}
+---
+
+<Layout title={`be-wine — ${product.name}`}>
+  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[700px]">
+    <a href="/products" class="inline-block mb-6 text-[#A71E22] font-sans font-medium text-sm no-underline hover:underline">
+      &larr; {t('winelist.title')}
+    </a>
+    <Card
+      image={product.imageUrl ?? ''}
+      title={product.name}
+      abbreviation={product.abbreviation}
+      subtitle={product.description}
+      isComingSoon={product.isComingSoon}
+      productId={product.id}
+      priceVnd={product.effectivePriceVnd}
+      availableQty={product.availableQty}
+      showAddToCart={!product.isComingSoon}
+      showBuyNow={!product.isComingSoon} />
+  </div>
+</Layout>
+
+<script src="../../scripts/add-to-cart-buttons.ts"></script>
+<script src="../../scripts/buy-now-buttons.ts"></script>

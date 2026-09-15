@@ -1,9 +1,27 @@
 ---
 import LanguagePicker from '../components/LanguagePicker.astro'
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils'
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+const translatePath = useTranslatedPath(lang)
 ---
 
-<header class="sticky top-0 z-40 flex justify-end pointer-events-none">
-  <div class="pointer-events-auto bg-sirah-50/90 backdrop-blur-sm rounded-bl-lg px-4 py-2 md:px-6 md:py-3">
+<header class="sticky top-0 z-40 grid grid-cols-3 items-center bg-[#A71E22] px-4 py-3 md:px-8">
+  <div class="justify-self-start">
+    <a
+      href={translatePath('/products')}
+      class="inline-flex items-center justify-center rounded-xl bg-white text-[#A71E22] font-sans font-bold text-xs md:text-base px-3 py-2 md:px-5 md:py-2.5 whitespace-nowrap hover:brightness-95 transition"
+    >
+      {t('nav.orderNow')}
+    </a>
+  </div>
+
+  <a href={translatePath('/')} class="justify-self-center">
+    <img src="/figma/hero-wave-logo.svg" alt="be-wine" class="h-5 md:h-7 w-auto" />
+  </a>
+
+  <div class="justify-self-end">
     <LanguagePicker />
   </div>
 </header>
