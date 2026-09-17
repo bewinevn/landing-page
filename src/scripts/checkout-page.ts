@@ -14,6 +14,13 @@ interface ApiProduct {
   imageUrl: string | null;
 }
 
+// Kept in sync with COD_FEE_VND in src/modules/orders/domain/order.service.ts —
+// the server is the source of truth for what's actually charged, this is
+// only used to preview the total before submitting.
+const COD_FEE_VND = 5000;
+
+let subtotalVnd = 0;
+
 function formatVnd(amount: number): string {
   return `${amount.toLocaleString("vi-VN")} ₫`;
 }
@@ -28,7 +35,6 @@ async function fetchProducts(): Promise<ApiProduct[]> {
 async function renderSummary(): Promise<void> {
   const cart = getCart();
   const linesEl = document.getElementById("checkout-summary-lines")!;
-  const totalEl = document.getElementById("checkout-total")!;
   const giftLabel = window.__BEWINE_I18N__?.gift ?? "gift";
 
   if (cart.length === 0) {
@@ -40,12 +46,12 @@ async function renderSummary(): Promise<void> {
   const byId = new Map(products.map((p) => [p.id, p]));
 
   linesEl.innerHTML = "";
-  let total = 0;
+  subtotalVnd = 0;
   for (const line of cart) {
     const product = byId.get(line.productId);
     if (!product) continue;
     const lineTotal = line.isGift ? 0 : product.effectivePriceVnd * line.quantity;
-    total += lineTotal;
+    subtotalVnd += lineTotal;
     const row = document.createElement("div");
     row.className = "flex justify-between text-sm";
     row.innerHTML = `
@@ -54,15 +60,31 @@ async function renderSummary(): Promise<void> {
     `;
     linesEl.appendChild(row);
   }
-  totalEl.textContent = formatVnd(total);
+  updateTotal();
 }
 
-function bindCodNote(): void {
+function updateTotal(): void {
+  const totalEl = document.getElementById("checkout-total")!;
+  const codFeeRow = document.getElementById("checkout-cod-fee-row")!;
+  const codFeeEl = document.getElementById("checkout-cod-fee")!;
+  const isCod = document.querySelector<HTMLInputElement>('input[name="paymentMethod"]:checked')?.value === "cod";
+
+  const codFee = isCod ? COD_FEE_VND : 0;
+  // Tailwind's `flex` utility on this element would otherwise beat the
+  // `hidden` attribute's `display: none` in the cascade, so toggle the
+  // computed display directly instead of relying on `.hidden`.
+  codFeeRow.style.display = isCod ? "flex" : "none";
+  codFeeEl.textContent = formatVnd(codFee);
+  totalEl.textContent = formatVnd(subtotalVnd + codFee);
+}
+
+function bindPaymentMethod(): void {
   const radios = document.querySelectorAll<HTMLInputElement>('input[name="paymentMethod"]');
   const codNote = document.getElementById("checkout-cod-note")!;
   function update() {
-    const selected = Array.from(radios).find((r) => r.checked)?.value;
-    codNote.hidden = selected !== "cod";
+    const isCod = Array.from(radios).find((r) => r.checked)?.value === "cod";
+    codNote.style.gridTemplateRows = isCod ? "1fr" : "0fr";
+    updateTotal();
   }
   radios.forEach((r) => r.addEventListener("change", update));
   update();
@@ -117,5 +139,5 @@ function bindForm(): void {
 }
 
 renderSummary();
-bindCodNote();
+bindPaymentMethod();
 bindForm();

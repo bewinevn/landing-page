@@ -98,6 +98,12 @@ const isPaid = order.status !== 'pending_payment' && order.status !== 'cancelled
       ))}
     </table>
 
+    {order.total_vnd > order.subtotal_vnd && (
+      <div class="row">
+        <span>Phí thu hộ (COD)</span>
+        <span>{(order.total_vnd - order.subtotal_vnd).toLocaleString('vi-VN')} ₫</span>
+      </div>
+    )}
     <div class="row total-row">
       <span>Tổng cộng</span>
       <span>{order.total_vnd.toLocaleString('vi-VN')} ₫</span>

@@ -85,6 +85,12 @@ const isCod = payment.provider === 'manual';
           </p>
         ))}
       </div>
+      {order.total_vnd > order.subtotal_vnd && (
+        <p class="flex justify-between text-sm text-[#666] mt-2 m-0">
+          <span>{t('checkout.codFeeLabel')}</span>
+          <span class="font-medium text-[#A71E22]">{(order.total_vnd - order.subtotal_vnd).toLocaleString('vi-VN')} ₫</span>
+        </p>
+      )}
       <p class="flex justify-between font-bold text-[#A71E22] mt-3 pt-3 border-t border-[#d1d5db]">
         <span>{t('checkout.total')}</span>
         <span>{order.total_vnd.toLocaleString('vi-VN')} ₫</span>

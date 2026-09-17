@@ -54,10 +54,16 @@ const locale = lang === 'en' ? 'en' : 'vn';
             <input type="radio" name="paymentMethod" value="cod" class="accent-[#A71E22]" />
             {t('checkout.paymentCod')}
           </label>
-          <p id="checkout-cod-note" hidden class="text-xs text-[#A71E22] m-0">{t('checkout.codFeeNote')}</p>
+          <div id="checkout-cod-note" class="grid transition-[grid-template-rows] duration-200 ease-out" style="grid-template-rows: 0fr;">
+            <p class="overflow-hidden text-xs text-[#A71E22] m-0">{t('checkout.codFeeNote')}</p>
+          </div>
         </div>
 
         <div>
+          <p id="checkout-cod-fee-row" style="display: none;" class="justify-between text-sm text-[#666] m-0">
+            <span>{t('checkout.codFeeLabel')}</span>
+            <span id="checkout-cod-fee">0 ₫</span>
+          </p>
           <p class="pt-4 border-t border-[#d1d5db] font-bold text-[#A71E22] text-lg flex justify-between m-0">
             <span>{t('checkout.total')}</span>
             <span id="checkout-total">0 ₫</span>

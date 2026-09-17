@@ -9,6 +9,9 @@ import * as orderRepository from "../data/order.repository";
 import { canTransition } from "./order.state-machine";
 import type { CheckoutInput, OrderItemRow, OrderRow, OrderStatus } from "./order.types";
 
+// Flat carrier fee added to COD orders on top of the product subtotal.
+const COD_FEE_VND = 5000;
+
 export interface CheckoutResult {
   order: OrderRow;
   items: OrderItemRow[];
@@ -72,13 +75,17 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       input.paymentMethod === "cod" ? null : new Date(Date.now() + env.ORDER_PAYMENT_WINDOW_MINUTES * 60_000);
 
     const subtotalVnd = lineItems.reduce((sum, li) => sum + li.lineTotalVnd, 0);
+    // COD orders carry an extra carrier fee, collected together with the
+    // product total on delivery; bank-transfer orders have no such fee.
+    const codFeeVnd = input.paymentMethod === "cod" ? COD_FEE_VND : 0;
+    const totalVnd = subtotalVnd + codFeeVnd;
 
     const order = await orderRepository.insertOrder({
       reference,
       customer_id: customer.id,
       cancelled_reason: null,
       subtotal_vnd: subtotalVnd,
-      total_vnd: subtotalVnd, // no shipping/tax modeled in this MVP
+      total_vnd: totalVnd,
       currency: "VND",
       delivery_full_name: input.customer.fullName,
       delivery_phone: input.customer.phone,
@@ -245,7 +252,9 @@ export async function getSalesSummary(): Promise<SalesSummary> {
   for (const status of allStatuses) statusCounts[status] += 1;
 
   return {
-    totalRevenueVnd: revenueOrders.reduce((sum, o) => sum + o.total_vnd, 0),
+    // subtotal_vnd, not total_vnd — the COD carrier fee is a pass-through
+    // cost, not product revenue, and would otherwise inflate this number.
+    totalRevenueVnd: revenueOrders.reduce((sum, o) => sum + o.subtotal_vnd, 0),
     totalOrders: revenueOrders.length,
     totalCansSold: items.reduce((sum, i) => sum + i.quantity, 0),
     byProduct: Array.from(byProductMap.entries())

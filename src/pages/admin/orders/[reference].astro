@@ -63,6 +63,12 @@ const isCod = payment.provider === 'manual';
           <span>{item.line_total_vnd.toLocaleString('vi-VN')} ₫</span>
         </p>
       ))}
+      {order.total_vnd > order.subtotal_vnd && (
+        <p style="display: flex; justify-content: space-between; margin: 8px 0 0; font-size: 14px; color: #666;">
+          <span>Phí thu hộ (COD)</span>
+          <span>{(order.total_vnd - order.subtotal_vnd).toLocaleString('vi-VN')} ₫</span>
+        </p>
+      )}
       <p style="display: flex; justify-content: space-between; margin: 8px 0 0; padding-top: 8px; border-top: 1px solid #eee; font-weight: 700;">
         <span>Tổng cộng</span>
         <span>{order.total_vnd.toLocaleString('vi-VN')} ₫</span>
