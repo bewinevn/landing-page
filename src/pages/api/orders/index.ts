@@ -17,6 +17,7 @@ const checkoutSchema = z.object({
       z.object({
         productId: z.string().uuid(),
         quantity: z.number().int().positive(),
+        isGift: z.boolean().optional(),
       }),
     )
     .min(1),

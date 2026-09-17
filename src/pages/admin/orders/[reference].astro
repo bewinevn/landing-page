@@ -59,7 +59,7 @@ const isCod = payment.provider === 'manual';
       <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 8px;">Sản phẩm</h2>
       {items.map((item) => (
         <p style="display: flex; justify-content: space-between; margin: 0 0 4px; font-size: 14px;">
-          <span>{item.product_name_snapshot} &times; {item.quantity}</span>
+          <span>{item.product_name_snapshot} &times; {item.quantity}{item.unit_price_vnd === 0 && <span style="color: #A71E22;"> (Quà tặng)</span>}</span>
           <span>{item.line_total_vnd.toLocaleString('vi-VN')} ₫</span>
         </p>
       ))}

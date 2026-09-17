@@ -10,6 +10,8 @@ const STORAGE_KEY = "bewine_cart_v1";
 export interface CartLine {
   productId: string;
   quantity: number;
+  /** True for promo gift cans — priced at 0đ and excluded from stock reservation. */
+  isGift?: boolean;
 }
 
 function readCart(): CartLine[] {

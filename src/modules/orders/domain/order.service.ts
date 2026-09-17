@@ -39,19 +39,25 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
     if (item.quantity <= 0) {
       throw new ValidationError(`Invalid quantity for product ${item.productId}`);
     }
-    const unitPriceVnd = effectivePrice(product);
+    // Gift cans are priced at 0đ regardless of the product's real price.
+    const unitPriceVnd = item.isGift ? 0 : effectivePrice(product);
     return {
       product,
       quantity: item.quantity,
       unitPriceVnd,
       lineTotalVnd: unitPriceVnd * item.quantity,
+      isGift: item.isGift ?? false,
     };
   });
 
-  const reservations: ReservationRequest[] = lineItems.map((li) => ({
-    productId: li.product.id,
-    quantity: li.quantity,
-  }));
+  // Gift lines aren't reserved against tracked stock (some gift SKUs, e.g.
+  // upcoming wines, have zero recorded stock) — only paid lines hold inventory.
+  const reservations: ReservationRequest[] = lineItems
+    .filter((li) => !li.isGift)
+    .map((li) => ({
+      productId: li.product.id,
+      quantity: li.quantity,
+    }));
 
   await reserveAll(reservations); // throws ConflictError and rolls back partial reservations on failure
 

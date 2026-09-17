@@ -67,6 +67,9 @@ export const languages = {
         'checkout.paymentMethod': 'Phương thức thanh toán',
         'checkout.paymentQr': 'Chuyển khoản QR',
         'checkout.paymentCod': 'Thanh toán khi nhận hàng (COD)',
+        'checkout.giftLabel': 'quà tặng',
+        'checkout.codFeeNote': '*Với hình thức này, đơn hàng sẽ mất thêm 5.000đ phí cho đơn vị vận chuyển.',
+        'checkout.shipNote': '*Số tiền trên chưa bao gồm phí vận chuyển.',
 
         'order.waitingTitle': 'Đang chờ thanh toán',
         'order.waitingDesc': 'Quét mã QR bên dưới bằng app ngân hàng để chuyển khoản. Đơn hàng sẽ tự động xác nhận khi chúng mình nhận được tiền.',
@@ -142,6 +145,9 @@ export const languages = {
       'checkout.paymentMethod': 'Payment method',
       'checkout.paymentQr': 'Bank transfer (QR)',
       'checkout.paymentCod': 'Cash on delivery (COD)',
+      'checkout.giftLabel': 'gift',
+      'checkout.codFeeNote': '*With this method, the order will incur an extra 5,000đ carrier fee.',
+      'checkout.shipNote': '*This amount does not include the shipping fee.',
 
       'order.waitingTitle': 'Waiting for payment',
       'order.waitingDesc': 'Scan the QR code below with your banking app to transfer. Your order will confirm automatically once we receive the payment.',

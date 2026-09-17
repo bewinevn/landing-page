@@ -1,4 +1,10 @@
-import { setCart } from "./cart-client";
+import { setCart, type CartLine } from "./cart-client";
+
+interface BonusItem {
+  slug: string;
+  abbreviation: string;
+  qty: number;
+}
 
 function formatVnd(amount: number): string {
   return amount.toLocaleString("vi-VN");
@@ -15,6 +21,13 @@ function init() {
   const checkoutBtn = document.getElementById("configurator-checkout") as HTMLButtonElement | null;
   if (!totalEl || !checkoutBtn) return;
 
+  // Bonus-wine product ids are looked up by slug so gifts work regardless
+  // of which wine is currently selected as the paid item.
+  const slugToProductId = new Map<string, string>();
+  wineOptions.forEach((btn) => {
+    if (btn.dataset.productSlug) slugToProductId.set(btn.dataset.productSlug, btn.dataset.productId!);
+  });
+
   let selectedWine = Array.from(wineOptions).find((b) => b.dataset.selected === "true") ?? wineOptions[0];
   let selectedQty = parseInt(
     Array.from(qtyOptions).find((b) => b.dataset.selected === "true")?.dataset.qty ?? "3",
@@ -27,6 +40,15 @@ function init() {
 
   function currentAvailableQty(): number {
     return parseInt(selectedWine?.dataset.availableQty ?? "0", 10);
+  }
+
+  function currentBonus(): BonusItem[] {
+    const btn = Array.from(qtyOptions).find((b) => parseInt(b.dataset.qty ?? "0", 10) === selectedQty);
+    try {
+      return JSON.parse(btn?.dataset.bonus ?? "[]");
+    } catch {
+      return [];
+    }
   }
 
   function render() {
@@ -72,7 +94,19 @@ function init() {
 
   checkoutBtn.addEventListener("click", () => {
     if (!selectedWine) return;
-    setCart([{ productId: selectedWine.dataset.productId!, quantity: selectedQty }]);
+    const productId = selectedWine.dataset.productId!;
+
+    const lines: CartLine[] = [
+      { productId, quantity: selectedQty },
+      { productId, quantity: selectedQty, isGift: true },
+    ];
+
+    for (const bonus of currentBonus()) {
+      const bonusProductId = slugToProductId.get(bonus.slug);
+      if (bonusProductId) lines.push({ productId: bonusProductId, quantity: bonus.qty, isGift: true });
+    }
+
+    setCart(lines);
     window.location.href = "/checkout";
   });
 

@@ -41,6 +41,8 @@ export interface OrderItemRow {
 export interface CheckoutItemInput {
   productId: string;
   quantity: number;
+  /** Promo gift can — server forces unit price to 0 and skips stock reservation. */
+  isGift?: boolean;
 }
 
 export interface CheckoutInput {

@@ -3,7 +3,7 @@ import { clearCart, getCart } from "./cart-client";
 declare global {
   interface Window {
     __BEWINE_LOCALE__?: "vn" | "en";
-    __BEWINE_I18N__?: { submitting: string; submit: string };
+    __BEWINE_I18N__?: { submitting: string; submit: string; gift: string };
   }
 }
 
@@ -29,6 +29,7 @@ async function renderSummary(): Promise<void> {
   const cart = getCart();
   const linesEl = document.getElementById("checkout-summary-lines")!;
   const totalEl = document.getElementById("checkout-total")!;
+  const giftLabel = window.__BEWINE_I18N__?.gift ?? "gift";
 
   if (cart.length === 0) {
     window.location.href = "/cart";
@@ -43,23 +44,35 @@ async function renderSummary(): Promise<void> {
   for (const line of cart) {
     const product = byId.get(line.productId);
     if (!product) continue;
-    total += product.effectivePriceVnd * line.quantity;
+    const lineTotal = line.isGift ? 0 : product.effectivePriceVnd * line.quantity;
+    total += lineTotal;
     const row = document.createElement("div");
     row.className = "flex justify-between text-sm";
     row.innerHTML = `
-      <span class="text-[#666] capitalize">${product.name} &times; ${line.quantity}</span>
-      <span class="font-medium text-[#A71E22]">${formatVnd(product.effectivePriceVnd * line.quantity)}</span>
+      <span class="text-[#666] capitalize">${product.name} &times; ${line.quantity}${line.isGift ? ` <span class="text-xs text-[#A71E22]">(${giftLabel})</span>` : ""}</span>
+      <span class="font-medium text-[#A71E22]">${formatVnd(lineTotal)}</span>
     `;
     linesEl.appendChild(row);
   }
   totalEl.textContent = formatVnd(total);
 }
 
+function bindCodNote(): void {
+  const radios = document.querySelectorAll<HTMLInputElement>('input[name="paymentMethod"]');
+  const codNote = document.getElementById("checkout-cod-note")!;
+  function update() {
+    const selected = Array.from(radios).find((r) => r.checked)?.value;
+    codNote.hidden = selected !== "cod";
+  }
+  radios.forEach((r) => r.addEventListener("change", update));
+  update();
+}
+
 function bindForm(): void {
   const form = document.getElementById("checkout-form") as HTMLFormElement;
   const submitBtn = document.getElementById("checkout-submit") as HTMLButtonElement;
   const errorEl = document.getElementById("checkout-error")!;
-  const i18n = window.__BEWINE_I18N__ ?? { submitting: "...", submit: "Submit" };
+  const i18n = window.__BEWINE_I18N__ ?? { submitting: "...", submit: "Submit", gift: "gift" };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -82,7 +95,7 @@ function bindForm(): void {
             city: formData.get("city"),
             note: formData.get("note") || undefined,
           },
-          items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity })),
+          items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity, isGift: l.isGift ?? false })),
           locale: window.__BEWINE_LOCALE__ ?? "vn",
           paymentMethod: formData.get("paymentMethod") || "vietqr",
         }),
@@ -104,4 +117,5 @@ function bindForm(): void {
 }
 
 renderSummary();
+bindCodNote();
 bindForm();

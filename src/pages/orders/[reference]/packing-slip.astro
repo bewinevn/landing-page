@@ -91,7 +91,7 @@ const isPaid = order.status !== 'pending_payment' && order.status !== 'cancelled
     <table>
       {items.map((item) => (
         <tr>
-          <td>{item.product_name_snapshot}</td>
+          <td>{item.product_name_snapshot}{item.unit_price_vnd === 0 && <strong> (Quà tặng)</strong>}</td>
           <td class="qty">&times;{item.quantity}</td>
           <td class="amount">{item.line_total_vnd.toLocaleString('vi-VN')} ₫</td>
         </tr>

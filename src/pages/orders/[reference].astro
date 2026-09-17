@@ -75,7 +75,10 @@ const isCod = payment.provider === 'manual';
       <div class="flex flex-col gap-2">
         {items.map((item) => (
           <p class="flex justify-between text-sm m-0">
-            <span class="text-[#666] capitalize">{item.product_name_snapshot} &times; {item.quantity}</span>
+            <span class="text-[#666] capitalize">
+              {item.product_name_snapshot} &times; {item.quantity}
+              {item.unit_price_vnd === 0 && <span class="text-xs text-[#A71E22]"> ({t('checkout.giftLabel')})</span>}
+            </span>
             <span class="font-medium text-[#A71E22]">{item.line_total_vnd.toLocaleString('vi-VN')} ₫</span>
           </p>
         ))}
