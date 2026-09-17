@@ -16,6 +16,14 @@ const envSchema = z.object({
   // set for the channel to activate — see ECOMMERCE_SETUP.md for setup.
   TELEGRAM_BOT_TOKEN: z.string().optional(),
   TELEGRAM_CHAT_ID: z.string().optional(),
+  // Optional: Zalo ZNS customer notifications (payment confirmation).
+  // App ID/Secret come from the Zalo Developers app linked to the OA;
+  // the actual access/refresh tokens are obtained via one-time OAuth
+  // (see /api/admin/zalo/authorize) and stored in the zalo_oa_tokens
+  // table, not here — see ECOMMERCE_SETUP.md.
+  ZALO_APP_ID: z.string().optional(),
+  ZALO_APP_SECRET: z.string().optional(),
+  ZALO_ZNS_TEMPLATE_ID: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

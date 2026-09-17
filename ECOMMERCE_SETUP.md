@@ -67,6 +67,30 @@ Sends a message to a Telegram group whenever a customer places an order (and whe
    ```
 5. Restart the dev server. Placing a test order should post a "🆕 Đơn hàng mới" message to the group within a second or two. Leaving either var unset simply disables this channel — nothing else is affected.
 
-## 6. Deploy
+## 6. Customer payment-confirmation via Zalo ZNS (optional)
+
+Sends the customer a ZNS message when their bank transfer is confirmed (`order.paid`). COD orders never trigger this — they aren't "paid" until cash is collected on delivery. Needs a Zalo OA with ZNS enabled and an approved message template.
+
+1. Go to https://developers.zalo.me/ → create an App (type "Official Account"), then in the app's "Official Account" tab, link it to your OA.
+2. In the app's settings, copy the **App ID** and **Secret Key**, and add a Redirect URI:
+   ```
+   https://<your-domain>/api/admin/zalo/callback
+   ```
+   (use your Netlify URL in production, or `http://localhost:4321/api/admin/zalo/callback` while testing locally).
+3. Add to `.env` (and Netlify's env vars):
+   ```
+   ZALO_APP_ID=<the App ID>
+   ZALO_APP_SECRET=<the Secret Key>
+   ```
+4. Apply `supabase/migrations/0006_zalo_oa_tokens.sql` via the Supabase SQL Editor (stores the OA's OAuth tokens — see step 1's approach for applying migrations).
+5. Log into `/admin`, then visit `/api/admin/zalo/authorize` in the same browser tab. It redirects to Zalo's consent screen — approve as the OA's admin. On success you land on a "Đã liên kết Zalo OA thành công" page; the access/refresh tokens are now stored and auto-refresh from then on (no need to repeat this unless you revoke access on Zalo's side).
+6. In the Zalo OA ZNS dashboard, find the **template_id** of your approved "payment confirmed" template and its exact parameter names, then add:
+   ```
+   ZALO_ZNS_TEMPLATE_ID=<the template id>
+   ```
+   `src/modules/notifications/channels/zalo-channel.ts` currently sends `customer_name`, `order_code`, `amount` as the template variables — **edit that file's `templateData` object to match your template's actual parameter names** before relying on this; a mismatch makes Zalo reject the send.
+7. Leaving `ZALO_APP_ID`/`ZALO_ZNS_TEMPLATE_ID` unset disables this channel entirely — nothing else is affected.
+
+## 7. Deploy
 
 Push the `ecommerce` branch and set the same env vars in **Netlify → Site settings → Environment variables**, then either merge to `minimma` or point a Netlify branch deploy at `ecommerce` to test on a real URL first. The order-expiry sweep (`netlify/functions/expire-stale-orders.ts`) runs automatically every 5 minutes once deployed — no extra setup needed.
