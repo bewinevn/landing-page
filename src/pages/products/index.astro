@@ -1,0 +1,142 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
+import { listProducts } from '../../modules/products';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
+
+const products = await listProducts(locale);
+const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
+
+const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
+const zinfandel = products.find((p) => p.slug === 'zinfandel');
+
+// Quantity tiers and their gift rule. 3/6 just double the same wine;
+// 10/20 add a bonus can each of the two other wines as a teaser combo.
+const QUANTITY_TIERS = [
+  { qty: 3, bonus: [] as { slug: string; name: string; qty: number }[] },
+  { qty: 6, bonus: [] as { slug: string; name: string; qty: number }[] },
+  {
+    qty: 10,
+    bonus: [
+      { slug: 'sauvignon-blanc', name: sauvignonBlanc?.name ?? 'Sauvignon Blanc', qty: 1 },
+      { slug: 'zinfandel', name: zinfandel?.name ?? 'Zinfandel', qty: 1 },
+    ],
+  },
+  {
+    qty: 20,
+    bonus: [
+      { slug: 'sauvignon-blanc', name: sauvignonBlanc?.name ?? 'Sauvignon Blanc', qty: 2 },
+      { slug: 'zinfandel', name: zinfandel?.name ?? 'Zinfandel', qty: 2 },
+    ],
+  },
+];
+---
+
+<style>
+  .card-texture {
+    background-image: url("../../assets/topography.svg");
+    background-size: 384px 384px;
+    background-position: top left;
+    opacity: 0.5;
+  }
+</style>
+
+<Layout title="be-wine">
+  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1100px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+      <div class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
+        <div class="card-texture absolute inset-0 pointer-events-none"></div>
+        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <div>
+          <h1 id="configurator-title" class="text-2xl md:text-3xl font-bold text-[#86181b] m-0 capitalize">
+            {defaultProduct?.name}
+          </h1>
+          <p class="m-0 mt-2 text-xl font-bold text-[#A71E22]">
+            <span id="configurator-unit-price">{defaultProduct?.effectivePriceVnd.toLocaleString('vi-VN')}</span> ₫
+            <span class="text-sm font-normal text-[#666]">{t('product.perCan')}</span>
+          </p>
+        </div>
+
+        <div>
+          <p class="m-0 mb-2 text-sm text-[#666]">{t('product.wineType')}</p>
+          <div class="flex flex-wrap gap-2">
+            {products.map((product) => (
+              <button
+                type="button"
+                data-wine-option
+                data-product-id={product.id}
+                data-product-slug={product.slug}
+                data-product-name={product.name}
+                data-product-image={product.imageUrl ?? ''}
+                data-unit-price={product.effectivePriceVnd}
+                data-available-qty={product.availableQty}
+                disabled={product.isComingSoon}
+                class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                data-selected={product.id === defaultProduct?.id ? 'true' : 'false'}
+              >
+                {product.name}{product.isComingSoon ? ` (${t('winelist.comingsoon')})` : ''}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
+          <div class="grid grid-cols-4 gap-2">
+            {QUANTITY_TIERS.map((tier, i) => (
+              <button
+                type="button"
+                data-qty-option
+                data-qty={tier.qty}
+                data-bonus={JSON.stringify(tier.bonus)}
+                data-selected={i === 0 ? 'true' : 'false'}
+                class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+              >
+                {`${tier.qty} ${t('product.canUnit')}`}
+              </button>
+            ))}
+          </div>
+          <div class="grid grid-cols-4 gap-2 mt-2">
+            {QUANTITY_TIERS.map((tier, i) => (
+              <span
+                data-gift-tag
+                data-qty={tier.qty}
+                data-selected={i === 0 ? 'true' : 'false'}
+                class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center leading-snug data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+              >
+                {`${t('product.giftPrefix')} ${tier.qty} ${t('product.canUnit')}`}
+              </span>
+            ))}
+          </div>
+          <div
+            id="bonus-gift-box"
+            hidden
+            data-can-unit={t('product.canUnit')}
+            class="mt-2 rounded-lg border-2 border-dashed border-[#A71E22] bg-[#FBEDEC] px-4 py-3"
+          >
+            <p class="m-0 text-xs font-bold uppercase tracking-wide text-[#A71E22]">{t('product.bonusGiftTitle')}</p>
+            <ul id="bonus-gift-list" class="m-0 mt-1 pl-4 text-sm text-[#A71E22] font-medium"></ul>
+          </div>
+        </div>
+
+        <p class="font-bold text-[#A71E22] text-xl m-0" id="configurator-total"></p>
+
+        <button
+          type="button"
+          id="configurator-checkout"
+          class="w-full inline-flex items-center justify-center rounded-full bg-[#A71E22] text-white font-sans font-bold text-base px-8 py-4 hover:brightness-110 transition disabled:bg-[#ccc] disabled:cursor-not-allowed"
+        >
+          {t('product.buyNow')}
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script src="../../scripts/product-configurator.ts"></script>
