@@ -16,20 +16,20 @@ const zinfandel = products.find((p) => p.slug === 'zinfandel');
 // Quantity tiers and their gift rule. 3/6 just double the same wine;
 // 10/20 add a bonus can each of the two other wines as a teaser combo.
 const QUANTITY_TIERS = [
-  { qty: 3, bonus: [] as { slug: string; abbreviation: string; qty: number }[] },
-  { qty: 6, bonus: [] as { slug: string; abbreviation: string; qty: number }[] },
+  { qty: 3, bonus: [] as { slug: string; name: string; qty: number }[] },
+  { qty: 6, bonus: [] as { slug: string; name: string; qty: number }[] },
   {
     qty: 10,
     bonus: [
-      { slug: 'sauvignon-blanc', abbreviation: sauvignonBlanc?.abbreviation ?? 'SB', qty: 1 },
-      { slug: 'zinfandel', abbreviation: zinfandel?.abbreviation ?? 'ZL', qty: 1 },
+      { slug: 'sauvignon-blanc', name: sauvignonBlanc?.name ?? 'Sauvignon Blanc', qty: 1 },
+      { slug: 'zinfandel', name: zinfandel?.name ?? 'Zinfandel', qty: 1 },
     ],
   },
   {
     qty: 20,
     bonus: [
-      { slug: 'sauvignon-blanc', abbreviation: sauvignonBlanc?.abbreviation ?? 'SB', qty: 2 },
-      { slug: 'zinfandel', abbreviation: zinfandel?.abbreviation ?? 'ZL', qty: 2 },
+      { slug: 'sauvignon-blanc', name: sauvignonBlanc?.name ?? 'Sauvignon Blanc', qty: 2 },
+      { slug: 'zinfandel', name: zinfandel?.name ?? 'Zinfandel', qty: 2 },
     ],
   },
 ];
@@ -111,9 +111,17 @@ const QUANTITY_TIERS = [
                 class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center leading-snug data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
               >
                 {`${t('product.giftPrefix')} ${tier.qty} ${t('product.canUnit')}`}
-                {tier.bonus.map((b) => ` + ${b.qty} ${b.abbreviation}`).join('')}
               </span>
             ))}
+          </div>
+          <div
+            id="bonus-gift-box"
+            hidden
+            data-can-unit={t('product.canUnit')}
+            class="mt-2 rounded-lg border-2 border-dashed border-[#A71E22] bg-[#FBEDEC] px-4 py-3"
+          >
+            <p class="m-0 text-xs font-bold uppercase tracking-wide text-[#A71E22]">{t('product.bonusGiftTitle')}</p>
+            <ul id="bonus-gift-list" class="m-0 mt-1 pl-4 text-sm text-[#A71E22] font-medium"></ul>
           </div>
         </div>
 

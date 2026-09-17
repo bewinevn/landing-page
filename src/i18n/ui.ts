@@ -42,6 +42,7 @@ export const languages = {
         'product.canUnit': 'lon',
         'product.giftPrefix': 'tặng',
         'product.perCan': '/ lon',
+        'product.bonusGiftTitle': 'tặng kèm thêm',
 
         'cart.title': 'Giỏ hàng của bạn',
         'cart.empty': 'Giỏ hàng đang trống.',
@@ -120,6 +121,7 @@ export const languages = {
       'product.canUnit': 'cans',
       'product.giftPrefix': 'free',
       'product.perCan': '/ can',
+      'product.bonusGiftTitle': 'plus a bonus gift',
 
       'cart.title': 'Your cart',
       'cart.empty': 'Your cart is empty.',

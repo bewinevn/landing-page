@@ -2,7 +2,7 @@ import { setCart, type CartLine } from "./cart-client";
 
 interface BonusItem {
   slug: string;
-  abbreviation: string;
+  name: string;
   qty: number;
 }
 
@@ -14,6 +14,8 @@ function init() {
   const wineOptions = document.querySelectorAll<HTMLButtonElement>("[data-wine-option]");
   const qtyOptions = document.querySelectorAll<HTMLButtonElement>("[data-qty-option]");
   const giftTags = document.querySelectorAll<HTMLElement>("[data-gift-tag]");
+  const bonusGiftBox = document.getElementById("bonus-gift-box");
+  const bonusGiftList = document.getElementById("bonus-gift-list");
   const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
   const titleEl = document.getElementById("configurator-title");
   const unitPriceEl = document.getElementById("configurator-unit-price");
@@ -64,6 +66,13 @@ function init() {
       const qty = parseInt(tag.dataset.qty ?? "0", 10);
       tag.dataset.selected = qty === selectedQty ? "true" : "false";
     });
+
+    const bonus = currentBonus();
+    if (bonusGiftBox && bonusGiftList) {
+      const canUnit = bonusGiftBox.dataset.canUnit ?? "";
+      bonusGiftBox.hidden = bonus.length === 0;
+      bonusGiftList.innerHTML = bonus.map((b) => `<li>${b.qty} ${canUnit} ${b.name}</li>`).join("");
+    }
 
     checkoutBtn!.disabled = !selectedWine || selectedQty > currentAvailableQty();
   }
