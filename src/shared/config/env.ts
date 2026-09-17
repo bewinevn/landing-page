@@ -12,6 +12,10 @@ const envSchema = z.object({
   ORDER_PAYMENT_WINDOW_MINUTES: z.coerce.number().int().positive().default(30),
   ADMIN_PASSWORD: z.string().min(1),
   ADMIN_SESSION_SECRET: z.string().min(1),
+  // Optional: staff order notifications via a Telegram bot. Both must be
+  // set for the channel to activate — see ECOMMERCE_SETUP.md for setup.
+  TELEGRAM_BOT_TOKEN: z.string().optional(),
+  TELEGRAM_CHAT_ID: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

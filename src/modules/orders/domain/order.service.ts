@@ -1,5 +1,6 @@
 import { findOrCreateByPhone } from "../../customers";
 import { fulfillOrderFromWarehouse, releaseAll, reserveAll, type ReservationRequest } from "../../inventory";
+import { emit } from "../../notifications";
 import { createCodPaymentForOrder, createPaymentForOrder, toPaymentView, type PaymentView } from "../../payments";
 import { getProductRowsByIds, type ProductRow } from "../../products";
 import { getEnv } from "../../../shared/config/env";
@@ -120,6 +121,15 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
             amountVnd: order.total_vnd,
             expiresAt: expiresAt!,
           });
+
+    await emit({
+      type: "order.created",
+      orderReference: order.reference,
+      customerName: input.customer.fullName,
+      customerPhone: input.customer.phone,
+      totalVnd: order.total_vnd,
+      paymentMethod: input.paymentMethod,
+    });
 
     return { order, items, payment: toPaymentView(paymentRow) };
   } catch (err) {

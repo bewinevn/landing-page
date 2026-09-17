@@ -53,6 +53,20 @@ npm run dev
 
 Note: `/api/webhooks/mock` only works when running `npm run dev` (it's disabled in production builds — see `src/pages/api/webhooks/mock.ts`).
 
-## 5. Deploy
+## 5. Staff order notifications via Telegram (optional)
+
+Sends a message to a Telegram group whenever a customer places an order (and when a bank transfer lands), so staff don't have to keep the admin page open.
+
+1. Message [@BotFather](https://t.me/BotFather) on Telegram → `/newbot` → follow the prompts. It gives you a bot token like `123456:ABC-DEF...`.
+2. Create a Telegram group for staff, add the bot to it.
+3. Send any message in the group, then visit `https://api.telegram.org/bot<token>/getUpdates` in a browser — find `"chat":{"id": -100..., ...}` in the JSON response. That number (including the `-`) is the chat id.
+4. Add both to `.env` (and to Netlify's env vars for production):
+   ```
+   TELEGRAM_BOT_TOKEN=<the bot token>
+   TELEGRAM_CHAT_ID=<the chat id>
+   ```
+5. Restart the dev server. Placing a test order should post a "🆕 Đơn hàng mới" message to the group within a second or two. Leaving either var unset simply disables this channel — nothing else is affected.
+
+## 6. Deploy
 
 Push the `ecommerce` branch and set the same env vars in **Netlify → Site settings → Environment variables**, then either merge to `minimma` or point a Netlify branch deploy at `ecommerce` to test on a real URL first. The order-expiry sweep (`netlify/functions/expire-stale-orders.ts`) runs automatically every 5 minutes once deployed — no extra setup needed.

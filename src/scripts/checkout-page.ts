@@ -21,6 +21,42 @@ const COD_FEE_VND = 5000;
 
 let subtotalVnd = 0;
 
+const DELIVERY_INFO_KEY = "bewine_delivery_info_v1";
+
+interface SavedDeliveryInfo {
+  fullName: string;
+  phone: string;
+  addressLine: string;
+  note: string;
+}
+
+// Per-browser convenience only (no login/membership system): remembers the
+// last delivery info so returning customers on the same device don't have
+// to retype it. Never sent anywhere but this device's own checkout form.
+function prefillDeliveryInfo(): void {
+  const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+  if (!form) return;
+  try {
+    const raw = localStorage.getItem(DELIVERY_INFO_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw) as Partial<SavedDeliveryInfo>;
+    if (saved.fullName) (form.elements.namedItem("fullName") as HTMLInputElement).value = saved.fullName;
+    if (saved.phone) (form.elements.namedItem("phone") as HTMLInputElement).value = saved.phone;
+    if (saved.addressLine) (form.elements.namedItem("addressLine") as HTMLInputElement).value = saved.addressLine;
+    if (saved.note) (form.elements.namedItem("note") as HTMLTextAreaElement).value = saved.note;
+  } catch {
+    // corrupt/blocked storage — just skip prefill
+  }
+}
+
+function saveDeliveryInfo(info: SavedDeliveryInfo): void {
+  try {
+    localStorage.setItem(DELIVERY_INFO_KEY, JSON.stringify(info));
+  } catch {
+    // private-browsing/blocked storage — prefill just won't work next time
+  }
+}
+
 function formatVnd(amount: number): string {
   return `${amount.toLocaleString("vi-VN")} ₫`;
 }
@@ -104,6 +140,10 @@ function bindForm(): void {
 
     const formData = new FormData(form);
     const cart = getCart();
+    const fullName = String(formData.get("fullName") ?? "");
+    const phone = String(formData.get("phone") ?? "");
+    const addressLine = String(formData.get("addressLine") ?? "");
+    const note = String(formData.get("note") ?? "");
 
     try {
       const res = await fetch("/api/orders", {
@@ -111,11 +151,11 @@ function bindForm(): void {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customer: {
-            fullName: formData.get("fullName"),
-            phone: formData.get("phone"),
-            addressLine: formData.get("addressLine"),
+            fullName,
+            phone,
+            addressLine,
             city: formData.get("city"),
-            note: formData.get("note") || undefined,
+            note: note || undefined,
           },
           items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity, isGift: l.isGift ?? false })),
           locale: window.__BEWINE_LOCALE__ ?? "vn",
@@ -128,6 +168,7 @@ function bindForm(): void {
       }
 
       const data = await res.json();
+      saveDeliveryInfo({ fullName, phone, addressLine, note });
       clearCart();
       window.location.href = `/orders/${data.orderReference}`;
     } catch {
@@ -138,6 +179,7 @@ function bindForm(): void {
   });
 }
 
+prefillDeliveryInfo();
 renderSummary();
 bindPaymentMethod();
 bindForm();
