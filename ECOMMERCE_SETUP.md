@@ -84,12 +84,13 @@ Sends the customer a ZNS message when their bank transfer is confirmed (`order.p
    ```
 4. Apply `supabase/migrations/0006_zalo_oa_tokens.sql` via the Supabase SQL Editor (stores the OA's OAuth tokens — see step 1's approach for applying migrations).
 5. Log into `/admin`, then visit `/api/admin/zalo/authorize` in the same browser tab. It redirects to Zalo's consent screen — approve as the OA's admin. On success you land on a "Đã liên kết Zalo OA thành công" page; the access/refresh tokens are now stored and auto-refresh from then on (no need to repeat this unless you revoke access on Zalo's side).
-6. In the Zalo OA ZNS dashboard, find the **template_id** of your approved "payment confirmed" template and its exact parameter names, then add:
+6. Create the ZNS template in the OA's own dashboard (not developers.zalo.me): oa.zalo.me → pick the OA → **Chiến dịch → Quản lý Template → Tạo Template**. A "Xác nhận thanh toán đơn hàng thành công" draft already exists there using three standard Zalo parameters — `customer_name`, `code` (order reference), `amount_vn_standard` (bare VND number) — matching what `src/modules/notifications/channels/zalo-channel.ts` sends. It still needs a logo image (400×96px, light + dark) uploaded before it can be submitted ("Gửi duyệt"); Zalo review can take some time, and separately requires the OA to be verified + on a paid plan for ZNS APIs to work at all.
+7. Once approved, copy its **template_id** and add:
    ```
    ZALO_ZNS_TEMPLATE_ID=<the template id>
    ```
-   `src/modules/notifications/channels/zalo-channel.ts` currently sends `customer_name`, `order_code`, `amount` as the template variables — **edit that file's `templateData` object to match your template's actual parameter names** before relying on this; a mismatch makes Zalo reject the send.
-7. Leaving `ZALO_APP_ID`/`ZALO_ZNS_TEMPLATE_ID` unset disables this channel entirely — nothing else is affected.
+   If you create a different template with different parameter names instead, edit `zalo-channel.ts`'s `templateData` object to match — a mismatch makes Zalo reject the send.
+8. Leaving `ZALO_APP_ID`/`ZALO_ZNS_TEMPLATE_ID` unset disables this channel entirely — nothing else is affected.
 
 ## 7. Deploy
 
