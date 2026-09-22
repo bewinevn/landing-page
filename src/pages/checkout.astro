@@ -33,7 +33,9 @@ const locale = lang === 'en' ? 'en' : 'vn';
             <option value={t('checkout.cityHanoi')}>{t('checkout.cityHanoi')}</option>
             <option value={t('checkout.cityHcm')}>{t('checkout.cityHcm')}</option>
             <option value={t('checkout.cityDanang')}>{t('checkout.cityDanang')}</option>
+            <option value="other">{t('checkout.cityOther')}</option>
           </select>
+          <p id="checkout-city-other-note" hidden class="text-xs text-[#A71E22] m-0">{t('checkout.cityOtherNote')}</p>
         </div>
         <label class="flex flex-col gap-1 text-sm text-[#666]">
           {t('checkout.note')}

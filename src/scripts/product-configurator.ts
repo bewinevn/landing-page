@@ -8,12 +8,6 @@ const COMBO_SB_UNIT_VND = 45_000;
 const COMBO_ZL_UNIT_VND = 30_000;
 const CANS_PER_WINE_PER_COMBO = 2;
 
-// object-top anchors the crop to the top of the image (where the be-wine
-// logo and banner are) instead of the default center, which would cut
-// into it to fit the box's height.
-const COMBO_IMAGE_CLASSES = ["w-full", "h-full", "object-cover", "object-top"];
-const NORMAL_IMAGE_CLASSES = ["max-h-full", "w-auto", "object-contain"];
-
 function formatVnd(amount: number): string {
   return amount.toLocaleString("vi-VN");
 }
@@ -87,13 +81,7 @@ function init() {
   function selectWine(btn: HTMLButtonElement) {
     selectedWine = btn;
     wineOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
-    if (imageEl) {
-      imageEl.src = btn.dataset.productImage ?? "";
-      const addClasses = btn.dataset.combo === "true" ? COMBO_IMAGE_CLASSES : NORMAL_IMAGE_CLASSES;
-      const removeClasses = btn.dataset.combo === "true" ? NORMAL_IMAGE_CLASSES : COMBO_IMAGE_CLASSES;
-      imageEl.classList.remove(...removeClasses);
-      imageEl.classList.add(...addClasses);
-    }
+    if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
     if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
     if (unitPriceEl) unitPriceEl.textContent = formatVnd(currentUnitPrice());
     if (unitSuffixEl) unitSuffixEl.textContent = btn.dataset.unitSuffix ?? "";

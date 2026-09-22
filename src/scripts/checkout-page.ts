@@ -112,6 +112,23 @@ function updateTotal(): void {
   totalEl.textContent = formatVnd(subtotalVnd + COD_FEE_VND);
 }
 
+// Cities outside the 3 we actually deliver to don't go through checkout —
+// picking "other" shows a contact-us note and blocks submission instead.
+function bindCitySelect(): void {
+  const citySelect = document.getElementById("checkout-city") as HTMLSelectElement | null;
+  const otherNote = document.getElementById("checkout-city-other-note");
+  const submitBtn = document.getElementById("checkout-submit") as HTMLButtonElement | null;
+  if (!citySelect || !otherNote || !submitBtn) return;
+
+  function update() {
+    const isOther = citySelect!.value === "other";
+    otherNote!.hidden = !isOther;
+    submitBtn!.disabled = isOther;
+  }
+  citySelect.addEventListener("change", update);
+  update();
+}
+
 function bindForm(): void {
   const form = document.getElementById("checkout-form") as HTMLFormElement;
   const submitBtn = document.getElementById("checkout-submit") as HTMLButtonElement;
@@ -121,10 +138,13 @@ function bindForm(): void {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errorEl.hidden = true;
+
+    const formData = new FormData(form);
+    if (formData.get("city") === "other") return;
+
     submitBtn.disabled = true;
     submitBtn.textContent = i18n.submitting;
 
-    const formData = new FormData(form);
     const cart = getCart();
     const fullName = String(formData.get("fullName") ?? "");
     const phone = String(formData.get("phone") ?? "");
@@ -172,4 +192,5 @@ function bindForm(): void {
 
 prefillDeliveryInfo();
 renderSummary();
+bindCitySelect();
 bindForm();
