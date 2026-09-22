@@ -85,6 +85,10 @@ export async function findOrders(filter: OrderListFilter): Promise<{ orders: Ord
   return { orders: (data as OrderRow[]) ?? [], total: count ?? 0 };
 }
 
+export async function voidManualOrder(orderId: string): Promise<void> {
+  await callRpc("void_manual_order", { p_order_id: orderId });
+}
+
 export async function updateStatus(orderId: string, status: OrderStatus): Promise<OrderRow> {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase

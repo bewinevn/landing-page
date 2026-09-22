@@ -5,6 +5,7 @@ export {
   expireStaleOrders,
   listOrdersForAdmin,
   advanceOrderStatus,
+  voidManualOrder,
   fulfillOrder,
   getSalesSummary,
 } from "./domain/order.service";

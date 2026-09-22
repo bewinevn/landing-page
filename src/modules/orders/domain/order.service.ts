@@ -218,6 +218,29 @@ export async function advanceOrderStatus(reference: string, toStatus: OrderStatu
 }
 
 /**
+ * Deletes a manually-entered order (channel "offline") typed in by
+ * mistake, restoring whatever inventory it had committed. Real customer
+ * orders and anything already at "processing" or later are rejected by
+ * the void_manual_order RPC itself — see its comment for why.
+ */
+export async function voidManualOrder(reference: string): Promise<void> {
+  const order = await orderRepository.findByReference(reference);
+  if (!order) throw new NotFoundError(`Order "${reference}" not found`);
+  try {
+    await orderRepository.voidManualOrder(order.id);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "";
+    if (message.includes("not_a_manual_order")) {
+      throw new ValidationError("Chỉ có thể xoá đơn được tạo thủ công (bán trực tiếp).");
+    }
+    if (message.includes("order_already_fulfilled")) {
+      throw new ValidationError("Đơn đã được xuất kho/giao/hoàn tất, không thể xoá — dùng chuyển trạng thái huỷ/hoàn tiền thay thế.");
+    }
+    throw err;
+  }
+}
+
+/**
  * Packing-time warehouse allocation: the paid -> processing transition.
  * Deducts the chosen warehouse's physical stock for every line item
  * (all-or-nothing, via fulfill_order_from_warehouse) and records which
