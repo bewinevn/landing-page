@@ -92,6 +92,19 @@ Sends the customer a ZNS message when their bank transfer is confirmed (`order.p
    If you create a different template with different parameter names instead, edit `zalo-channel.ts`'s `templateData` object to match — a mismatch makes Zalo reject the send.
 8. Leaving `ZALO_APP_ID`/`ZALO_ZNS_TEMPLATE_ID` unset disables this channel entirely — nothing else is affected.
 
-## 7. Deploy
+## 7. Staff order processing via ClickUp (optional)
+
+Creates a ClickUp task in a fixed list for every new order (`order.created`), with customer info, address, items, and total — an alternative to the Telegram alert for teams that track order fulfillment as tasks. Leaving either var unset disables this channel; it doesn't conflict with Telegram/Zalo being configured too.
+
+1. Get a personal API token: ClickUp → click your avatar (bottom left) → **Settings → Apps** → **Generate** under API Token. Copy it (starts with `pk_`).
+2. Open the List you want new-order tasks created in, and copy its **List ID** from the URL (`https://app.clickup.com/<team>/v/li/<list_id>`).
+3. Add to `.env` (and Netlify's env vars):
+   ```
+   CLICKUP_API_TOKEN=<the personal API token>
+   CLICKUP_LIST_ID=<the list id>
+   ```
+4. Restart the dev server. Placing a test order should create a task named "Đơn <reference> — <customer name>" in that list within a second or two.
+
+## 8. Deploy
 
 Push the `ecommerce` branch and set the same env vars in **Netlify → Site settings → Environment variables**, then either merge to `minimma` or point a Netlify branch deploy at `ecommerce` to test on a real URL first. The order-expiry sweep (`netlify/functions/expire-stale-orders.ts`) runs automatically every 5 minutes once deployed — no extra setup needed.

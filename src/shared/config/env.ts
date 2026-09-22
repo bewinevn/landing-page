@@ -24,6 +24,10 @@ const envSchema = z.object({
   ZALO_APP_ID: z.string().optional(),
   ZALO_APP_SECRET: z.string().optional(),
   ZALO_ZNS_TEMPLATE_ID: z.string().optional(),
+  // Optional: staff order processing via a ClickUp task per new order.
+  // Both must be set for the channel to activate — see ECOMMERCE_SETUP.md.
+  CLICKUP_API_TOKEN: z.string().optional(),
+  CLICKUP_LIST_ID: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
