@@ -2,6 +2,7 @@
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { listOrdersForAdmin, type OrderStatus } from '../../../modules/orders';
 import { getPaymentsByOrderIds } from '../../../modules/payments';
+import { listProductsForAdmin } from '../../../modules/products';
 
 const STATUSES: OrderStatus[] = [
   'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled', 'refunded',
@@ -13,6 +14,7 @@ const search = Astro.url.searchParams.get('q') ?? '';
 
 const { orders, total } = await listOrdersForAdmin({ status, search: search || undefined, limit: 50 });
 const paymentsByOrderId = await getPaymentsByOrderIds(orders.map((o) => o.id));
+const sellableProducts = (await listProductsForAdmin()).filter((p) => p.is_active);
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: 'Chờ thanh toán',
@@ -27,6 +29,44 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 
 <AdminLayout title="be-wine admin — đơn hàng">
   <h1 style="font-size: 20px; margin: 0 0 16px;">Đơn hàng ({total})</h1>
+
+  <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+    <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">
+      Tạo đơn thủ công (khách mua qua sales/ngoài website)
+    </h2>
+    <form id="manual-order-form">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px;">
+        <input name="fullName" placeholder="Tên khách hàng" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+        <input name="phone" placeholder="Số điện thoại" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+        <input name="addressLine" placeholder="Địa chỉ" value="Bán trực tiếp" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+        <input name="city" placeholder="Tỉnh/thành" value="Hà Nội" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+      </div>
+      <input name="note" placeholder="Ghi chú (vd: người bán, kênh bán qua Zalo/điện thoại...)" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 12px; box-sizing: border-box;" />
+
+      <div id="manual-order-items">
+        {[0, 1, 2].map(() => (
+          <div class="manual-order-item-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <select class="manual-order-product" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+              <option value="">— Chọn sản phẩm —</option>
+              {sellableProducts.map((p) => (
+                <option value={p.id}>{p.name_vn} — {p.price_vnd.toLocaleString('vi-VN')}đ</option>
+              ))}
+            </select>
+            <input type="number" class="manual-order-qty" min="1" placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+          </div>
+        ))}
+      </div>
+      <button type="button" id="manual-order-add-row" style="background: #f0f0f0; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-weight: 700; cursor: pointer; margin-bottom: 12px;">
+        + Thêm sản phẩm
+      </button>
+      <div>
+        <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px 20px; font-weight: 700; cursor: pointer;">
+          Tạo đơn (đã thanh toán)
+        </button>
+        <span id="manual-order-error" hidden style="color: #A71E22; margin-left: 12px;"></span>
+      </div>
+    </form>
+  </div>
 
   <form method="get" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
     <select name="status" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
@@ -62,7 +102,10 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
       <tbody>
         {orders.map((order) => {
           const payment = paymentsByOrderId.get(order.id);
-          const paymentLabel = payment?.provider === 'manual' ? 'COD' : payment?.provider === 'vietqr_static' ? 'QR' : (payment?.provider ?? '—');
+          const paymentLabel =
+            order.channel === 'offline'
+              ? 'Bán trực tiếp'
+              : payment?.provider === 'manual' ? 'COD' : payment?.provider === 'vietqr_static' ? 'QR' : (payment?.provider ?? '—');
           return (
             <tr style="border-bottom: 1px solid #f0f0f0;">
               <td style="padding: 10px;">
@@ -83,3 +126,66 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
     </table>
   </div>
 </AdminLayout>
+
+<script>
+  const form = document.getElementById('manual-order-form') as HTMLFormElement;
+  const itemsContainer = document.getElementById('manual-order-items')!;
+  const addRowBtn = document.getElementById('manual-order-add-row')!;
+  const errorEl = document.getElementById('manual-order-error')!;
+
+  addRowBtn.addEventListener('click', () => {
+    const firstRow = itemsContainer.querySelector('.manual-order-item-row') as HTMLElement;
+    const clone = firstRow.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('select, input').forEach((el) => {
+      (el as HTMLInputElement | HTMLSelectElement).value = '';
+    });
+    itemsContainer.appendChild(clone);
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.hidden = true;
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    submitBtn.disabled = true;
+
+    const fd = new FormData(form);
+    const items = Array.from(itemsContainer.querySelectorAll('.manual-order-item-row'))
+      .map((row) => {
+        const productId = (row.querySelector('.manual-order-product') as HTMLSelectElement).value;
+        const quantity = parseInt((row.querySelector('.manual-order-qty') as HTMLInputElement).value || '0', 10);
+        return { productId, quantity };
+      })
+      .filter((item) => item.productId && item.quantity > 0);
+
+    if (items.length === 0) {
+      errorEl.textContent = 'Chọn ít nhất 1 sản phẩm và số lượng.';
+      errorEl.hidden = false;
+      submitBtn.disabled = false;
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/orders/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer: {
+            fullName: fd.get('fullName'),
+            phone: fd.get('phone'),
+            addressLine: fd.get('addressLine'),
+            city: fd.get('city'),
+            note: fd.get('note') || undefined,
+          },
+          items,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra, vui lòng thử lại.');
+      window.location.href = `/admin/orders/${data.orderReference}`;
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : 'Có lỗi xảy ra, vui lòng thử lại.';
+      errorEl.hidden = false;
+      submitBtn.disabled = false;
+    }
+  });
+</script>

@@ -5,7 +5,7 @@ export type NotificationEvent =
       customerName: string;
       customerPhone: string;
       totalVnd: number;
-      paymentMethod: "vietqr" | "cod";
+      paymentMethod: "vietqr" | "cod" | "offline";
     }
   | { type: "order.paid"; orderReference: string; totalVnd: number }
   | { type: "order.payment_mismatched"; orderReference: string; expectedVnd: number; receivedVnd: number }

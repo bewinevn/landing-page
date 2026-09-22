@@ -76,14 +76,17 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
 
     const reference = await generateUniqueReference();
     const env = getEnv();
-    // COD isn't waiting on a bank transfer, so it gets no expiry — the
-    // stale-order sweep only cancels orders with a non-null expires_at.
+    // Only vietqr waits on a bank transfer and needs an expiry (the
+    // stale-order sweep only cancels orders with a non-null expires_at).
+    // COD and offline sales are both "already settled" from the payment
+    // provider's point of view — nothing to wait on.
     const expiresAt =
-      input.paymentMethod === "cod" ? null : new Date(Date.now() + env.ORDER_PAYMENT_WINDOW_MINUTES * 60_000);
+      input.paymentMethod === "vietqr" ? new Date(Date.now() + env.ORDER_PAYMENT_WINDOW_MINUTES * 60_000) : null;
 
     const subtotalVnd = lineItems.reduce((sum, li) => sum + li.lineTotalVnd, 0);
-    // COD orders carry an extra carrier fee, collected together with the
-    // product total on delivery; bank-transfer orders have no such fee.
+    // Only COD carries the carrier's collect-on-delivery fee; an offline
+    // sale has no shipper involved, so it's priced the same as a normal
+    // bank-transfer order.
     const codFeeVnd = input.paymentMethod === "cod" ? COD_FEE_VND : 0;
     const totalVnd = subtotalVnd + codFeeVnd;
 
@@ -101,6 +104,7 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       delivery_note: input.customer.note ?? null,
       locale: input.locale,
       expires_at: expiresAt ? expiresAt.toISOString() : null,
+      channel: input.channel ?? "online",
     });
 
     const items = await orderRepository.insertOrderItems(
@@ -114,18 +118,21 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       })),
     );
 
+    // cod and offline both skip the QR payment provider (no bank transfer
+    // to wait on); createCodPaymentForOrder just records a "manual"
+    // provider payment row for either case despite its name.
     const paymentRow =
-      input.paymentMethod === "cod"
-        ? await createCodPaymentForOrder({
-            orderId: order.id,
-            orderReference: order.reference,
-            amountVnd: order.total_vnd,
-          })
-        : await createPaymentForOrder({
+      input.paymentMethod === "vietqr"
+        ? await createPaymentForOrder({
             orderId: order.id,
             orderReference: order.reference,
             amountVnd: order.total_vnd,
             expiresAt: expiresAt!,
+          })
+        : await createCodPaymentForOrder({
+            orderId: order.id,
+            orderReference: order.reference,
+            amountVnd: order.total_vnd,
           });
 
     await emit({

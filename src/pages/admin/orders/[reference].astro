@@ -34,7 +34,8 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 const nextStatuses = ORDER_TRANSITIONS[order.status].filter(
   (s) => s !== 'cancelled' && s !== 'refunded' && s !== 'paid' && s !== 'processing',
 );
-const isCod = payment.provider === 'manual';
+const paymentMethodLabel =
+  order.channel === 'offline' ? 'Bán trực tiếp' : payment.provider === 'manual' ? 'COD' : 'Chuyển khoản QR';
 ---
 
 <AdminLayout title={`be-wine admin — đơn ${order.reference}`}>
@@ -43,7 +44,7 @@ const isCod = payment.provider === 'manual';
   <h1 style="font-size: 22px; margin: 12px 0 4px;">{order.reference}</h1>
   <p style="margin: 0 0 20px; color: #666;">
     Trạng thái: <strong id="current-status">{STATUS_LABELS[order.status]}</strong>
-    &middot; Thanh toán: <strong>{isCod ? 'COD' : 'Chuyển khoản QR'}</strong> ({payment.status})
+    &middot; Thanh toán: <strong>{paymentMethodLabel}</strong> ({payment.status})
   </p>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">

@@ -14,7 +14,8 @@ function formatVnd(amount: number): string {
 function renderMessage(event: NotificationEvent): string | null {
   switch (event.type) {
     case "order.created": {
-      const methodLabel = event.paymentMethod === "cod" ? "COD" : "Chuyển khoản QR";
+      const methodLabel =
+        event.paymentMethod === "offline" ? "Bán trực tiếp" : event.paymentMethod === "cod" ? "COD" : "Chuyển khoản QR";
       return (
         `🆕 <b>Đơn hàng mới</b> ${event.orderReference}\n` +
         `Khách: ${event.customerName} (${event.customerPhone})\n` +

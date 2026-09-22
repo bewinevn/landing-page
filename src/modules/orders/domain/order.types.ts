@@ -26,6 +26,8 @@ export interface OrderRow {
   locale: Locale;
   expires_at: string | null;
   created_at: string;
+  /** 'offline' = entered by admin for a sale made outside the website (in person, by phone, ...). */
+  channel: "online" | "offline";
 }
 
 export interface OrderItemRow {
@@ -61,5 +63,10 @@ export interface CheckoutInput {
   };
   items: CheckoutItemInput[];
   locale: Locale;
-  paymentMethod: "vietqr" | "cod";
+  // "offline" is never accepted from the public checkout API (its zod
+  // schema only allows vietqr/cod) — it's only ever set internally by the
+  // admin manual-order endpoint, alongside channel: "offline".
+  paymentMethod: "vietqr" | "cod" | "offline";
+  /** Defaults to "online" (the public checkout) when omitted. */
+  channel?: "online" | "offline";
 }
