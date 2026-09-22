@@ -104,12 +104,13 @@ export async function updateStatus(orderId: string, status: OrderStatus): Promis
 export interface SalesOrderRow {
   id: string;
   total_vnd: number;
+  subtotal_vnd: number;
 }
 
 /** Order volume/revenue is small enough at this stage to aggregate in-process rather than via SQL. */
 export async function findOrdersByStatuses(statuses: OrderStatus[]): Promise<SalesOrderRow[]> {
   const supabase = getSupabaseServerClient();
-  const { data, error } = await supabase.from("orders").select("id, total_vnd").in("status", statuses);
+  const { data, error } = await supabase.from("orders").select("id, total_vnd, subtotal_vnd").in("status", statuses);
   if (error) throw new Error(`findOrdersByStatuses failed: ${error.message}`);
   return data as SalesOrderRow[];
 }
