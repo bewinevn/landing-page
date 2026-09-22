@@ -14,23 +14,12 @@ const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
 const zinfandel = products.find((p) => p.slug === 'zinfandel');
 const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
 
-// Quantity tiers for a real wine (Petite Sirah): buying N cans gifts N
-// cans total, split between Sauvignon Blanc and Zinfandel (they aren't
-// sold on their own). The gift is priced at 0đ but still reserves real
-// stock (unitPriceOverrideVnd, not isGift), since it draws down real
-// SB/ZL inventory. Split is as even as possible; the odd tier (3) rounds
-// the extra can to Sauvignon Blanc.
-const QUANTITY_TIERS = [3, 6, 12, 24].map((qty) => {
-  const sbQty = Math.ceil(qty / 2);
-  const zlQty = Math.floor(qty / 2);
-  const bonus = [
-    { slug: 'sauvignon-blanc', name: sauvignonBlanc?.name ?? 'Sauvignon Blanc', qty: sbQty },
-    { slug: 'zinfandel', name: zinfandel?.name ?? 'Zinfandel', qty: zlQty },
-  ];
-  const bonusFeasible =
-    (sauvignonBlanc?.availableQty ?? 0) >= sbQty && (zinfandel?.availableQty ?? 0) >= zlQty;
-  return { qty, bonus, bonusFeasible };
-});
+// Quantity tiers for Petite Sirah: buying N cans gifts N more cans of the
+// same wine (mua N tặng N). The gift is priced at 0đ but still reserves
+// real stock (unitPriceOverrideVnd, not isGift) — each tier consumes
+// 2×qty cans total (bought + gifted), which the availability check in
+// product-configurator.ts accounts for.
+const QUANTITY_TIERS = [3, 6, 12, 24];
 
 // Combo trải nghiệm: a 4th "wine type" in the picker (not a real product)
 // — a fixed 2 Petite Sirah + 2 Sauvignon Blanc + 2 Zinfandel per combo,
@@ -57,10 +46,10 @@ const maxComboQty = Math.min(
     opacity: 0.5;
   }
 
-  /* Combo picker button: border + text blend the 3 wines' own colors
-     (Petite Sirah red, Sauvignon Blanc green, Zinfandel magenta) when
-     selected, instead of the plain single-color state other wine
-     buttons use — it represents all three at once. */
+  /* Combo picker button: border blends the 3 wines' own colors (Petite
+     Sirah red, Sauvignon Blanc green, Zinfandel magenta) when selected,
+     instead of the plain single-color border other wine buttons use —
+     it represents all three at once. Text stays the normal brand red. */
   .combo-picker-btn[data-selected="true"] {
     border-color: transparent;
     background-image:
@@ -68,12 +57,6 @@ const maxComboQty = Math.min(
       linear-gradient(90deg, #A71E22, #3CAA44, #9C2A4C);
     background-origin: border-box;
     background-clip: padding-box, border-box;
-  }
-  .combo-picker-btn[data-selected="true"] .combo-picker-label {
-    background-image: linear-gradient(90deg, #A71E22, #3CAA44, #9C2A4C);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
   }
 </style>
 
@@ -99,7 +82,44 @@ const maxComboQty = Math.min(
         <div>
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.wineType')}</p>
           <div class="flex flex-wrap gap-2">
-            {products.map((product) => (
+            {petiteSirah && (
+              <button
+                type="button"
+                data-wine-option
+                data-product-id={petiteSirah.id}
+                data-product-slug={petiteSirah.slug}
+                data-product-name={petiteSirah.name}
+                data-product-image={petiteSirah.imageUrl ?? ''}
+                data-unit-price={petiteSirah.effectivePriceVnd}
+                data-available-qty={petiteSirah.availableQty}
+                data-unit-suffix={t('product.perCan')}
+                disabled={petiteSirah.isComingSoon}
+                class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                data-selected={petiteSirah.id === defaultProduct?.id ? 'true' : 'false'}
+              >
+                {petiteSirah.name}
+              </button>
+            )}
+            <button
+              type="button"
+              data-wine-option
+              data-combo="true"
+              data-product-slug="combo"
+              data-product-name={t('product.comboName')}
+              data-product-image="/images/products/combo.webp"
+              data-unit-price={COMBO_PRICE_VND}
+              data-available-qty={maxComboQty}
+              data-unit-suffix={t('product.comboPerUnit')}
+              data-combo-ps-id={petiteSirah?.id ?? ''}
+              data-combo-sb-id={sauvignonBlanc?.id ?? ''}
+              data-combo-zl-id={zinfandel?.id ?? ''}
+              disabled={maxComboQty === 0}
+              class="combo-picker-btn px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:text-[#A71E22]"
+              data-selected="false"
+            >
+              {t('product.comboName')}
+            </button>
+            {products.filter((product) => product.slug !== 'petite-sirah').map((product) => (
               <button
                 type="button"
                 data-wine-option
@@ -117,25 +137,6 @@ const maxComboQty = Math.min(
                 {product.name}{product.isComingSoon ? ` (${t('winelist.comingsoon')})` : ''}
               </button>
             ))}
-            <button
-              type="button"
-              data-wine-option
-              data-combo="true"
-              data-product-slug="combo"
-              data-product-name={t('product.comboName')}
-              data-product-image="/images/products/combo.webp"
-              data-unit-price={COMBO_PRICE_VND}
-              data-available-qty={maxComboQty}
-              data-unit-suffix={t('product.comboPerUnit')}
-              data-combo-ps-id={petiteSirah?.id ?? ''}
-              data-combo-sb-id={sauvignonBlanc?.id ?? ''}
-              data-combo-zl-id={zinfandel?.id ?? ''}
-              disabled={maxComboQty === 0}
-              class="combo-picker-btn px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed"
-              data-selected="false"
-            >
-              <span class="combo-picker-label">{t('product.comboName')}</span>
-            </button>
           </div>
         </div>
 
@@ -144,40 +145,29 @@ const maxComboQty = Math.min(
 
           <div id="can-qty-section">
             <div class="grid grid-cols-4 gap-2">
-              {QUANTITY_TIERS.map((tier, i) => (
+              {QUANTITY_TIERS.map((qty, i) => (
                 <button
                   type="button"
                   data-qty-option
-                  data-qty={tier.qty}
-                  data-bonus={JSON.stringify(tier.bonus)}
-                  data-bonus-feasible={tier.bonusFeasible ? 'true' : 'false'}
+                  data-qty={qty}
                   data-selected={i === 0 ? 'true' : 'false'}
                   class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 >
-                  {`${tier.qty} ${t('product.canUnit')}`}
+                  {`${qty} ${t('product.canUnit')}`}
                 </button>
               ))}
             </div>
             <div class="grid grid-cols-4 gap-2 mt-2">
-              {QUANTITY_TIERS.map((tier, i) => (
+              {QUANTITY_TIERS.map((qty, i) => (
                 <span
                   data-gift-tag
-                  data-qty={tier.qty}
+                  data-qty={qty}
                   data-selected={i === 0 ? 'true' : 'false'}
                   class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center leading-snug data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 >
-                  {`${t('product.giftPrefix')} ${tier.qty} ${t('product.canUnit')}`}
+                  {`${t('product.giftPrefix')} ${qty} ${t('product.canUnit')}`}
                 </span>
               ))}
-            </div>
-            <div
-              id="bonus-gift-box"
-              hidden
-              data-can-unit={t('product.canUnit')}
-              class="mt-2 rounded-lg border-2 border-dashed border-[#A71E22] bg-[#FBEDEC] px-4 py-3"
-            >
-              <p class="m-0 text-xs font-bold uppercase tracking-wide text-[#A71E22]">{t('product.bonusGiftTitle')}</p>
-              <ul id="bonus-gift-list" class="m-0 mt-1 pl-4 text-sm text-[#A71E22] font-medium"></ul>
             </div>
           </div>
 

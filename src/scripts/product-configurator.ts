@@ -1,11 +1,5 @@
 import { setCart, type CartLine } from "./cart-client";
 
-interface BonusItem {
-  slug: string;
-  name: string;
-  qty: number;
-}
-
 // Kept in sync with COMBO_PS_UNIT_VND / COMBO_SB_UNIT_VND / COMBO_ZL_UNIT_VND
 // in src/pages/products/index.astro — what the server actually prices each
 // combo line at via unitPriceOverrideVnd (see order.service.ts).
@@ -13,6 +7,9 @@ const COMBO_PS_UNIT_VND = 50_000;
 const COMBO_SB_UNIT_VND = 45_000;
 const COMBO_ZL_UNIT_VND = 30_000;
 const CANS_PER_WINE_PER_COMBO = 2;
+
+const COMBO_IMAGE_CLASSES = ["w-full", "h-full", "object-cover"];
+const NORMAL_IMAGE_CLASSES = ["max-h-full", "w-auto", "object-contain"];
 
 function formatVnd(amount: number): string {
   return amount.toLocaleString("vi-VN");
@@ -22,8 +19,6 @@ function init() {
   const wineOptions = document.querySelectorAll<HTMLButtonElement>("[data-wine-option]");
   const qtyOptions = document.querySelectorAll<HTMLButtonElement>("[data-qty-option]");
   const giftTags = document.querySelectorAll<HTMLElement>("[data-gift-tag]");
-  const bonusGiftBox = document.getElementById("bonus-gift-box");
-  const bonusGiftList = document.getElementById("bonus-gift-list");
   const canQtySection = document.getElementById("can-qty-section");
   const comboQtySection = document.getElementById("combo-qty-section");
   const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
@@ -33,13 +28,6 @@ function init() {
   const totalEl = document.getElementById("configurator-total");
   const checkoutBtn = document.getElementById("configurator-checkout") as HTMLButtonElement | null;
   if (!totalEl || !checkoutBtn) return;
-
-  // Bonus-wine product ids are looked up by slug so gifts work regardless
-  // of which wine is currently selected as the paid item.
-  const slugToProductId = new Map<string, string>();
-  wineOptions.forEach((btn) => {
-    if (btn.dataset.productSlug) slugToProductId.set(btn.dataset.productSlug, btn.dataset.productId!);
-  });
 
   let selectedWine = Array.from(wineOptions).find((b) => b.dataset.selected === "true") ?? wineOptions[0];
   let selectedQty = parseInt(
@@ -62,18 +50,11 @@ function init() {
     return parseInt(selectedWine?.dataset.availableQty ?? "0", 10);
   }
 
-  function currentBonus(): BonusItem[] {
-    const btn = Array.from(qtyOptions).find((b) => parseInt(b.dataset.qty ?? "0", 10) === selectedQty);
-    try {
-      return JSON.parse(btn?.dataset.bonus ?? "[]");
-    } catch {
-      return [];
-    }
-  }
-
-  function currentBonusFeasible(): boolean {
-    const btn = Array.from(qtyOptions).find((b) => parseInt(b.dataset.qty ?? "0", 10) === selectedQty);
-    return btn?.dataset.bonusFeasible !== "false";
+  // A can tier of qty N needs 2N cans in stock (N bought + N gifted, same
+  // wine); a combo tier of qty N just needs N (currentAvailableQty()
+  // already reflects max combos, not cans).
+  function neededQtyFor(qty: number): number {
+    return isCombo() ? qty : qty * 2;
   }
 
   function render() {
@@ -87,7 +68,7 @@ function init() {
     qtyOptions.forEach((btn) => {
       const qty = parseInt(btn.dataset.qty ?? "0", 10);
       btn.dataset.selected = qty === selectedQty ? "true" : "false";
-      btn.disabled = qty > currentAvailableQty() || btn.dataset.bonusFeasible === "false";
+      btn.disabled = neededQtyFor(qty) > currentAvailableQty();
     });
 
     if (!combo) {
@@ -95,24 +76,21 @@ function init() {
         const qty = parseInt(tag.dataset.qty ?? "0", 10);
         tag.dataset.selected = qty === selectedQty ? "true" : "false";
       });
-
-      const bonus = currentBonus();
-      if (bonusGiftBox && bonusGiftList) {
-        const canUnit = bonusGiftBox.dataset.canUnit ?? "";
-        bonusGiftBox.hidden = bonus.length === 0;
-        bonusGiftList.innerHTML = bonus.map((b) => `<li>${b.qty} ${canUnit} ${b.name}</li>`).join("");
-      }
-    } else if (bonusGiftBox) {
-      bonusGiftBox.hidden = true;
     }
 
-    checkoutBtn!.disabled = !selectedWine || selectedQty < 1 || selectedQty > currentAvailableQty();
+    checkoutBtn!.disabled = !selectedWine || selectedQty < 1 || neededQtyFor(selectedQty) > currentAvailableQty();
   }
 
   function selectWine(btn: HTMLButtonElement) {
     selectedWine = btn;
     wineOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
-    if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
+    if (imageEl) {
+      imageEl.src = btn.dataset.productImage ?? "";
+      const addClasses = btn.dataset.combo === "true" ? COMBO_IMAGE_CLASSES : NORMAL_IMAGE_CLASSES;
+      const removeClasses = btn.dataset.combo === "true" ? NORMAL_IMAGE_CLASSES : COMBO_IMAGE_CLASSES;
+      imageEl.classList.remove(...removeClasses);
+      imageEl.classList.add(...addClasses);
+    }
     if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
     if (unitPriceEl) unitPriceEl.textContent = formatVnd(currentUnitPrice());
     if (unitSuffixEl) unitSuffixEl.textContent = btn.dataset.unitSuffix ?? "";
@@ -157,17 +135,12 @@ function init() {
     }
 
     const productId = selectedWine.dataset.productId!;
-    const lines: CartLine[] = [{ productId, quantity: selectedQty }];
-
-    // The gift is Sauvignon Blanc + Zinfandel (not more of the wine being
-    // bought) — priced at 0đ via unitPriceOverrideVnd, which still reserves
-    // real stock, unlike isGift (these draw down actual SB/ZL inventory).
-    for (const bonus of currentBonus()) {
-      const bonusProductId = slugToProductId.get(bonus.slug);
-      if (bonusProductId && bonus.qty > 0) {
-        lines.push({ productId: bonusProductId, quantity: bonus.qty, unitPriceOverrideVnd: 0 });
-      }
-    }
+    // Mua N tặng N (same wine) — priced at 0đ via unitPriceOverrideVnd,
+    // which still reserves real stock, unlike isGift.
+    const lines: CartLine[] = [
+      { productId, quantity: selectedQty },
+      { productId, quantity: selectedQty, unitPriceOverrideVnd: 0 },
+    ];
 
     setCart(lines);
     window.location.href = "/checkout";
