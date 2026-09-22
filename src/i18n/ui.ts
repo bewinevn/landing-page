@@ -40,9 +40,7 @@ export const languages = {
         'product.wineType': 'loại rượu',
         'product.packageLabel': 'số lượng',
         'product.canUnit': 'lon',
-        'product.giftPrefix': 'tặng',
         'product.perCan': '/ lon',
-        'product.bonusGiftTitle': 'tặng kèm thêm',
 
         'cart.title': 'Giỏ hàng của bạn',
         'cart.empty': 'Giỏ hàng đang trống.',
@@ -120,9 +118,7 @@ export const languages = {
       'product.wineType': 'wine type',
       'product.packageLabel': 'quantity',
       'product.canUnit': 'cans',
-      'product.giftPrefix': 'free',
       'product.perCan': '/ can',
-      'product.bonusGiftTitle': 'plus a bonus gift',
 
       'cart.title': 'Your cart',
       'cart.empty': 'Your cart is empty.',
