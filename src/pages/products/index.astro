@@ -56,6 +56,25 @@ const maxComboQty = Math.min(
     background-position: top left;
     opacity: 0.5;
   }
+
+  /* Combo picker button: border + text blend the 3 wines' own colors
+     (Petite Sirah red, Sauvignon Blanc green, Zinfandel magenta) when
+     selected, instead of the plain single-color state other wine
+     buttons use — it represents all three at once. */
+  .combo-picker-btn[data-selected="true"] {
+    border-color: transparent;
+    background-image:
+      linear-gradient(#fff, #fff),
+      linear-gradient(90deg, #A71E22, #3CAA44, #9C2A4C);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  .combo-picker-btn[data-selected="true"] .combo-picker-label {
+    background-image: linear-gradient(90deg, #A71E22, #3CAA44, #9C2A4C);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
 </style>
 
 <Layout title="be-wine">
@@ -104,7 +123,7 @@ const maxComboQty = Math.min(
               data-combo="true"
               data-product-slug="combo"
               data-product-name={t('product.comboName')}
-              data-product-image="/images/products/combo.svg"
+              data-product-image="/images/products/combo.webp"
               data-unit-price={COMBO_PRICE_VND}
               data-available-qty={maxComboQty}
               data-unit-suffix={t('product.comboPerUnit')}
@@ -112,10 +131,10 @@ const maxComboQty = Math.min(
               data-combo-sb-id={sauvignonBlanc?.id ?? ''}
               data-combo-zl-id={zinfandel?.id ?? ''}
               disabled={maxComboQty === 0}
-              class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+              class="combo-picker-btn px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed"
               data-selected="false"
             >
-              {t('product.comboName')}
+              <span class="combo-picker-label">{t('product.comboName')}</span>
             </button>
           </div>
         </div>
