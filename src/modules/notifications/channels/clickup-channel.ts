@@ -90,6 +90,10 @@ export const clickupChannel: NotificationChannel = {
           name: `Đơn ${event.orderReference} — ${event.customerName}`,
           description,
           assignees: env.CLICKUP_ASSIGNEE_ID ? [env.CLICKUP_ASSIGNEE_ID] : undefined,
+          // Without this, ClickUp's API defaults to creating the task
+          // silently (no push/email notification to the assignee) —
+          // the whole point of this channel is to alert staff.
+          notify_all: true,
         }),
       });
 
