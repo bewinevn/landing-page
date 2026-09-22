@@ -7,8 +7,6 @@ export interface WarehouseRow {
   id: string;
   code: string;
   name: string;
-  /** True for the write-off bucket that records stock already given away — see write_off_gift_stock. */
-  is_gift_bucket: boolean;
 }
 
 export interface ProductStockRow {

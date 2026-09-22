@@ -28,12 +28,6 @@ function translateStockError(err: unknown): never {
   if (message.includes("order_not_paid")) {
     throw new ValidationError("Chỉ có thể xuất kho cho đơn đã thanh toán.");
   }
-  if (message.includes("gift_warehouse_not_found")) {
-    throw new ValidationError("Chưa có kho ghi nhận hàng tặng.");
-  }
-  if (message.includes("cannot_write_off_from_gift_warehouse")) {
-    throw new ValidationError("Không thể ghi nhận hàng tặng từ chính kho hàng đã tặng.");
-  }
   throw err;
 }
 
@@ -61,15 +55,6 @@ export async function restockProduct(productId: string, warehouseId: string, qua
 export async function fulfillOrderFromWarehouse(orderId: string, warehouseId: string): Promise<void> {
   try {
     await warehouseRepository.fulfillOrderFromWarehouse(orderId, warehouseId);
-  } catch (err) {
-    translateStockError(err);
-  }
-}
-
-/** Records stock given away as gifts/samples: moves it into the gift bucket and shrinks the sellable total. */
-export async function writeOffGiftStock(productId: string, fromWarehouseId: string, quantity: number): Promise<void> {
-  try {
-    await warehouseRepository.writeOffGiftStock(productId, fromWarehouseId, quantity);
   } catch (err) {
     translateStockError(err);
   }

@@ -45,11 +45,3 @@ export async function fulfillOrderFromWarehouse(orderId: string, warehouseId: st
     p_warehouse_id: warehouseId,
   });
 }
-
-export async function writeOffGiftStock(productId: string, fromWarehouseId: string, quantity: number): Promise<void> {
-  await callRpc<void>("write_off_gift_stock", {
-    p_product_id: productId,
-    p_from_warehouse_id: fromWarehouseId,
-    p_quantity: quantity,
-  });
-}

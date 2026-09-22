@@ -9,11 +9,6 @@ const [products, warehouses, stockRows] = await Promise.all([
   listAllProductStock(),
 ]);
 
-// The gift write-off bucket isn't a place to restock into, transfer
-// to/from normally, or ship an order from — it only ever receives stock
-// via "Ghi nhận hàng tặng" below.
-const realWarehouses = warehouses.filter((w) => !w.is_gift_bucket);
-
 // stockByProduct[productId][warehouseId] = quantity, for O(1) cell lookups below.
 const stockByProduct = new Map<string, Map<string, number>>();
 for (const row of stockRows) {
@@ -71,7 +66,7 @@ for (const row of stockRows) {
     </table>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div style="background: white; border-radius: 8px; padding: 16px;">
       <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Nhập kho</h2>
       <form id="restock-form" style="display: flex; flex-direction: column; gap: 10px;">
@@ -79,7 +74,7 @@ for (const row of stockRows) {
           {products.map((p) => <option value={p.id}>{p.name_vn} ({p.abbreviation})</option>)}
         </select>
         <select name="warehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
-          {realWarehouses.map((w) => <option value={w.id}>{w.name}</option>)}
+          {warehouses.map((w) => <option value={w.id}>{w.name}</option>)}
         </select>
         <input name="quantity" type="number" min="1" required placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
         <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;">
@@ -95,31 +90,14 @@ for (const row of stockRows) {
           {products.map((p) => <option value={p.id}>{p.name_vn} ({p.abbreviation})</option>)}
         </select>
         <select name="fromWarehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
-          {realWarehouses.map((w) => <option value={w.id}>Từ: {w.name}</option>)}
+          {warehouses.map((w) => <option value={w.id}>Từ: {w.name}</option>)}
         </select>
         <select name="toWarehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
-          {realWarehouses.map((w) => <option value={w.id}>Đến: {w.name}</option>)}
+          {warehouses.map((w) => <option value={w.id}>Đến: {w.name}</option>)}
         </select>
         <input name="quantity" type="number" min="1" required placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
         <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;">
           Chuyển kho
-        </button>
-      </form>
-    </div>
-
-    <div style="background: white; border-radius: 8px; padding: 16px;">
-      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Ghi nhận hàng tặng</h2>
-      <p style="margin: 0 0 10px; font-size: 12px; color: #999;">Trừ thẳng khỏi tổng tồn kho (không phải chuyển kho thường) — dùng khi cho/tặng hàng đi.</p>
-      <form id="gift-writeoff-form" style="display: flex; flex-direction: column; gap: 10px;">
-        <select name="productId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
-          {products.map((p) => <option value={p.id}>{p.name_vn} ({p.abbreviation})</option>)}
-        </select>
-        <select name="fromWarehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
-          {realWarehouses.map((w) => <option value={w.id}>Từ: {w.name}</option>)}
-        </select>
-        <input name="quantity" type="number" min="1" required placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
-        <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;">
-          Ghi nhận hàng tặng
         </button>
       </form>
     </div>
@@ -207,31 +185,6 @@ for (const row of stockRows) {
           productId: fd.get('productId'),
           fromWarehouseId: fd.get('fromWarehouseId'),
           toWarehouseId: fd.get('toWarehouseId'),
-          quantity: Number(fd.get('quantity')),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra.');
-      window.location.reload();
-    } catch (err) {
-      showError(err instanceof Error ? err.message : 'Có lỗi xảy ra.');
-    }
-  });
-
-  document.getElementById('gift-writeoff-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget as HTMLFormElement;
-    const fd = new FormData(form);
-    errorEl.hidden = true;
-    successEl.hidden = true;
-
-    try {
-      const res = await fetch('/api/admin/inventory/gift-writeoff', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId: fd.get('productId'),
-          fromWarehouseId: fd.get('fromWarehouseId'),
           quantity: Number(fd.get('quantity')),
         }),
       });

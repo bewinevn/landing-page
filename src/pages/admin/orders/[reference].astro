@@ -14,9 +14,7 @@ try {
   return Astro.redirect('/admin/orders');
 }
 
-// Excludes the gift write-off bucket — an order is never shipped from
-// stock that's already been given away.
-const warehouses = (await listWarehouses()).filter((w) => !w.is_gift_bucket);
+const warehouses = await listWarehouses();
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: 'Chờ thanh toán',

@@ -5,6 +5,5 @@ export {
   transferStock,
   restockProduct,
   fulfillOrderFromWarehouse,
-  writeOffGiftStock,
 } from "./domain/warehouse.service";
 export type { ReservationRequest, WarehouseRow, ProductStockRow } from "./domain/inventory.types";
