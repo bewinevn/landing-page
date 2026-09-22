@@ -7,12 +7,6 @@ interface Props {
   subtitle?: string;
   image: string;
   isComingSoon?: boolean;
-  // e-commerce affordance (optional — omit to render exactly as before)
-  productId?: string;
-  priceVnd?: number;
-  availableQty?: number;
-  showAddToCart?: boolean;
-  showBuyNow?: boolean;
 }
 
 const {
@@ -21,18 +15,12 @@ const {
   subtitle,
   image,
   isComingSoon = false,
-  productId,
-  priceVnd,
-  availableQty,
-  showAddToCart = false,
-  showBuyNow = false,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
-const outOfStock = showAddToCart && (availableQty ?? 0) <= 0;
 ---
 
 <style>
@@ -82,51 +70,11 @@ const outOfStock = showAddToCart && (availableQty ?? 0) <= 0;
     </p>
   </div>
 
-  {!isComingSoon && !showAddToCart && (
+  {!isComingSoon && (
     <div class="relative flex min-h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db] px-2 py-1.5">
       <p class="m-0 text-[#f0f0f0] text-xs md:text-sm text-center leading-snug">
         {t('winelist.disclaimerPrefix')} <span class="underline">{t('winelist.disclaimerLimited')}</span> {t('winelist.disclaimerMiddle')} <span class="underline">{t('winelist.disclaimerArea')}</span>
       </p>
-    </div>
-  )}
-
-  {showAddToCart && !isComingSoon && productId && priceVnd != null && (
-    <div class="relative flex flex-col gap-3 w-full">
-      <div class="flex items-center justify-between gap-3 w-full">
-        <p class="font-sans font-bold text-[#A71E22] text-xl m-0">{priceVnd.toLocaleString('vi-VN')} ₫</p>
-        {showBuyNow && !outOfStock && (
-          <input
-            type="number"
-            min="1"
-            max={availableQty ?? undefined}
-            value="1"
-            data-qty-input
-            data-product-id={productId}
-            class="w-16 rounded border border-[#d1d5db] px-2 py-2 text-center text-sm"
-          />
-        )}
-      </div>
-      <div class="flex items-center gap-2 w-full">
-        <button
-          type="button"
-          data-add-to-cart
-          data-product-id={productId}
-          disabled={outOfStock}
-          class="flex-1 inline-flex items-center justify-center rounded bg-[#A71E22] disabled:bg-[#ccc] disabled:cursor-not-allowed text-white font-sans font-bold text-sm px-4 py-2 hover:brightness-110 transition"
-        >
-          {outOfStock ? t('product.outOfStock') : t('product.addToCart')}
-        </button>
-        {showBuyNow && !outOfStock && (
-          <button
-            type="button"
-            data-buy-now
-            data-product-id={productId}
-            class="flex-1 inline-flex items-center justify-center rounded border-2 border-[#A71E22] text-[#A71E22] font-sans font-bold text-sm px-4 py-2 hover:bg-[#A71E22]/10 transition"
-          >
-            {t('product.buyNow')}
-          </button>
-        )}
-      </div>
     </div>
   )}
 </figure>
