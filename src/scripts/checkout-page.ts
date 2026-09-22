@@ -86,7 +86,8 @@ async function renderSummary(): Promise<void> {
   for (const line of cart) {
     const product = byId.get(line.productId);
     if (!product) continue;
-    const lineTotal = line.isGift ? 0 : product.effectivePriceVnd * line.quantity;
+    const unitPrice = line.isGift ? 0 : (line.unitPriceOverrideVnd ?? product.effectivePriceVnd);
+    const lineTotal = unitPrice * line.quantity;
     subtotalVnd += lineTotal;
     const row = document.createElement("div");
     row.className = "flex justify-between text-sm";
@@ -157,7 +158,12 @@ function bindForm(): void {
             city: formData.get("city"),
             note: note || undefined,
           },
-          items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity, isGift: l.isGift ?? false })),
+          items: cart.map((l) => ({
+            productId: l.productId,
+            quantity: l.quantity,
+            isGift: l.isGift ?? false,
+            unitPriceOverrideVnd: l.unitPriceOverrideVnd,
+          })),
           locale: window.__BEWINE_LOCALE__ ?? "vn",
           paymentMethod: formData.get("paymentMethod") || "vietqr",
         }),

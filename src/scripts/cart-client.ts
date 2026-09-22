@@ -12,6 +12,12 @@ export interface CartLine {
   quantity: number;
   /** True for promo gift cans — priced at 0đ and excluded from stock reservation. */
   isGift?: boolean;
+  /**
+   * Forces this line's per-can price instead of the product's own listed
+   * price — used for fixed-price bundles (e.g. the 3-wine combo pack).
+   * Unlike isGift, the line still reserves real stock normally.
+   */
+  unitPriceOverrideVnd?: number;
 }
 
 function readCart(): CartLine[] {

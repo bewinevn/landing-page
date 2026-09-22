@@ -44,7 +44,13 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       throw new ValidationError(`Invalid quantity for product ${item.productId}`);
     }
     // Gift cans are priced at 0đ regardless of the product's real price.
-    const unitPriceVnd = item.isGift ? 0 : effectivePrice(product);
+    // A unitPriceOverrideVnd (e.g. a fixed-price bundle) wins over the
+    // product's own listed price but still reserves real stock below.
+    const unitPriceVnd = item.isGift
+      ? 0
+      : item.unitPriceOverrideVnd !== undefined
+        ? item.unitPriceOverrideVnd
+        : effectivePrice(product);
     return {
       product,
       quantity: item.quantity,

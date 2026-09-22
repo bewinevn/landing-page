@@ -43,6 +43,12 @@ export interface CheckoutItemInput {
   quantity: number;
   /** Promo gift can — server forces unit price to 0 and skips stock reservation. */
   isGift?: boolean;
+  /**
+   * Forces this line's per-can price instead of the product's own listed
+   * price — used for fixed-price bundles. Stock is still reserved
+   * normally (unlike isGift).
+   */
+  unitPriceOverrideVnd?: number;
 }
 
 export interface CheckoutInput {

@@ -18,6 +18,7 @@ const checkoutSchema = z.object({
         productId: z.string().uuid(),
         quantity: z.number().int().positive(),
         isGift: z.boolean().optional(),
+        unitPriceOverrideVnd: z.number().int().nonnegative().optional(),
       }),
     )
     .min(1),

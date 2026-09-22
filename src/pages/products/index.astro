@@ -12,6 +12,22 @@ const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
 
 const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
 const zinfandel = products.find((p) => p.slug === 'zinfandel');
+const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
+
+// Fixed-composition combo: 2 cans each of Petite Sirah / Sauvignon Blanc /
+// Zinfandel for a flat 250,000đ (not the sum of their individual prices —
+// this is what makes Sauvignon Blanc & Zinfandel purchasable at all today,
+// since they're otherwise combo-only and disabled in the picker above).
+const COMBO_PS_UNIT_VND = 50_000;
+const COMBO_SB_UNIT_VND = 45_000;
+const COMBO_ZL_UNIT_VND = 30_000;
+const COMBO_CANS_PER_WINE = 2;
+const COMBO_PRICE_VND = (COMBO_PS_UNIT_VND + COMBO_SB_UNIT_VND + COMBO_ZL_UNIT_VND) * COMBO_CANS_PER_WINE;
+const maxCombos = Math.min(
+  Math.floor((petiteSirah?.availableQty ?? 0) / COMBO_CANS_PER_WINE),
+  Math.floor((sauvignonBlanc?.availableQty ?? 0) / COMBO_CANS_PER_WINE),
+  Math.floor((zinfandel?.availableQty ?? 0) / COMBO_CANS_PER_WINE),
+);
 
 // Quantity tiers and their gift rule. 3/6 just double the same wine;
 // 10/20 add a bonus can each of the two other wines as a teaser combo.
@@ -136,7 +152,52 @@ const QUANTITY_TIERS = [
         </button>
       </div>
     </div>
+
+    <div class="mt-16 rounded-lg border-2 border-dashed border-[#A71E22] bg-[#FBEDEC] p-6 md:p-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <p class="m-0 mb-1 text-xs font-bold uppercase tracking-wide text-[#A71E22]">{t('product.comboBadge')}</p>
+          <h2 class="text-xl md:text-2xl font-bold text-[#86181b] m-0">{t('product.comboTitle')}</h2>
+          <p class="m-0 mt-2 text-sm text-[#666]">{t('product.comboDescription')}</p>
+          <p class="m-0 mt-3 text-xl font-bold text-[#A71E22]">
+            {COMBO_PRICE_VND.toLocaleString('vi-VN')} ₫
+            <span class="text-sm font-normal text-[#666]">{t('product.comboPerUnit')}</span>
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          {maxCombos > 0 ? (
+            <Fragment>
+              <div>
+                <p class="m-0 mb-2 text-sm text-[#666]">{t('product.comboQuantityLabel')}</p>
+                <div class="flex items-center gap-3">
+                  <button type="button" id="combo-qty-minus" class="w-10 h-10 rounded-full border-2 border-[#d1d5db] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed">−</button>
+                  <span id="combo-qty-value" class="w-8 text-center font-bold text-lg">1</span>
+                  <button type="button" id="combo-qty-plus" class="w-10 h-10 rounded-full border-2 border-[#d1d5db] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed">+</button>
+                </div>
+              </div>
+              <p class="font-bold text-[#A71E22] text-xl m-0" id="combo-total"></p>
+              <button
+                type="button"
+                id="combo-checkout"
+                data-ps-id={petiteSirah?.id ?? ''}
+                data-sb-id={sauvignonBlanc?.id ?? ''}
+                data-zl-id={zinfandel?.id ?? ''}
+                data-max-combo={maxCombos}
+                data-combo-price={COMBO_PRICE_VND}
+                class="w-full inline-flex items-center justify-center rounded-full bg-[#A71E22] text-white font-sans font-bold text-base px-8 py-4 hover:brightness-110 transition disabled:bg-[#ccc] disabled:cursor-not-allowed"
+              >
+                {t('product.buyNow')}
+              </button>
+            </Fragment>
+          ) : (
+            <p class="font-bold text-[#A71E22] text-base m-0">{t('product.comboSoldOut')}</p>
+          )}
+        </div>
+      </div>
+    </div>
   </div>
 </Layout>
 
 <script src="../../scripts/product-configurator.ts"></script>
+<script src="../../scripts/combo-configurator.ts"></script>
