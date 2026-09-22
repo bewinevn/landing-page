@@ -87,12 +87,13 @@ async function renderSummary(): Promise<void> {
     const product = byId.get(line.productId);
     if (!product) continue;
     const unitPrice = line.isGift ? 0 : (line.unitPriceOverrideVnd ?? product.effectivePriceVnd);
+    const isFreeLine = line.isGift || unitPrice === 0;
     const lineTotal = unitPrice * line.quantity;
     subtotalVnd += lineTotal;
     const row = document.createElement("div");
     row.className = "flex justify-between text-sm";
     row.innerHTML = `
-      <span class="text-[#666] capitalize">${product.name} &times; ${line.quantity}${line.isGift ? ` <span class="text-xs text-[#A71E22]">(${giftLabel})</span>` : ""}</span>
+      <span class="text-[#666] capitalize">${product.name} &times; ${line.quantity}${isFreeLine ? ` <span class="text-xs text-[#A71E22]">(${giftLabel})</span>` : ""}</span>
       <span class="font-medium text-[#A71E22]">${formatVnd(lineTotal)}</span>
     `;
     linesEl.appendChild(row);

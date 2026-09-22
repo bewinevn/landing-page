@@ -53,6 +53,11 @@ function init() {
     }
   }
 
+  function currentBonusFeasible(): boolean {
+    const btn = Array.from(qtyOptions).find((b) => parseInt(b.dataset.qty ?? "0", 10) === selectedQty);
+    return btn?.dataset.bonusFeasible !== "false";
+  }
+
   function render() {
     const total = currentUnitPrice() * selectedQty;
     totalEl!.textContent = `${formatVnd(total)} ₫`;
@@ -60,7 +65,7 @@ function init() {
     qtyOptions.forEach((btn) => {
       const qty = parseInt(btn.dataset.qty ?? "0", 10);
       btn.dataset.selected = qty === selectedQty ? "true" : "false";
-      btn.disabled = qty > currentAvailableQty();
+      btn.disabled = qty > currentAvailableQty() || btn.dataset.bonusFeasible === "false";
     });
     giftTags.forEach((tag) => {
       const qty = parseInt(tag.dataset.qty ?? "0", 10);
@@ -74,7 +79,7 @@ function init() {
       bonusGiftList.innerHTML = bonus.map((b) => `<li>${b.qty} ${canUnit} ${b.name}</li>`).join("");
     }
 
-    checkoutBtn!.disabled = !selectedWine || selectedQty > currentAvailableQty();
+    checkoutBtn!.disabled = !selectedWine || selectedQty > currentAvailableQty() || !currentBonusFeasible();
   }
 
   function selectWine(btn: HTMLButtonElement) {
@@ -105,14 +110,16 @@ function init() {
     if (!selectedWine) return;
     const productId = selectedWine.dataset.productId!;
 
-    const lines: CartLine[] = [
-      { productId, quantity: selectedQty },
-      { productId, quantity: selectedQty, isGift: true },
-    ];
+    const lines: CartLine[] = [{ productId, quantity: selectedQty }];
 
+    // The gift is Sauvignon Blanc + Zinfandel (not more of the wine being
+    // bought) — priced at 0đ via unitPriceOverrideVnd, which still reserves
+    // real stock, unlike isGift (these draw down actual SB/ZL inventory).
     for (const bonus of currentBonus()) {
       const bonusProductId = slugToProductId.get(bonus.slug);
-      if (bonusProductId) lines.push({ productId: bonusProductId, quantity: bonus.qty, isGift: true });
+      if (bonusProductId && bonus.qty > 0) {
+        lines.push({ productId: bonusProductId, quantity: bonus.qty, unitPriceOverrideVnd: 0 });
+      }
     }
 
     setCart(lines);
