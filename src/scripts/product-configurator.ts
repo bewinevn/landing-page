@@ -8,7 +8,10 @@ const COMBO_SB_UNIT_VND = 45_000;
 const COMBO_ZL_UNIT_VND = 30_000;
 const CANS_PER_WINE_PER_COMBO = 2;
 
-const COMBO_IMAGE_CLASSES = ["w-full", "h-full", "object-cover"];
+// object-top anchors the crop to the top of the image (where the be-wine
+// logo and banner are) instead of the default center, which would cut
+// into it to fit the box's height.
+const COMBO_IMAGE_CLASSES = ["w-full", "h-full", "object-cover", "object-top"];
 const NORMAL_IMAGE_CLASSES = ["max-h-full", "w-auto", "object-contain"];
 
 function formatVnd(amount: number): string {

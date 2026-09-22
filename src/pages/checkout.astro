@@ -29,8 +29,11 @@ const locale = lang === 'en' ? 'en' : 'vn';
         </label>
         <div class="flex flex-col gap-1 text-sm text-[#666]">
           <label for="checkout-city">{t('checkout.city')}</label>
-          <input id="checkout-city" name="city" readonly value={t('checkout.cityFixedValue')} class="border border-[#d1d5db] rounded px-3 py-2 bg-[#f0f0f0] text-[#666] cursor-not-allowed" />
-          <p class="text-xs text-[#999] m-0">{t('checkout.hanoiOnlyNote')}</p>
+          <select id="checkout-city" name="city" required class="border border-[#d1d5db] rounded px-3 py-2 bg-white">
+            <option value={t('checkout.cityHanoi')}>{t('checkout.cityHanoi')}</option>
+            <option value={t('checkout.cityHcm')}>{t('checkout.cityHcm')}</option>
+            <option value={t('checkout.cityDanang')}>{t('checkout.cityDanang')}</option>
+          </select>
         </div>
         <label class="flex flex-col gap-1 text-sm text-[#666]">
           {t('checkout.note')}
@@ -46,17 +49,10 @@ const locale = lang === 'en' ? 'en' : 'vn';
 
         <div class="flex flex-col gap-2">
           <p class="text-sm text-[#666] m-0">{t('checkout.paymentMethod')}</p>
-          <label class="flex items-center gap-2 border border-[#d1d5db] rounded px-3 py-2 cursor-pointer has-[:checked]:border-[#A71E22]">
-            <input type="radio" name="paymentMethod" value="vietqr" checked class="accent-[#A71E22]" />
-            {t('checkout.paymentQr')}
-          </label>
-          <label class="flex items-center gap-2 border border-[#d1d5db] rounded px-3 py-2 cursor-pointer has-[:checked]:border-[#A71E22]">
-            <input type="radio" name="paymentMethod" value="cod" class="accent-[#A71E22]" />
+          <div class="flex items-center gap-2 border border-[#A71E22] rounded px-3 py-2 text-[#A71E22] font-medium">
             {t('checkout.paymentCod')}
-          </label>
-          <div id="checkout-cod-note" class="grid transition-[grid-template-rows] duration-200 ease-out" style="grid-template-rows: 0fr;">
-            <p class="overflow-hidden text-xs text-[#A71E22] m-0">{t('checkout.codFeeNote')}</p>
           </div>
+          <p class="text-xs text-[#A71E22] m-0">{t('checkout.codFeeNote')}</p>
         </div>
 
         <div>

@@ -101,31 +101,15 @@ async function renderSummary(): Promise<void> {
   updateTotal();
 }
 
+// COD is the only payment method offered — no picker to read anymore.
 function updateTotal(): void {
   const totalEl = document.getElementById("checkout-total")!;
   const codFeeRow = document.getElementById("checkout-cod-fee-row")!;
   const codFeeEl = document.getElementById("checkout-cod-fee")!;
-  const isCod = document.querySelector<HTMLInputElement>('input[name="paymentMethod"]:checked')?.value === "cod";
 
-  const codFee = isCod ? COD_FEE_VND : 0;
-  // Tailwind's `flex` utility on this element would otherwise beat the
-  // `hidden` attribute's `display: none` in the cascade, so toggle the
-  // computed display directly instead of relying on `.hidden`.
-  codFeeRow.style.display = isCod ? "flex" : "none";
-  codFeeEl.textContent = formatVnd(codFee);
-  totalEl.textContent = formatVnd(subtotalVnd + codFee);
-}
-
-function bindPaymentMethod(): void {
-  const radios = document.querySelectorAll<HTMLInputElement>('input[name="paymentMethod"]');
-  const codNote = document.getElementById("checkout-cod-note")!;
-  function update() {
-    const isCod = Array.from(radios).find((r) => r.checked)?.value === "cod";
-    codNote.style.gridTemplateRows = isCod ? "1fr" : "0fr";
-    updateTotal();
-  }
-  radios.forEach((r) => r.addEventListener("change", update));
-  update();
+  codFeeRow.style.display = "flex";
+  codFeeEl.textContent = formatVnd(COD_FEE_VND);
+  totalEl.textContent = formatVnd(subtotalVnd + COD_FEE_VND);
 }
 
 function bindForm(): void {
@@ -166,7 +150,7 @@ function bindForm(): void {
             unitPriceOverrideVnd: l.unitPriceOverrideVnd,
           })),
           locale: window.__BEWINE_LOCALE__ ?? "vn",
-          paymentMethod: formData.get("paymentMethod") || "vietqr",
+          paymentMethod: "cod",
         }),
       });
 
@@ -188,5 +172,4 @@ function bindForm(): void {
 
 prefillDeliveryInfo();
 renderSummary();
-bindPaymentMethod();
 bindForm();
