@@ -14,7 +14,16 @@ const search = Astro.url.searchParams.get('q') ?? '';
 
 const { orders, total } = await listOrdersForAdmin({ status, search: search || undefined, limit: 50 });
 const paymentsByOrderId = await getPaymentsByOrderIds(orders.map((o) => o.id));
-const sellableProducts = (await listProductsForAdmin()).filter((p) => p.is_active);
+const sellableProducts = (await listProductsForAdmin())
+  .filter((p) => p.is_active)
+  .map((p) => ({
+    ...p,
+    // The manual-order endpoint charges createOrder's effectivePrice()
+    // (promo-aware) for every line, same as a real checkout — show that
+    // same number here so the dropdown never disagrees with what the
+    // order actually gets charged.
+    effectivePriceVnd: p.is_promo && p.promo_price_vnd != null ? p.promo_price_vnd : p.price_vnd,
+  }));
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: 'Chờ thanh toán',
@@ -49,7 +58,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
             <select class="manual-order-product" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
               <option value="">— Chọn sản phẩm —</option>
               {sellableProducts.map((p) => (
-                <option value={p.id}>{p.name_vn} — {p.price_vnd.toLocaleString('vi-VN')}đ</option>
+                <option value={p.id}>{p.name_vn} — {p.effectivePriceVnd.toLocaleString('vi-VN')}đ</option>
               ))}
             </select>
             <input type="number" class="manual-order-qty" min="1" placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
