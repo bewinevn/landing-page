@@ -15,7 +15,7 @@ const paragraphs = t('hero.description').split('\n').filter(Boolean);
     </h1>
     <div class="flex-1 min-w-0 text-[#252525] text-base md:text-2xl leading-relaxed">
       {paragraphs.map((p, i) => (
-        <p class:list={["m-0 mb-4 last:mb-0", i === paragraphs.length - 1 && "font-bold text-[#A71E22]"]}>{p}</p>
+        <p class:list={["m-0 mb-4 last:mb-0", i === paragraphs.length - 1 && "font-bold text-[#252525]"]}>{p}</p>
       ))}
     </div>
   </div>
