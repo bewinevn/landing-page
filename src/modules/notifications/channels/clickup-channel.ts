@@ -89,6 +89,7 @@ export const clickupChannel: NotificationChannel = {
         body: JSON.stringify({
           name: `Đơn ${event.orderReference} — ${event.customerName}`,
           description,
+          assignees: env.CLICKUP_ASSIGNEE_ID ? [env.CLICKUP_ASSIGNEE_ID] : undefined,
         }),
       });
 

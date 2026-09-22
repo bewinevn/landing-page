@@ -104,6 +104,10 @@ Creates a ClickUp task in a fixed list for every new order (`order.created`), wi
    CLICKUP_LIST_ID=<the list id>
    ```
 4. Restart the dev server. Placing a test order should create a task named "Đơn <reference> — <customer name>" in that list within a second or two.
+5. Optional: to have each task auto-assigned to a specific person (so it shows up in their ClickUp notifications), find their numeric user id (e.g. via `GET https://api.clickup.com/api/v2/team` with your API token — look under `members`) and add:
+   ```
+   CLICKUP_ASSIGNEE_ID=<their numeric user id>
+   ```
 
 ## 8. Deploy
 

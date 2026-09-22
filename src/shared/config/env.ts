@@ -28,6 +28,10 @@ const envSchema = z.object({
   // Both must be set for the channel to activate — see ECOMMERCE_SETUP.md.
   CLICKUP_API_TOKEN: z.string().optional(),
   CLICKUP_LIST_ID: z.string().optional(),
+  // Optional: auto-assigns each new task to this ClickUp user id, so
+  // they get a notification per their own ClickUp app settings. Leaving
+  // it unset just creates unassigned tasks.
+  CLICKUP_ASSIGNEE_ID: z.coerce.number().int().positive().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
