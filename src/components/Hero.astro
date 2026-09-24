@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "src/i18n/utils";
 import hero1 from '../assets/figma/hero-1.png';
 import hero2 from '../assets/figma/hero-2.png';
 import hero3 from '../assets/figma/hero-3.png';
@@ -8,6 +8,7 @@ import heroMobile from '../assets/figma/hero-mobile.jpg';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
 <div>
@@ -42,7 +43,7 @@ const t = useTranslations(lang);
     />
 
     <div class="md:hidden absolute inset-x-0 bottom-10 flex justify-center z-10">
-      <a href="https://zalo.me/3836034200863507097" target="_blank" class="inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg">
+      <a href={translatePath('/products')} class="inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg">
         {t('wheretofind.nav')}
       </a>
     </div>

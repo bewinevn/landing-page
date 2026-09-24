@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  showNav?: boolean;
+}
+const { title, showNav = true } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, "Space Grotesk", Arial, sans-serif;
+        margin: 0;
+        background: #fafafa;
+        color: #1a1a1a;
+      }
+      a { color: #A71E22; }
+      .admin-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        background: #A71E22;
+        color: white;
+      }
+      .admin-nav .admin-nav-links { display: flex; align-items: center; gap: 20px; }
+      .admin-nav a { color: white; text-decoration: none; font-weight: 700; }
+      .admin-nav a.active { text-decoration: underline; }
+      .admin-nav button {
+        background: transparent;
+        border: 1px solid white;
+        color: white;
+        border-radius: 6px;
+        padding: 6px 14px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .admin-main { max-width: 1000px; margin: 0 auto; padding: 24px; }
+    </style>
+  </head>
+  <body>
+    {showNav && (
+      <div class="admin-nav">
+        <div class="admin-nav-links">
+          <a href="/admin" class={pathname === '/admin' ? 'active' : ''}>Tổng quan</a>
+          <a href="/admin/orders" class={pathname.startsWith('/admin/orders') ? 'active' : ''}>Đơn hàng</a>
+          <a href="/admin/inventory" class={pathname.startsWith('/admin/inventory') ? 'active' : ''}>Kho</a>
+        </div>
+        <button id="admin-logout-btn" type="button">Đăng xuất</button>
+      </div>
+    )}
+    <main class="admin-main">
+      <slot />
+    </main>
+    {showNav && (
+      <script>
+        document.getElementById("admin-logout-btn")?.addEventListener("click", async () => {
+          await fetch("/api/admin/logout", { method: "POST" });
+          window.location.href = "/admin/login";
+        });
+      </script>
+    )}
+  </body>
+</html>

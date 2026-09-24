@@ -1,0 +1,206 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
+import { listProducts } from '../../modules/products';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
+
+const products = await listProducts(locale);
+const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
+
+const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
+const zinfandel = products.find((p) => p.slug === 'zinfandel');
+const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
+
+// Quantity tiers for Petite Sirah: buying N cans gifts N more cans of the
+// same wine (mua N tặng N). The gift is priced at 0đ but still reserves
+// real stock (unitPriceOverrideVnd, not isGift) — each tier consumes
+// 2×qty cans total (bought + gifted), which the availability check in
+// product-configurator.ts accounts for.
+const QUANTITY_TIERS = [3, 6, 12, 24];
+
+// Combo trải nghiệm: a 4th "wine type" in the picker (not a real product)
+// — a fixed 2 Petite Sirah + 2 Sauvignon Blanc + 2 Zinfandel per combo,
+// flat 250,000đ. Quantity here means number of combos (1-4), not cans.
+const COMBO_PS_UNIT_VND = 50_000;
+const COMBO_SB_UNIT_VND = 45_000;
+const COMBO_ZL_UNIT_VND = 30_000;
+const CANS_PER_WINE_PER_COMBO = 2;
+const COMBO_PRICE_VND = (COMBO_PS_UNIT_VND + COMBO_SB_UNIT_VND + COMBO_ZL_UNIT_VND) * CANS_PER_WINE_PER_COMBO;
+const COMBO_QUANTITY_OPTIONS = [1, 2, 3, 4];
+const maxComboQty = Math.min(
+  4,
+  Math.floor((petiteSirah?.availableQty ?? 0) / CANS_PER_WINE_PER_COMBO),
+  Math.floor((sauvignonBlanc?.availableQty ?? 0) / CANS_PER_WINE_PER_COMBO),
+  Math.floor((zinfandel?.availableQty ?? 0) / CANS_PER_WINE_PER_COMBO),
+);
+---
+
+<style>
+  .card-texture {
+    background-image: url("../../assets/topography.svg");
+    background-size: 384px 384px;
+    background-position: top left;
+    opacity: 0.5;
+  }
+
+  /* Combo picker button: border blends the 3 wines' own colors (Petite
+     Sirah red, Sauvignon Blanc green, Zinfandel magenta) when selected,
+     instead of the plain single-color border other wine buttons use —
+     it represents all three at once. Text stays the normal brand red. */
+  .combo-picker-btn[data-selected="true"] {
+    border-color: transparent;
+    background-image:
+      linear-gradient(#fff, #fff),
+      linear-gradient(90deg, #A71E22, #3CAA44, #9C2A4C);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+</style>
+
+<Layout title="be-wine">
+  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1100px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+      <div class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
+        <div class="card-texture absolute inset-0 pointer-events-none"></div>
+        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <div>
+          <h1 id="configurator-title" class="text-2xl md:text-3xl font-bold text-[#86181b] m-0 capitalize">
+            {defaultProduct?.name}
+          </h1>
+          <p class="m-0 mt-2 text-xl font-bold text-[#A71E22]">
+            <span id="configurator-unit-price">{defaultProduct?.effectivePriceVnd.toLocaleString('vi-VN')}</span> ₫
+            <span id="configurator-unit-suffix" class="text-sm font-normal text-[#666]">{t('product.perCan')}</span>
+          </p>
+        </div>
+
+        <div>
+          <p class="m-0 mb-2 text-sm text-[#666]">{t('product.wineType')}</p>
+          <div class="flex flex-wrap gap-2">
+            {petiteSirah && (
+              <button
+                type="button"
+                data-wine-option
+                data-product-id={petiteSirah.id}
+                data-product-slug={petiteSirah.slug}
+                data-product-name={petiteSirah.name}
+                data-product-image={petiteSirah.imageUrl ?? ''}
+                data-unit-price={petiteSirah.effectivePriceVnd}
+                data-available-qty={petiteSirah.availableQty}
+                data-unit-suffix={t('product.perCan')}
+                disabled={petiteSirah.isComingSoon}
+                class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                data-selected={petiteSirah.id === defaultProduct?.id ? 'true' : 'false'}
+              >
+                {petiteSirah.name}
+              </button>
+            )}
+            <button
+              type="button"
+              data-wine-option
+              data-combo="true"
+              data-product-slug="combo"
+              data-product-name={t('product.comboName')}
+              data-product-image="/images/products/combo.webp"
+              data-unit-price={COMBO_PRICE_VND}
+              data-available-qty={maxComboQty}
+              data-unit-suffix={t('product.comboPerUnit')}
+              data-combo-ps-id={petiteSirah?.id ?? ''}
+              data-combo-sb-id={sauvignonBlanc?.id ?? ''}
+              data-combo-zl-id={zinfandel?.id ?? ''}
+              disabled={maxComboQty === 0}
+              class="combo-picker-btn px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:text-[#A71E22]"
+              data-selected="false"
+            >
+              {t('product.comboName')}
+            </button>
+            {products.filter((product) => product.slug !== 'petite-sirah').map((product) => (
+              <button
+                type="button"
+                data-wine-option
+                data-product-id={product.id}
+                data-product-slug={product.slug}
+                data-product-name={product.name}
+                data-product-image={product.imageUrl ?? ''}
+                data-unit-price={product.effectivePriceVnd}
+                data-available-qty={product.availableQty}
+                data-unit-suffix={t('product.perCan')}
+                disabled={product.isComingSoon}
+                class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                data-selected={product.id === defaultProduct?.id ? 'true' : 'false'}
+              >
+                {product.name}{product.isComingSoon ? ` (${t('winelist.comingsoon')})` : ''}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
+
+          <div id="can-qty-section">
+            <div class="grid grid-cols-4 gap-2">
+              {QUANTITY_TIERS.map((qty, i) => (
+                <button
+                  type="button"
+                  data-qty-option
+                  data-qty={qty}
+                  data-selected={i === 0 ? 'true' : 'false'}
+                  class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                >
+                  {`${qty} ${t('product.canUnit')}`}
+                </button>
+              ))}
+            </div>
+            <div class="grid grid-cols-4 gap-2 mt-2">
+              {QUANTITY_TIERS.map((qty, i) => (
+                <span
+                  data-gift-tag
+                  data-qty={qty}
+                  data-selected={i === 0 ? 'true' : 'false'}
+                  class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center leading-snug data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                >
+                  {`${t('product.giftPrefix')} ${qty} ${t('product.canUnit')}`}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div id="combo-qty-section" hidden>
+            <div class="grid grid-cols-4 gap-2">
+              {COMBO_QUANTITY_OPTIONS.map((qty, i) => (
+                <button
+                  type="button"
+                  data-qty-option
+                  data-qty={qty}
+                  data-selected={i === 0 ? 'true' : 'false'}
+                  class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
+                >
+                  {`${qty} ${t('product.comboUnit')}`}
+                </button>
+              ))}
+            </div>
+            <p class="m-0 mt-2 text-xs text-[#999]">{t('product.comboDescription')}</p>
+          </div>
+        </div>
+
+        <p class="font-bold text-[#A71E22] text-xl m-0" id="configurator-total"></p>
+
+        <button
+          type="button"
+          id="configurator-checkout"
+          class="w-full inline-flex items-center justify-center rounded-full bg-[#A71E22] text-white font-sans font-bold text-base px-8 py-4 hover:brightness-110 transition disabled:bg-[#ccc] disabled:cursor-not-allowed"
+        >
+          {t('product.buyNow')}
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script src="../../scripts/product-configurator.ts"></script>

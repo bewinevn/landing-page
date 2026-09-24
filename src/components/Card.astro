@@ -1,19 +1,25 @@
 ---
-import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from "src/i18n/utils";
 
-const { title, subtitle, image } = Astro.props;
+interface Props {
+  title: string;
+  abbreviation?: string;
+  subtitle?: string;
+  image: string;
+  isComingSoon?: boolean;
+}
+
+const {
+  title,
+  abbreviation = '',
+  subtitle,
+  image,
+  isComingSoon = false,
+} = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const isComingSoon = /coming soon/i.test(title);
-const abbrevMatch = title.match(/\(([^)]+)\)/);
-const abbrev = abbrevMatch ? abbrevMatch[1] : '';
-const displayTitle = title
-  .replace(/\([^)]*\)/, '')
-  .replace(/[\s-]*coming soon/i, '')
-  .trim();
 const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
 ---
 
@@ -42,14 +48,14 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
   </div>
 
   <div class="relative w-full h-[260px] md:h-[300px] flex items-center justify-center">
-    <Image class="w-auto h-full object-contain" loading="lazy" alt={title} src={image} />
+    <img class="w-auto h-full object-contain" loading="lazy" alt={title} src={image} />
   </div>
 
   <div class="relative flex gap-2 items-center w-full">
-    <p class="font-sans font-bold text-[#A71E22] text-2xl md:text-4xl m-0 capitalize">{displayTitle}</p>
-    {abbrev && (
+    <p class="font-sans font-bold text-[#A71E22] text-2xl md:text-4xl m-0 capitalize">{title}</p>
+    {abbreviation && (
       <span class="inline-flex items-center justify-center h-[30px] w-[43px] shrink-0 rounded bg-white border border-[#d1d5db] font-sans font-bold text-[#A71E22] text-lg">
-        {abbrev}
+        {abbreviation}
       </span>
     )}
   </div>

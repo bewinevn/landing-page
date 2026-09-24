@@ -1,12 +1,13 @@
 ---
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "src/i18n/utils";
 import quality1 from '../assets/figma/quality-1.png';
 import quality2 from '../assets/figma/quality-2.png';
 import quality3 from '../assets/figma/quality-3.png';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const items = [
   { image: quality1, caption: t('tag.1') },
@@ -17,8 +18,7 @@ const items = [
 
 <section class="relative w-full bg-sirah-50 pb-10 md:pb-20 flex flex-col items-center gap-8 md:gap-20">
   <a
-    href="https://zalo.me/3836034200863507097"
-    target="_blank"
+    href={translatePath('/products')}
     class="hidden md:inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-2xl rounded-xl px-10 py-6 hover:brightness-110 transition"
   >
     {t('wheretofind.nav')}

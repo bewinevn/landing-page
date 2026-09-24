@@ -1,21 +1,14 @@
 ---
-import { getEntry } from 'astro:content';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { listProducts } from '../modules/products';
 import Card from './Card.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
 
-const getLocalizedWineList = () => {
-    if (!lang || lang === 'vn') {
-        return 'wines';
-    }
-
-    return lang + '/' + 'wines';
-}
-
-const wineList = await getEntry('wines', getLocalizedWineList());
-
+const products = await listProducts(locale);
 ---
 
 <section id="WineList" class="relative w-full bg-sirah-50 px-5 py-16 md:px-[120px] md:py-20">
@@ -24,12 +17,16 @@ const wineList = await getEntry('wines', getLocalizedWineList());
       {t('winelist.title')}
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wineList.data.list.map(
-          (wine) =>
-          <Card
-            image={wine.image}
-            title={wine.name}
-            subtitle={wine.description} />
+        {products.map(
+          (product) =>
+          <a href={translatePath('/products')} class="block transition-transform duration-200 hover:scale-[1.03] hover:shadow-lg rounded-lg">
+            <Card
+              image={product.imageUrl ?? ''}
+              title={product.name}
+              abbreviation={product.abbreviation}
+              subtitle={product.description}
+              isComingSoon={product.isComingSoon} />
+          </a>
         )}
       </div>
   </div>
