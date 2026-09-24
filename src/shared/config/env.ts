@@ -16,6 +16,9 @@ const envSchema = z.object({
   // set for the channel to activate — see ECOMMERCE_SETUP.md for setup.
   TELEGRAM_BOT_TOKEN: z.string().optional(),
   TELEGRAM_CHAT_ID: z.string().optional(),
+  // Optional: staff order notifications via a Slack Incoming Webhook —
+  // no bot/app to install, just a webhook URL. See ECOMMERCE_SETUP.md.
+  SLACK_WEBHOOK_URL: z.string().url().optional(),
   // Optional: Zalo ZNS customer notifications (payment confirmation).
   // App ID/Secret come from the Zalo Developers app linked to the OA;
   // the actual access/refresh tokens are obtained via one-time OAuth

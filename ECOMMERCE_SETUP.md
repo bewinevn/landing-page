@@ -67,6 +67,19 @@ Sends a message to a Telegram group whenever a customer places an order (and whe
    ```
 5. Restart the dev server. Placing a test order should post a "🆕 Đơn hàng mới" message to the group within a second or two. Leaving either var unset simply disables this channel — nothing else is affected.
 
+## 5b. Staff order notifications via Slack (optional, alternative to Telegram)
+
+An Incoming Webhook — no bot/app install, and both channels can run at once if you want.
+
+1. In Slack: **Settings & administration → Manage apps** → search "Incoming Webhooks" → Add to Slack.
+2. Pick the channel that should receive order alerts (e.g. `#don-hang`) → Add Incoming Webhooks Integration.
+3. Copy the generated URL (`https://hooks.slack.com/services/...`).
+4. Add to `.env` (and Netlify's env vars):
+   ```
+   SLACK_WEBHOOK_URL=<the webhook url>
+   ```
+5. Restart the dev server. Placing a test order should post a "🆕 Đơn hàng mới" message to that channel. Leave it unset to disable.
+
 ## 6. Customer payment-confirmation via Zalo ZNS (optional)
 
 Sends the customer a ZNS message when their bank transfer is confirmed (`order.paid`). COD orders never trigger this — they aren't "paid" until cash is collected on delivery. Needs a Zalo OA with ZNS enabled and an approved message template.
