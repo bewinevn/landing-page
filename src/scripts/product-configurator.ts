@@ -19,6 +19,8 @@ function init() {
   const canQtySection = document.getElementById("can-qty-section");
   const comboQtySection = document.getElementById("combo-qty-section");
   const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
+  const imageFrameEl = document.getElementById("configurator-image-frame");
+  const imageTextureEl = document.getElementById("configurator-image-texture");
   const titleEl = document.getElementById("configurator-title");
   const unitPriceEl = document.getElementById("configurator-unit-price");
   const unitSuffixEl = document.getElementById("configurator-unit-suffix");
@@ -82,6 +84,20 @@ function init() {
     selectedWine = btn;
     wineOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
     if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
+    // The combo option is a pre-composed banner graphic (its own background
+    // and layout), not a product photo — show it edge-to-edge instead of
+    // padded/contained like the wine can photos, so it fills the frame
+    // fully instead of leaving the frame's own background visible as a
+    // border around it.
+    const combo = btn.dataset.combo === "true";
+    if (imageEl) imageEl.classList.toggle("object-cover", combo);
+    if (imageEl) imageEl.classList.toggle("w-full", combo);
+    if (imageEl) imageEl.classList.toggle("h-full", combo);
+    if (imageEl) imageEl.classList.toggle("object-contain", !combo);
+    if (imageEl) imageEl.classList.toggle("max-h-full", !combo);
+    if (imageEl) imageEl.classList.toggle("w-auto", !combo);
+    if (imageFrameEl) imageFrameEl.classList.toggle("p-6", !combo);
+    if (imageTextureEl) imageTextureEl.classList.toggle("invisible", combo);
     if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
     if (unitPriceEl) unitPriceEl.textContent = formatVnd(currentUnitPrice());
     if (unitSuffixEl) unitSuffixEl.textContent = btn.dataset.unitSuffix ?? "";
