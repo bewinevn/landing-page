@@ -63,8 +63,8 @@ const maxComboQty = Math.min(
 <Layout title="be-wine">
   <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1100px]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-      <div class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
-        <div class="card-texture absolute inset-0 pointer-events-none"></div>
+      <div id="configurator-image-frame" class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
+        <div id="configurator-image-texture" class="card-texture absolute inset-0 pointer-events-none"></div>
         <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
       </div>
 
