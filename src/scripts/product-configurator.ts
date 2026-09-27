@@ -84,23 +84,11 @@ function init() {
     selectedWine = btn;
     wineOptions.forEach((o) => (o.dataset.selected = o === btn ? "true" : "false"));
     if (imageEl) imageEl.src = btn.dataset.productImage ?? "";
-    // The combo option is a pre-composed banner graphic (its own background
-    // and layout), not a product photo — show it edge-to-edge instead of
-    // padded/contained like the wine can photos, so it fills the frame
-    // fully instead of leaving the frame's own background visible as a
-    // border around it.
+    // The combo option is a pre-composed banner graphic, not a product
+    // photo — drop the frame's padding so it sits flush against the edges,
+    // but keep object-contain (like the wine can photos) so nothing about
+    // it ever gets cropped.
     const combo = btn.dataset.combo === "true";
-    if (imageEl) imageEl.classList.toggle("object-cover", combo);
-    // Anchored to the bottom: the combo banner's price/label text sits
-    // right at its bottom edge, while the top just has decorative script
-    // text — on narrower frames (mobile), cropping from the top instead
-    // of splitting the crop evenly keeps that bottom text intact.
-    if (imageEl) imageEl.classList.toggle("object-bottom", combo);
-    if (imageEl) imageEl.classList.toggle("w-full", combo);
-    if (imageEl) imageEl.classList.toggle("h-full", combo);
-    if (imageEl) imageEl.classList.toggle("object-contain", !combo);
-    if (imageEl) imageEl.classList.toggle("max-h-full", !combo);
-    if (imageEl) imageEl.classList.toggle("w-auto", !combo);
     if (imageFrameEl) imageFrameEl.classList.toggle("p-6", !combo);
     if (imageTextureEl) imageTextureEl.classList.toggle("invisible", combo);
     if (titleEl) titleEl.textContent = btn.dataset.productName ?? "";
