@@ -41,6 +41,7 @@ export const languages = {
         'product.comboUnit': 'combo',
         'product.comboPerUnit': '/ combo',
         'product.comboDescription': 'Mỗi combo: 2 lon Petite Sirah + 2 lon Sauvignon Blanc + 2 lon Zinfandel.',
+        'product.contactZaloPrefix': 'liên hệ đặt hàng qua',
 
         'cart.title': 'Giỏ hàng của bạn',
         'cart.empty': 'Giỏ hàng đang trống.',
@@ -120,6 +121,7 @@ export const languages = {
       'product.comboUnit': 'combo',
       'product.comboPerUnit': '/ combo',
       'product.comboDescription': 'Each combo: 2 cans Petite Sirah + 2 Sauvignon Blanc + 2 Zinfandel.',
+      'product.contactZaloPrefix': 'contact us to order via',
 
       'cart.title': 'Your cart',
       'cart.empty': 'Your cart is empty.',
