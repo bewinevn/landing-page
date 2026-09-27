@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { listProducts } from '../../modules/products';
+import zaloLogo from '../../assets/zalo-logo.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -206,10 +208,7 @@ const maxComboQty = Math.min(
           class="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0068FF] text-[#0068FF] font-sans font-bold text-base px-8 py-4 hover:bg-[#0068FF]/5 transition"
         >
           {t('product.contactZaloPrefix')}
-          <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect width="22" height="22" rx="6" fill="#0068FF" />
-            <text x="11" y="15.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#fff">Zalo</text>
-          </svg>
+          <Image src={zaloLogo} alt="Zalo" width={22} height={22} class="w-[22px] h-[22px]" />
         </a>
       </div>
     </div>
