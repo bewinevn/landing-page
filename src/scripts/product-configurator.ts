@@ -91,6 +91,11 @@ function init() {
     // border around it.
     const combo = btn.dataset.combo === "true";
     if (imageEl) imageEl.classList.toggle("object-cover", combo);
+    // Anchored to the bottom: the combo banner's price/label text sits
+    // right at its bottom edge, while the top just has decorative script
+    // text — on narrower frames (mobile), cropping from the top instead
+    // of splitting the crop evenly keeps that bottom text intact.
+    if (imageEl) imageEl.classList.toggle("object-bottom", combo);
     if (imageEl) imageEl.classList.toggle("w-full", combo);
     if (imageEl) imageEl.classList.toggle("h-full", combo);
     if (imageEl) imageEl.classList.toggle("object-contain", !combo);
