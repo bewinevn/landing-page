@@ -7,6 +7,7 @@ interface Props {
   subtitle?: string;
   image: string;
   isComingSoon?: boolean;
+  promoLabel?: string | null;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   subtitle,
   image,
   isComingSoon = false,
+  promoLabel = null,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
@@ -40,10 +42,12 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
       <div class="flex h-[30px] w-full items-center justify-center rounded bg-white border border-[#d1d5db]">
         <p class="font-sans font-bold text-[#A71E22] text-lg md:text-xl m-0">{t('winelist.comingsoon')}</p>
       </div>
-    ) : (
+    ) : promoLabel ? (
       <div class="flex h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db]">
-        <p class="font-sans font-bold text-[#EFEDE9] text-lg md:text-xl m-0">{t('winelist.promo')}</p>
+        <p class="font-sans font-bold text-[#EFEDE9] text-lg md:text-xl m-0">{promoLabel}</p>
       </div>
+    ) : (
+      <div class="h-[30px] w-full" />
     )}
   </div>
 
@@ -69,12 +73,4 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
       <span>{t('winelist.hsdText')}</span>
     </p>
   </div>
-
-  {!isComingSoon && (
-    <div class="relative flex min-h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db] px-2 py-1.5">
-      <p class="m-0 text-[#f0f0f0] text-xs md:text-sm text-center leading-snug">
-        {t('winelist.disclaimerPrefix')} <span class="underline">{t('winelist.disclaimerLimited')}</span> {t('winelist.disclaimerMiddle')} <span class="underline">{t('winelist.disclaimerArea')}</span>
-      </p>
-    </div>
-  )}
 </figure>
