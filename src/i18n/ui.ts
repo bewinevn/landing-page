@@ -9,7 +9,7 @@ export const languages = {
   export const ui = {
     vn: {
         'winelist.title': 'các sản phẩm',
-        'winelist.comingsoon': 'coming soon',
+        'winelist.comingsoon': 'giới hạn trong combo',
         'winelist.ingredients': 'Nước nho lên men (không chứa đường)',
         'winelist.hsdLabel': 'HSD:',
         'winelist.hsdText': '8 tháng kể từ NSX (được in dưới đáy lon)',
@@ -85,7 +85,7 @@ export const languages = {
     },
     en: {
       'winelist.title': 'our products',
-      'winelist.comingsoon': 'coming soon',
+      'winelist.comingsoon': 'exclusive in combo',
       'winelist.ingredients': 'Fermented grape juice (no added sugar)',
       'winelist.hsdLabel': 'Best before:',
       'winelist.hsdText': '8 months from production date (printed on the bottom of the can)',
