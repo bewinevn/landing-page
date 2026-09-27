@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { listProducts } from '../../modules/products';
-import zaloLogo from '../../assets/zalo-logo.webp';
+import zaloLogo from '../../assets/zalo-wordmark.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -208,7 +208,7 @@ const maxComboQty = Math.min(
           class="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0068FF] text-[#0068FF] font-sans font-bold text-base px-8 py-4 hover:bg-[#0068FF]/5 transition"
         >
           {t('product.contactZaloPrefix')}
-          <Image src={zaloLogo} alt="Zalo" width={22} height={22} class="w-[22px] h-[22px]" />
+          <Image src={zaloLogo} alt="Zalo" width={1200} height={420} class="h-5 w-auto" />
         </a>
       </div>
     </div>
