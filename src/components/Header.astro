@@ -5,12 +5,19 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/util
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 const translatePath = useTranslatedPath(lang)
+
+// There's no English products/checkout flow yet (only the English home
+// page exists) — send English visitors straight to Zalo instead of a
+// dead /en/products link.
+const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : translatePath('/products');
 ---
 
 <header class="sticky top-0 z-40 grid grid-cols-3 items-center bg-[#A71E22] px-4 py-3 md:px-8">
   <div class="justify-self-start">
     <a
-      href={translatePath('/products')}
+      href={orderHref}
+      target={lang === 'en' ? '_blank' : undefined}
+      rel={lang === 'en' ? 'noopener' : undefined}
       class="inline-flex items-center justify-center rounded-xl bg-white text-[#A71E22] font-sans font-bold text-xs md:text-base px-3 py-2 md:px-5 md:py-2.5 whitespace-nowrap hover:brightness-95 transition"
     >
       {t('nav.orderNow')}
