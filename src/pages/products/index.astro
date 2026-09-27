@@ -12,6 +12,12 @@ const locale = lang === 'en' ? 'en' : 'vn';
 const products = await listProducts(locale);
 const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
 
+// Deep link from the homepage's "exclusive in combo" cards (Sauvignon
+// Blanc / Zinfandel) — they aren't sold standalone, only the combo picker
+// option unlocks them, so /products?combo=1 pre-selects it instead of
+// landing on the default wine.
+const preselectCombo = Astro.url.searchParams.get('combo') === '1';
+
 const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
 const zinfandel = products.find((p) => p.slug === 'zinfandel');
 const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
@@ -65,19 +71,19 @@ const maxComboQty = Math.min(
 <Layout title="be-wine">
   <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[1100px]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-      <div id="configurator-image-frame" class="relative overflow-hidden rounded-lg bg-[#EFEDE9] p-6 flex items-center justify-center h-[320px] md:h-[440px]">
-        <div id="configurator-image-texture" class="card-texture absolute inset-0 pointer-events-none"></div>
-        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
+      <div id="configurator-image-frame" class:list={["relative overflow-hidden rounded-lg bg-[#EFEDE9] flex items-center justify-center h-[320px] md:h-[440px]", !preselectCombo && "p-6"]}>
+        <div id="configurator-image-texture" class:list={["card-texture absolute inset-0 pointer-events-none", preselectCombo && "invisible"]}></div>
+        <img id="configurator-image" src={preselectCombo ? '/images/products/combo.webp' : (defaultProduct?.imageUrl ?? '')} alt="" class="relative max-h-full w-auto object-contain" />
       </div>
 
       <div class="flex flex-col gap-6">
         <div>
           <h1 id="configurator-title" class="text-2xl md:text-3xl font-bold text-[#86181b] m-0 capitalize">
-            {defaultProduct?.name}
+            {preselectCombo ? t('product.comboName') : defaultProduct?.name}
           </h1>
           <p class="m-0 mt-2 text-xl font-bold text-[#A71E22]">
-            <span id="configurator-unit-price">{defaultProduct?.effectivePriceVnd.toLocaleString('vi-VN')}</span> ₫
-            <span id="configurator-unit-suffix" class="text-sm font-normal text-[#666]">{t('product.perCan')}</span>
+            <span id="configurator-unit-price">{(preselectCombo ? COMBO_PRICE_VND : defaultProduct?.effectivePriceVnd ?? 0).toLocaleString('vi-VN')}</span> ₫
+            <span id="configurator-unit-suffix" class="text-sm font-normal text-[#666]">{preselectCombo ? t('product.comboPerUnit') : t('product.perCan')}</span>
           </p>
         </div>
 
@@ -97,7 +103,7 @@ const maxComboQty = Math.min(
                 data-unit-suffix={t('product.perCan')}
                 disabled={petiteSirah.isComingSoon}
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
-                data-selected={petiteSirah.id === defaultProduct?.id ? 'true' : 'false'}
+                data-selected={!preselectCombo && petiteSirah.id === defaultProduct?.id ? 'true' : 'false'}
               >
                 {petiteSirah.name}
               </button>
@@ -117,7 +123,7 @@ const maxComboQty = Math.min(
               data-combo-zl-id={zinfandel?.id ?? ''}
               disabled={maxComboQty === 0}
               class="combo-picker-btn px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:text-[#A71E22]"
-              data-selected="false"
+              data-selected={preselectCombo ? 'true' : 'false'}
             >
               {t('product.comboName')}
             </button>
@@ -134,7 +140,7 @@ const maxComboQty = Math.min(
                 data-unit-suffix={t('product.perCan')}
                 disabled={product.isComingSoon}
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
-                data-selected={product.id === defaultProduct?.id ? 'true' : 'false'}
+                data-selected={!preselectCombo && product.id === defaultProduct?.id ? 'true' : 'false'}
               >
                 {product.name}{product.isComingSoon ? ` (${t('winelist.comingsoon')})` : ''}
               </button>
@@ -145,14 +151,14 @@ const maxComboQty = Math.min(
         <div>
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
 
-          <div id="can-qty-section">
+          <div id="can-qty-section" hidden={preselectCombo}>
             <div class="grid grid-cols-4 gap-2">
               {QUANTITY_TIERS.map((qty, i) => (
                 <button
                   type="button"
                   data-qty-option
                   data-qty={qty}
-                  data-selected={i === 0 ? 'true' : 'false'}
+                  data-selected={!preselectCombo && i === 0 ? 'true' : 'false'}
                   class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 >
                   {`${qty} ${t('product.canUnit')}`}
@@ -173,14 +179,14 @@ const maxComboQty = Math.min(
             </div>
           </div>
 
-          <div id="combo-qty-section" hidden>
+          <div id="combo-qty-section" hidden={!preselectCombo}>
             <div class="grid grid-cols-4 gap-2">
               {COMBO_QUANTITY_OPTIONS.map((qty, i) => (
                 <button
                   type="button"
                   data-qty-option
                   data-qty={qty}
-                  data-selected={i === 0 ? 'true' : 'false'}
+                  data-selected={preselectCombo && i === 0 ? 'true' : 'false'}
                   class="px-2 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 >
                   {`${qty} ${t('product.comboUnit')}`}
