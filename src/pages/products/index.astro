@@ -142,7 +142,7 @@ const maxComboQty = Math.min(
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 data-selected={!preselectCombo && product.id === defaultProduct?.id ? 'true' : 'false'}
               >
-                {product.name}{product.isComingSoon ? ` (${t('winelist.comingsoon')})` : ''}
+                {product.name}
               </button>
             ))}
           </div>
