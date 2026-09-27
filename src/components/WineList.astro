@@ -25,9 +25,16 @@ const products = await listProducts(locale);
               title={product.name}
               abbreviation={product.abbreviation}
               subtitle={product.description}
-              isComingSoon={product.isComingSoon} />
+              isComingSoon={product.isComingSoon}
+              promoLabel={product.promoLabel} />
           </a>
         )}
+      </div>
+
+      <div class="flex min-h-[40px] w-full items-center justify-center rounded bg-[#A71E22] px-4 py-2">
+        <p class="m-0 text-[#f0f0f0] text-sm md:text-base text-center leading-snug font-medium">
+          {t('winelist.nationwideShipping')}
+        </p>
       </div>
   </div>
 </section>
