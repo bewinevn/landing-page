@@ -2,19 +2,19 @@
 import { Image } from "astro:assets";
 import { getLangFromUrl, useTranslatedPath } from "src/i18n/utils";
 
-import discountImg from '../assets/discount.webp';
+import discountImg from '../assets/discount.png';
 
 const lang = getLangFromUrl(Astro.url);
 const translatePath = useTranslatedPath(lang);
 ---
-<dialog id="discount-popup" class="rounded-2xl backdrop:bg-black/50 backdrop:backdrop-blur-md p-0 border-0 max-w-[90vw] max-h-[88vh]">
-    <div class="relative bg-sirah-50 rounded-2xl overflow-hidden h-full">
+<dialog id="discount-popup" class="rounded-2xl backdrop:bg-black/50 backdrop:backdrop-blur-md p-0 border-0 max-w-sm md:max-w-md lg:max-w-lg w-[90vw]">
+    <div class="relative bg-sirah-50 rounded-2xl overflow-hidden">
         <button type="button" id="discount-popup-close" aria-label="Đóng" class="absolute top-2 right-2 z-10 flex items-center justify-center w-8 h-8 rounded-full bg-black/15 text-white text-lg hover:bg-black/30 focus:outline-none">
             &times;
         </button>
 
-        <a href={translatePath('/products')} class="block h-full">
-            <Image src={discountImg} alt="be-wine khuyến mãi" class="block mx-auto w-auto h-auto max-w-[90vw] max-h-[88vh] object-contain" />
+        <a href={translatePath('/products')} class="block">
+            <Image src={discountImg} alt="be-wine khuyến mãi" class="w-full h-auto" />
         </a>
     </div>
 </dialog>
