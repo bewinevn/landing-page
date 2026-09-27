@@ -14,11 +14,18 @@ const items = [
   { image: quality2, caption: t('tag.2') },
   { image: quality3, caption: t('tag.3') },
 ];
+
+// There's no English products/checkout flow yet (only the English home
+// page exists) — send English visitors straight to Zalo instead of a
+// dead /en/products link.
+const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : translatePath('/products');
 ---
 
 <section class="relative w-full bg-sirah-50 pb-10 md:pb-20 flex flex-col items-center gap-8 md:gap-20">
   <a
-    href={translatePath('/products')}
+    href={orderHref}
+    target={lang === 'en' ? '_blank' : undefined}
+    rel={lang === 'en' ? 'noopener' : undefined}
     class="hidden md:inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-2xl rounded-xl px-10 py-6 hover:brightness-110 transition"
   >
     {t('wheretofind.nav')}
