@@ -3,13 +3,12 @@ import { ViewTransitions } from 'astro:transitions';
 import { GoogleFontsOptimizer } from "astro-google-fonts-optimizer";
 
 import { getLangFromUrl } from '../i18n/utils';
-// import AgeVerification from '../components/AgeVerification.astro';
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import DiscountPopup from '../components/DiscountPopup.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
 
-const { title } = Astro.props;
+const { title, showDiscountPopup = false } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 ---
@@ -17,12 +16,6 @@ const lang = getLangFromUrl(Astro.url);
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth">
   <head>
-    <style>
-      body {
-        background-image: url("../assets/topography.svg");
-      }
-    </style>
-
     <!-- Google Tag Manager -->
     <script is:inline>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -39,23 +32,28 @@ const lang = getLangFromUrl(Astro.url);
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="zalo-platform-site-verification" content="SjoXDhZv5o5Iov8cbDmV2nNDnJBvknzbEJCo" />
     <title>{title}</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="be-wine" />
+    <meta name="title" content="Vang Việt thế hệ mới" />
     <meta name="description" content="Vang đóng lon đầu tiên tại Việt Nam - thưởng vang khắp mọi phố phường ngõ hẻm!" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://bewinevn.com/" />
-    <meta property="og:title" content="be-wine" />
+    <meta property="og:title" content="Vang Việt thế hệ mới" />
     <meta property="og:description" content="Vang đóng lon đầu tiên tại Việt Nam - thưởng vang khắp mọi phố phường ngõ hẻm!" />
+    <meta property="og:image" content="https://bewinevn.com/og-image.png" />
+    <meta property="og:image:width" content="400" />
+    <meta property="og:image:height" content="400" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://bewinevn.com/" />
-    <meta property="twitter:title" content="be-wine" />
+    <meta property="twitter:title" content="Vang Việt thế hệ mới" />
     <meta property="twitter:description" content="Vang đóng lon đầu tiên tại Việt Nam - thưởng vang khắp mọi phố phường ngõ hẻm!" />
+    <meta property="twitter:image" content="https://bewinevn.com/og-image.png" />
 
     <!-- Meta Tags Generated with https://metatags.io -->
 
@@ -77,8 +75,7 @@ const lang = getLangFromUrl(Astro.url);
       </iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
-      <!-- <AgeVerification /> -->
-    <DiscountPopup />
+    {showDiscountPopup && <DiscountPopup />}
     <AnnouncementBar />
     <Header />
     <slot />

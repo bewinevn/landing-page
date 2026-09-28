@@ -7,7 +7,7 @@ const t = useTranslations(lang);
 const text = t('announcement.text');
 ---
 
-<div class="announcement-bar bg-sirah-700 text-white font-sans font-medium overflow-hidden select-none" role="region" aria-label={text}>
+<div class="announcement-bar bg-sirah-50 text-[#A71E22] font-sans font-medium overflow-hidden select-none" role="region" aria-label={text}>
   <div class="announcement-track flex items-center whitespace-nowrap py-2.5">
     <!-- Repeat the text so the marquee loops without a visible gap -->
     {Array.from({ length: 8 }).map(() => (

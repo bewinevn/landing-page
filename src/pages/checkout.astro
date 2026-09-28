@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
+---
+
+<Layout title="be-wine — checkout">
+  <div class="mx-auto px-5 md:px-[120px] py-16 max-w-[900px]">
+    <h1 class="text-2xl md:text-4xl uppercase font-bold tracking-wide text-[#86181b] m-0 mb-8">
+      {t('checkout.title')}
+    </h1>
+
+    <form id="checkout-form" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div class="flex flex-col gap-4">
+        <label class="flex flex-col gap-1 text-sm text-[#666]">
+          {t('checkout.fullName')}
+          <input name="fullName" required class="border border-[#d1d5db] rounded px-3 py-2" />
+        </label>
+        <label class="flex flex-col gap-1 text-sm text-[#666]">
+          {t('checkout.phone')}
+          <input name="phone" type="tel" required class="border border-[#d1d5db] rounded px-3 py-2" />
+        </label>
+        <label class="flex flex-col gap-1 text-sm text-[#666]">
+          {t('checkout.addressLine')}
+          <input name="addressLine" required class="border border-[#d1d5db] rounded px-3 py-2" />
+        </label>
+        <div class="flex flex-col gap-1 text-sm text-[#666]">
+          <label for="checkout-city">{t('checkout.city')}</label>
+          <select id="checkout-city" name="city" required class="border border-[#d1d5db] rounded px-3 py-2 bg-white">
+            <option value={t('checkout.cityHanoi')}>{t('checkout.cityHanoi')}</option>
+            <option value={t('checkout.cityHcm')}>{t('checkout.cityHcm')}</option>
+            <option value={t('checkout.cityDanang')}>{t('checkout.cityDanang')}</option>
+            <option value="other">{t('checkout.cityOther')}</option>
+          </select>
+          <p id="checkout-city-other-note" hidden class="text-xs text-[#A71E22] m-0">{t('checkout.cityOtherNote')}</p>
+        </div>
+        <label class="flex flex-col gap-1 text-sm text-[#666]">
+          {t('checkout.note')}
+          <textarea name="note" rows="2" class="border border-[#d1d5db] rounded px-3 py-2"></textarea>
+        </label>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-[#86181b] uppercase m-0 mb-4">{t('checkout.orderSummary')}</h2>
+          <div id="checkout-summary-lines" class="flex flex-col gap-3"></div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#666] m-0">{t('checkout.paymentMethod')}</p>
+          <div class="flex items-center gap-2 border border-[#A71E22] rounded px-3 py-2 text-[#A71E22] font-medium">
+            {t('checkout.paymentCod')}
+          </div>
+          <p class="text-xs text-[#A71E22] m-0">{t('checkout.codFeeNote')}</p>
+        </div>
+
+        <div>
+          <p id="checkout-cod-fee-row" style="display: none;" class="justify-between text-sm text-[#666] m-0">
+            <span>{t('checkout.codFeeLabel')}</span>
+            <span id="checkout-cod-fee">0 ₫</span>
+          </p>
+          <p class="pt-4 border-t border-[#d1d5db] font-bold text-[#A71E22] text-lg flex justify-between m-0">
+            <span>{t('checkout.total')}</span>
+            <span id="checkout-total">0 ₫</span>
+          </p>
+          <p class="mt-1 text-xs text-[#999] m-0">{t('checkout.shipNote')}</p>
+        </div>
+
+        <p id="checkout-error" hidden class="text-sm text-[#A71E22] font-medium m-0">{t('checkout.error')}</p>
+
+        <button
+          type="submit"
+          id="checkout-submit"
+          class="inline-flex items-center justify-center rounded bg-[#A71E22] text-white font-sans font-bold text-base px-8 py-3 hover:brightness-110 transition disabled:opacity-60"
+        >
+          {t('checkout.submit')}
+        </button>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script define:vars={{ locale, submittingLabel: t('checkout.submitting'), submitLabel: t('checkout.submit'), giftLabel: t('checkout.giftLabel') }}>
+  window.__BEWINE_LOCALE__ = locale;
+  window.__BEWINE_I18N__ = { submitting: submittingLabel, submit: submitLabel, gift: giftLabel };
+</script>
+<script src="../scripts/checkout-page.ts"></script>
