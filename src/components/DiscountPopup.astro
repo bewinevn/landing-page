@@ -1,8 +1,5 @@
 ---
-import { Image } from "astro:assets";
 import { getLangFromUrl, useTranslatedPath } from "src/i18n/utils";
-
-import discountImg from '../assets/discount-v2.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const translatePath = useTranslatedPath(lang);
@@ -14,7 +11,7 @@ const translatePath = useTranslatedPath(lang);
         </button>
 
         <a href={translatePath('/products')} class="block">
-            <Image src={discountImg} alt="be-wine khuyến mãi" class="w-full h-auto" />
+            <video src="/popup.mp4" poster="/popup-poster.jpg" width="720" height="1020" autoplay muted loop playsinline preload="auto" aria-label="be-wine khuyến mãi" class="block w-full h-auto"></video>
         </a>
     </div>
 </dialog>
@@ -25,7 +22,10 @@ const translatePath = useTranslatedPath(lang);
 
     window.addEventListener("load", () => {
                 if (discountDialog && !discountDialog.open) {
-            setTimeout(() => discountDialog.showModal(), 800);
+            setTimeout(() => {
+                discountDialog.showModal();
+                discountDialog.querySelector("video")?.play().catch(() => {});
+            }, 800);
         }
     });
 
