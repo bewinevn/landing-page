@@ -7,7 +7,6 @@ interface Props {
   subtitle?: string;
   image: string;
   isComingSoon?: boolean;
-  promoLabel?: string | null;
 }
 
 const {
@@ -16,7 +15,6 @@ const {
   subtitle,
   image,
   isComingSoon = false,
-  promoLabel = null,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
@@ -42,12 +40,10 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
       <div class="flex h-[30px] w-full items-center justify-center rounded bg-white border border-[#d1d5db]">
         <p class="font-sans font-bold text-[#A71E22] text-lg md:text-xl m-0">{t('winelist.comingsoon')}</p>
       </div>
-    ) : promoLabel ? (
-      <div class="flex h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db]">
-        <p class="font-sans font-bold text-[#EFEDE9] text-lg md:text-xl m-0">{promoLabel}</p>
-      </div>
     ) : (
-      <div class="h-[30px] w-full" />
+      <div class="flex h-[30px] w-full items-center justify-center rounded bg-[#A71E22] border border-[#d1d5db]">
+        <p class="font-sans font-bold text-[#EFEDE9] text-lg md:text-xl m-0">{t('winelist.inStock')}</p>
+      </div>
     )}
   </div>
 
