@@ -22,11 +22,7 @@ const sauvignonBlanc = products.find((p) => p.slug === 'sauvignon-blanc');
 const zinfandel = products.find((p) => p.slug === 'zinfandel');
 const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
 
-// Quantity tiers for Petite Sirah: buying N cans gifts N more cans of the
-// same wine (mua N tặng N). The gift is priced at 0đ but still reserves
-// real stock (unitPriceOverrideVnd, not isGift) — each tier consumes
-// 2×qty cans total (bought + gifted), which the availability check in
-// product-configurator.ts accounts for.
+// Can quantity tiers for single wines.
 const QUANTITY_TIERS = [3, 6, 12, 24];
 
 // Combo trải nghiệm: a 4th "wine type" in the picker (not a real product)
@@ -163,18 +159,6 @@ const maxComboQty = Math.min(
                 >
                   {`${qty} ${t('product.canUnit')}`}
                 </button>
-              ))}
-            </div>
-            <div class="grid grid-cols-4 gap-2 mt-2">
-              {QUANTITY_TIERS.map((qty, i) => (
-                <span
-                  data-gift-tag
-                  data-qty={qty}
-                  data-selected={i === 0 ? 'true' : 'false'}
-                  class="px-2 py-1 rounded-full border-2 border-dashed border-[#d1d5db] text-[#999] font-sans font-bold text-xs text-center leading-snug data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
-                >
-                  {`${t('product.giftPrefix')} ${qty} ${t('product.canUnit')}`}
-                </span>
               ))}
             </div>
           </div>
