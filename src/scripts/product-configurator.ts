@@ -15,7 +15,6 @@ function formatVnd(amount: number): string {
 function init() {
   const wineOptions = document.querySelectorAll<HTMLButtonElement>("[data-wine-option]");
   const qtyOptions = document.querySelectorAll<HTMLButtonElement>("[data-qty-option]");
-  const giftTags = document.querySelectorAll<HTMLElement>("[data-gift-tag]");
   const canQtySection = document.getElementById("can-qty-section");
   const comboQtySection = document.getElementById("combo-qty-section");
   const imageEl = document.getElementById("configurator-image") as HTMLImageElement | null;
@@ -49,13 +48,6 @@ function init() {
     return parseInt(selectedWine?.dataset.availableQty ?? "0", 10);
   }
 
-  // A can tier of qty N needs 2N cans in stock (N bought + N gifted, same
-  // wine); a combo tier of qty N just needs N (currentAvailableQty()
-  // already reflects max combos, not cans).
-  function neededQtyFor(qty: number): number {
-    return isCombo() ? qty : qty * 2;
-  }
-
   function render() {
     const combo = isCombo();
     if (canQtySection) canQtySection.hidden = combo;
@@ -67,17 +59,10 @@ function init() {
     qtyOptions.forEach((btn) => {
       const qty = parseInt(btn.dataset.qty ?? "0", 10);
       btn.dataset.selected = qty === selectedQty ? "true" : "false";
-      btn.disabled = neededQtyFor(qty) > currentAvailableQty();
+      btn.disabled = qty > currentAvailableQty();
     });
 
-    if (!combo) {
-      giftTags.forEach((tag) => {
-        const qty = parseInt(tag.dataset.qty ?? "0", 10);
-        tag.dataset.selected = qty === selectedQty ? "true" : "false";
-      });
-    }
-
-    checkoutBtn!.disabled = !selectedWine || selectedQty < 1 || neededQtyFor(selectedQty) > currentAvailableQty();
+    checkoutBtn!.disabled = !selectedWine || selectedQty < 1 || selectedQty > currentAvailableQty();
   }
 
   function selectWine(btn: HTMLButtonElement) {
@@ -135,12 +120,7 @@ function init() {
     }
 
     const productId = selectedWine.dataset.productId!;
-    // Mua N tặng N (same wine) — priced at 0đ via unitPriceOverrideVnd,
-    // which still reserves real stock, unlike isGift.
-    const lines: CartLine[] = [
-      { productId, quantity: selectedQty },
-      { productId, quantity: selectedQty, unitPriceOverrideVnd: 0 },
-    ];
+    const lines: CartLine[] = [{ productId, quantity: selectedQty }];
 
     setCart(lines);
     window.location.href = "/checkout";
