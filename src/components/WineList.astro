@@ -1,21 +1,14 @@
 ---
-import { getEntry } from 'astro:content';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { listProducts } from '../modules/products';
 import Card from './Card.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const locale = lang === 'en' ? 'en' : 'vn';
 
-const getLocalizedWineList = () => {
-    if (!lang || lang === 'vn') {
-        return 'wines';
-    }
-
-    return lang + '/' + 'wines';
-}
-
-const wineList = await getEntry('wines', getLocalizedWineList());
-
+const products = await listProducts(locale);
 ---
 
 <section id="WineList" class="relative w-full bg-sirah-50 px-5 py-16 md:px-[120px] md:py-20">
@@ -24,13 +17,38 @@ const wineList = await getEntry('wines', getLocalizedWineList());
       {t('winelist.title')}
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wineList.data.list.map(
-          (wine) =>
-          <Card
-            image={wine.image}
-            title={wine.name}
-            subtitle={wine.description} />
-        )}
+        {products.map((product) => {
+          // Sauvignon Blanc / Zinfandel aren't sold standalone — only the
+          // combo picker unlocks them — so their card deep-links straight
+          // into the combo option instead of landing on the default wine.
+          // There's no English products/checkout flow yet (only the
+          // English home page exists), so English visitors go to Zalo
+          // instead of a dead /en/products link.
+          const href = lang === 'en'
+            ? 'https://zalo.me/3836034200863507097'
+            : translatePath('/products') + (product.isComingSoon ? '?combo=1' : '');
+          return (
+            <a
+              href={href}
+              target={lang === 'en' ? '_blank' : undefined}
+              rel={lang === 'en' ? 'noopener' : undefined}
+              class="block transition-transform duration-200 hover:scale-[1.03] hover:shadow-lg rounded-lg"
+            >
+              <Card
+                image={product.imageUrl ?? ''}
+                title={product.name}
+                abbreviation={product.abbreviation}
+                subtitle={product.description}
+                isComingSoon={product.isComingSoon} />
+            </a>
+          );
+        })}
+      </div>
+
+      <div class="flex min-h-[40px] w-full items-center justify-center rounded bg-[#A71E22] px-4 py-2">
+        <p class="m-0 text-[#f0f0f0] text-sm md:text-base text-center leading-snug font-medium">
+          {t('winelist.nationwideShipping')}
+        </p>
       </div>
   </div>
 </section>

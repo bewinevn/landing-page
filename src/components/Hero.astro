@@ -1,13 +1,19 @@
 ---
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations } from "src/i18n/utils";
-import hero1 from '../assets/figma/hero-1.png';
-import hero2 from '../assets/figma/hero-2.png';
-import hero3 from '../assets/figma/hero-3.png';
-import heroMobile from '../assets/figma/hero-mobile.jpg';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "src/i18n/utils";
+import hero1 from '../assets/figma/hero-1.jpg';
+import hero2 from '../assets/figma/hero-2.jpg';
+import hero3 from '../assets/figma/hero-3.jpg';
+import heroMobile from '../assets/figma/hero-mobile.png';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+// There's no English products/checkout flow yet (only the English home
+// page exists) — send English visitors straight to Zalo instead of a
+// dead /en/products link.
+const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : translatePath('/products');
 ---
 
 <div>
@@ -42,7 +48,12 @@ const t = useTranslations(lang);
     />
 
     <div class="md:hidden absolute inset-x-0 bottom-10 flex justify-center z-10">
-      <a href="https://zalo.me/3836034200863507097" target="_blank" class="inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg">
+      <a
+        href={orderHref}
+        target={lang === 'en' ? '_blank' : undefined}
+        rel={lang === 'en' ? 'noopener' : undefined}
+        class="inline-flex items-center justify-center bg-[#A71E22] text-sirah-50 font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg"
+      >
         {t('wheretofind.nav')}
       </a>
     </div>

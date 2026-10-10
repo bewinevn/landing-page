@@ -1,0 +1,55 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="be-wine admin — đăng nhập" showNav={false}>
+  <div style="max-width: 320px; margin: 80px auto 0;">
+    <h1 style="font-size: 20px; margin: 0 0 20px;">be-wine admin</h1>
+    <form id="login-form" style="display: flex; flex-direction: column; gap: 12px;">
+      <label style="display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: #666;">
+        Mật khẩu
+        <input
+          type="password"
+          name="password"
+          required
+          autofocus
+          style="border: 1px solid #d1d5db; border-radius: 6px; padding: 10px 12px; font-size: 14px;"
+        />
+      </label>
+      <p id="login-error" hidden style="color: #A71E22; font-size: 13px; margin: 0;">Sai mật khẩu, vui lòng thử lại.</p>
+      <button
+        type="submit"
+        id="login-submit"
+        style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;"
+      >
+        Đăng nhập
+      </button>
+    </form>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("login-form") as HTMLFormElement;
+  const errorEl = document.getElementById("login-error")!;
+  const submitBtn = document.getElementById("login-submit") as HTMLButtonElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorEl.hidden = true;
+    submitBtn.disabled = true;
+
+    const password = new FormData(form).get("password");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (!res.ok) throw new Error("login_failed");
+      window.location.href = "/admin";
+    } catch {
+      errorEl.hidden = false;
+      submitBtn.disabled = false;
+    }
+  });
+</script>
