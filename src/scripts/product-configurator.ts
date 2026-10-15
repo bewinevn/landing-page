@@ -129,5 +129,16 @@ function init() {
   render();
 }
 
+// Warm the browser cache with every option's image so switching wine type
+// doesn't wait on a download.
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.querySelectorAll<HTMLElement>("[data-wine-option]").forEach((b) => {
+      const src = b.dataset.productImage;
+      if (src) new Image().src = src;
+    });
+  }, 300);
+});
+
 init();
 document.addEventListener("astro:page-load", init);
