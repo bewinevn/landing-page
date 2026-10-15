@@ -1,0 +1,77 @@
+<script is:inline>
+  (function () {
+    var d = document.documentElement;
+    try { if (sessionStorage.getItem('bwLoaded')) return; } catch (e) {}
+    d.classList.add('bw-loading');
+    var t0 = Date.now();
+    function done() {
+      var wait = Math.max(0, 900 - (Date.now() - t0));
+      setTimeout(function () {
+        d.classList.remove('bw-loading');
+        try { sessionStorage.setItem('bwLoaded', '1'); } catch (e) {}
+      }, wait);
+    }
+    if (document.readyState === 'complete') done();
+    else window.addEventListener('load', done);
+    setTimeout(done, 6000);
+  })();
+</script>
+
+<div id="bw-loader" aria-hidden="true">
+  <svg viewBox="0 0 160 240" width="120" height="180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="bw-can-clip"><rect x="40" y="56" width="80" height="154" rx="10" /></clipPath>
+    </defs>
+    <g clip-path="url(#bw-can-clip)">
+      <g class="bw-fill">
+        <rect x="0" y="70" width="200" height="200" fill="#A71E22" />
+        <path class="bw-wave bw-wave-back" fill="#86181b" d="M0 70 q10 -9 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 V82 H0 Z" />
+        <path class="bw-wave bw-wave-front" fill="#A71E22" d="M0 72 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 V84 H0 Z" />
+      </g>
+      <rect x="50" y="62" width="7" height="142" rx="3.5" fill="#fff" opacity="0.22" />
+    </g>
+    <rect x="40" y="56" width="80" height="154" rx="10" fill="none" stroke="#A71E22" stroke-width="3" />
+    <rect x="46" y="40" width="68" height="16" rx="6" fill="#e4dfda" stroke="#A71E22" stroke-width="3" />
+    <rect x="52" y="210" width="56" height="8" rx="4" fill="#e4dfda" stroke="#A71E22" stroke-width="3" />
+  </svg>
+</div>
+
+<style is:global>
+  #bw-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  html.bw-loading #bw-loader {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  #bw-loader .bw-fill {
+    transform: translateY(150px);
+    animation: bw-fill 3.2s ease-in-out infinite;
+  }
+  #bw-loader .bw-wave { animation: bw-wave 1.6s linear infinite; }
+  #bw-loader .bw-wave-back { animation-duration: 2.4s; animation-direction: reverse; opacity: 0.85; }
+  @keyframes bw-fill {
+    0% { transform: translateY(150px); }
+    80% { transform: translateY(0); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes bw-wave {
+    from { transform: translateX(0); }
+    to { transform: translateX(-40px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #bw-loader .bw-fill { animation: none; transform: translateY(60px); }
+    #bw-loader .bw-wave { animation: none; }
+  }
+</style>
