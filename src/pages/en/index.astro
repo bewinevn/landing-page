@@ -7,8 +7,8 @@ import WineList from '../../components/WineList.astro';
 
 // Cache the rendered page at Netlify's edge so visitors don't wait on a
 // function + database round trip every time.
-Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
-Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, max-age=300, stale-while-revalidate=86400, durable');
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400, must-revalidate');
 ---
 
 <Layout title="be-wine">
