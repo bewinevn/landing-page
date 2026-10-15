@@ -10,6 +10,11 @@ const t = useTranslations(lang);
 const locale = lang === 'en' ? 'en' : 'vn';
 
 const products = await listProducts(locale);
+
+// Cache the rendered page at Netlify's edge so visitors don't wait on a
+// function + database round trip every time.
+Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
 const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
 
 // Deep link from the homepage's "exclusive in combo" cards (Sauvignon
