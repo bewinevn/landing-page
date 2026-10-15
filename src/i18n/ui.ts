@@ -26,6 +26,9 @@ export const languages = {
         'about.title.line3': 'mới',
         'footer.cta': 'theo dõi chúng mình nhé',
         'footer.hotline': 'hotline',
+        'footer.company': 'CÔNG TY CỔ PHẦN BEWINE',
+        'footer.registration': 'Mã số doanh nghiệp: 0111200149. Giấy chứng nhận đăng ký doanh nghiệp do Sở Kế hoạch và Đầu tư TP Hà Nội cấp lần đầu ngày 31/08/2025.',
+        'footer.foodSafety': 'Số cấp An toàn thực phẩm: 005/2024/ATTP-CNDK.',
 
         'product.buyNow': 'mua ngay',
         'product.wineType': 'loại rượu',
@@ -101,6 +104,9 @@ export const languages = {
       'about.title.line3': 'wine',
       'footer.cta': 'follow us on socials',
       'footer.hotline': 'hotline',
+      'footer.company': 'BEWINE JOINT STOCK COMPANY',
+      'footer.registration': 'Enterprise code: 0111200149. Business registration certificate first issued by the Hanoi Department of Planning and Investment on 31/08/2025.',
+      'footer.foodSafety': 'Food safety certificate no.: 005/2024/ATTP-CNDK.',
 
       'product.buyNow': 'buy now',
       'product.wineType': 'wine type',
