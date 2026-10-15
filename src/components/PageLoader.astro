@@ -1,0 +1,65 @@
+<script is:inline>
+  (function () {
+    var d = document.documentElement;
+    try { if (sessionStorage.getItem('bwLoaded')) return; } catch (e) {}
+    d.classList.add('bw-loading');
+    var t0 = Date.now();
+    function done() {
+      var wait = Math.max(0, 900 - (Date.now() - t0));
+      setTimeout(function () {
+        d.classList.remove('bw-loading');
+        try { sessionStorage.setItem('bwLoaded', '1'); } catch (e) {}
+      }, wait);
+    }
+    if (document.readyState === 'complete') done();
+    else window.addEventListener('load', done);
+    setTimeout(done, 6000);
+  })();
+</script>
+
+<div id="bw-loader" aria-hidden="true">
+  <svg class="bw-logo" viewBox="-20 -10 665 370" xmlns="http://www.w3.org/2000/svg">
+    <path class="bw-g bw-g0" d="M150.924 108.667C101.335 108.667 64.6808 168.175 23.715 283.739L74.1681 0H73.3061C54.3337 10.3492 27.5978 20.6984 4.31163 26.7359V27.5978C34.4973 31.4785 40.9658 35.7901 37.947 52.1768L2.15688 254.416C0.864024 263.039 0 271.233 0 278.564C0 329.017 32.7713 344.97 64.6829 344.97C139.282 344.97 198.36 266.058 198.36 175.503C198.36 134.537 180.25 108.665 150.926 108.665L150.924 108.667ZM63.8189 339.799C41.3967 339.799 23.715 327.293 23.715 305.733C23.715 300.559 24.5769 294.953 26.7338 288.053C66.4046 183.699 102.197 125.916 138.418 125.916C158.254 125.916 169.034 147.476 169.034 186.285C169.034 267.784 122.895 339.799 63.8189 339.799Z" />
+    <path class="bw-g bw-g1" d="M298.4 325.569C255.71 325.569 230.7 294.522 230.7 246.226V239.757C324.274 230.701 391.974 200.948 391.974 155.24C391.974 127.211 367.825 108.67 330.309 108.67C259.591 108.67 201.377 175.938 201.377 258.732C201.377 311.339 231.562 344.975 281.582 344.975C319.529 344.975 359.2 320.396 381.624 283.742L380.762 283.311C359.202 308.752 325.567 325.569 298.4 325.569ZM326.429 113.843C350.146 113.843 366.1 128.935 366.1 150.928C366.1 194.049 311.766 223.373 231.129 235.876C235.01 168.177 275.978 113.843 326.429 113.843Z" />
+    <path class="bw-g bw-g2" d="M401.031 216.04H608.014L609.738 211.728H402.754L401.031 216.04Z" />
+    <g class="bw-caret-x"><rect class="bw-caret" x="0" y="30" width="9" height="316" rx="2" /></g>
+  </svg>
+</div>
+
+<style is:global>
+  #bw-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  html.bw-loading #bw-loader {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  #bw-loader .bw-logo { width: min(220px, 52vw); height: auto; overflow: visible; }
+  #bw-loader .bw-g { fill: #A71E22; opacity: 0; }
+  #bw-loader .bw-caret { fill: #A71E22; animation: bw-blink 0.8s steps(1) infinite; }
+  #bw-loader .bw-caret-x { animation: bw-caret-x 3.2s step-end infinite; transform: translateX(-16px); }
+  @keyframes bw-blink { 50% { opacity: 0; } }
+  #bw-loader .bw-g0 { animation: bw-type0 3.2s linear infinite; }
+  #bw-loader .bw-g1 { animation: bw-type1 3.2s linear infinite; }
+  #bw-loader .bw-g2 { animation: bw-type2 3.2s linear infinite; }
+  @keyframes bw-type0 { 0%, 2.5% { opacity: 0; } 2.51%, 75% { opacity: 1; } 84%, 100% { opacity: 0; } }
+  @keyframes bw-type1 { 0%, 10.0% { opacity: 0; } 10.01%, 75% { opacity: 1; } 84%, 100% { opacity: 0; } }
+  @keyframes bw-type2 { 0%, 17.5% { opacity: 0; } 17.51%, 75% { opacity: 1; } 84%, 100% { opacity: 0; } }
+  @keyframes bw-caret-x { 0% { transform: translateX(-16px); } 2.5% { transform: translateX(208px); } 10.0% { transform: translateX(402px); } 17.5% { transform: translateX(620px); } 84% { transform: translateX(-16px); } }
+  @media (prefers-reduced-motion: reduce) {
+    #bw-loader .bw-g { animation: none; opacity: 1; }
+    #bw-loader .bw-caret-x, #bw-loader .bw-caret { animation: none; }
+    #bw-loader .bw-caret { opacity: 0; }
+  }
+</style>

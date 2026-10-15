@@ -1,0 +1,198 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listProductsForAdmin } from '../../../modules/products';
+import { listWarehouses, listAllProductStock } from '../../../modules/inventory';
+
+const [products, warehouses, stockRows] = await Promise.all([
+  listProductsForAdmin(),
+  listWarehouses(),
+  listAllProductStock(),
+]);
+
+// stockByProduct[productId][warehouseId] = quantity, for O(1) cell lookups below.
+const stockByProduct = new Map<string, Map<string, number>>();
+for (const row of stockRows) {
+  if (!stockByProduct.has(row.product_id)) stockByProduct.set(row.product_id, new Map());
+  stockByProduct.get(row.product_id)!.set(row.warehouse_id, row.stock_quantity);
+}
+---
+
+<AdminLayout title="be-wine admin — kho">
+  <h1 style="font-size: 20px; margin: 0 0 16px;">Quản lý kho</h1>
+
+  <div style="overflow-x: auto; margin-bottom: 24px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: white; border-radius: 8px;">
+      <thead>
+        <tr style="text-align: left; border-bottom: 2px solid #eee;">
+          <th style="padding: 10px;">Sản phẩm</th>
+          <th style="padding: 10px;">Giá / lon</th>
+          {warehouses.map((w) => <th style="padding: 10px;">{w.name}</th>)}
+          <th style="padding: 10px;">Tổng</th>
+          <th style="padding: 10px;">Đang giữ</th>
+          <th style="padding: 10px;">Có thể bán</th>
+          <th style="padding: 10px;">Đang bán</th>
+          <th style="padding: 10px;">Sắp ra mắt</th>
+          <th style="padding: 10px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((p) => (
+          <tr style="border-bottom: 1px solid #f0f0f0;" data-product-row data-product-id={p.id}>
+            <td style="padding: 10px; font-weight: 700;">{p.name_vn} <span style="color: #999; font-weight: 400;">({p.abbreviation})</span></td>
+            <td style="padding: 10px;">{(p.is_promo && p.promo_price_vnd != null ? p.promo_price_vnd : p.price_vnd).toLocaleString('vi-VN')} ₫</td>
+            {warehouses.map((w) => (
+              <td style="padding: 10px;">{stockByProduct.get(p.id)?.get(w.id) ?? 0}</td>
+            ))}
+            <td style="padding: 10px; font-weight: 700;">{p.stock_quantity}</td>
+            <td style="padding: 10px; color: #999;">{p.reserved_quantity}</td>
+            <td style="padding: 10px; color: #999;">{p.stock_quantity - p.reserved_quantity}</td>
+            <td style="padding: 10px;">
+              <input data-field="isActive" type="checkbox" checked={p.is_active} />
+            </td>
+            <td style="padding: 10px;">
+              <input data-field="isComingSoon" type="checkbox" checked={p.is_coming_soon} />
+            </td>
+            <td style="padding: 10px;">
+              <button
+                class="save-toggles-btn"
+                style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer;"
+              >
+                Lưu
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Nhập kho</h2>
+      <form id="restock-form" style="display: flex; flex-direction: column; gap: 10px;">
+        <select name="productId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {products.map((p) => <option value={p.id}>{p.name_vn} ({p.abbreviation})</option>)}
+        </select>
+        <select name="warehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {warehouses.map((w) => <option value={w.id}>{w.name}</option>)}
+        </select>
+        <input name="quantity" type="number" min="1" required placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+        <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;">
+          Nhập kho
+        </button>
+      </form>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Chuyển kho</h2>
+      <form id="transfer-form" style="display: flex; flex-direction: column; gap: 10px;">
+        <select name="productId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {products.map((p) => <option value={p.id}>{p.name_vn} ({p.abbreviation})</option>)}
+        </select>
+        <select name="fromWarehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {warehouses.map((w) => <option value={w.id}>Từ: {w.name}</option>)}
+        </select>
+        <select name="toWarehouseId" required style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+          {warehouses.map((w) => <option value={w.id}>Đến: {w.name}</option>)}
+        </select>
+        <input name="quantity" type="number" min="1" required placeholder="Số lượng" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;" />
+        <button type="submit" style="background: #A71E22; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: 700; cursor: pointer;">
+          Chuyển kho
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <p id="inventory-error" hidden style="color: #A71E22; margin-top: 12px;"></p>
+  <p id="inventory-success" hidden style="color: #16a34a; margin-top: 12px;">Đã lưu.</p>
+</AdminLayout>
+
+<script>
+  const errorEl = document.getElementById('inventory-error')!;
+  const successEl = document.getElementById('inventory-success')!;
+
+  function showError(message: string) {
+    successEl.hidden = true;
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.save-toggles-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const row = btn.closest('[data-product-row]') as HTMLElement;
+      const productId = row.dataset.productId;
+      const activeInput = row.querySelector<HTMLInputElement>('[data-field="isActive"]')!;
+      const comingSoonInput = row.querySelector<HTMLInputElement>('[data-field="isComingSoon"]')!;
+
+      errorEl.hidden = true;
+      successEl.hidden = true;
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/admin/products/${productId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isActive: activeInput.checked, isComingSoon: comingSoonInput.checked }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra.');
+        successEl.hidden = false;
+        window.location.reload();
+      } catch (err) {
+        showError(err instanceof Error ? err.message : 'Có lỗi xảy ra.');
+        btn.disabled = false;
+      }
+    });
+  });
+
+  document.getElementById('restock-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
+    errorEl.hidden = true;
+    successEl.hidden = true;
+
+    try {
+      const res = await fetch('/api/admin/inventory/restock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: fd.get('productId'),
+          warehouseId: fd.get('warehouseId'),
+          quantity: Number(fd.get('quantity')),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra.');
+      window.location.reload();
+    } catch (err) {
+      showError(err instanceof Error ? err.message : 'Có lỗi xảy ra.');
+    }
+  });
+
+  document.getElementById('transfer-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const fd = new FormData(form);
+    errorEl.hidden = true;
+    successEl.hidden = true;
+
+    try {
+      const res = await fetch('/api/admin/inventory/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: fd.get('productId'),
+          fromWarehouseId: fd.get('fromWarehouseId'),
+          toWarehouseId: fd.get('toWarehouseId'),
+          quantity: Number(fd.get('quantity')),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message ?? 'Có lỗi xảy ra.');
+      window.location.reload();
+    } catch (err) {
+      showError(err instanceof Error ? err.message : 'Có lỗi xảy ra.');
+    }
+  });
+</script>

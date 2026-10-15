@@ -1,0 +1,112 @@
+---
+import { getOrderDetail } from '../../../modules/orders';
+
+const { reference } = Astro.params;
+
+let order, items;
+try {
+  ({ order, items } = await getOrderDetail(reference!));
+} catch {
+  return Astro.redirect('/');
+}
+
+const isPaid = order.status !== 'pending_payment' && order.status !== 'cancelled';
+---
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Phiếu đơn — {order.reference}</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, "Space Grotesk", Arial, sans-serif;
+        color: #1a1a1a;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      .no-print { margin-bottom: 16px; }
+      .no-print button {
+        background: #A71E22;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      h1 { font-size: 18px; margin: 0 0 4px; text-transform: uppercase; }
+      .ref { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #A71E22; margin: 0 0 12px; }
+      .status {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 16px;
+      }
+      .status.paid { background: #dcfce7; color: #166534; }
+      .status.unpaid { background: #fee2e2; color: #991b1b; }
+      hr { border: none; border-top: 2px dashed #ccc; margin: 16px 0; }
+      .section-title { font-size: 11px; text-transform: uppercase; color: #888; font-weight: 700; margin: 0 0 6px; }
+      .row { display: flex; justify-content: space-between; font-size: 14px; margin: 2px 0; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; }
+      td { padding: 4px 0; }
+      td.qty { text-align: center; width: 40px; }
+      td.amount { text-align: right; }
+      .total-row { font-weight: 800; font-size: 16px; border-top: 2px solid #1a1a1a; padding-top: 8px; }
+      .note { font-size: 13px; margin-top: 4px; color: #444; }
+      @media print {
+        .no-print { display: none; }
+        body { padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print">
+      <button onclick="window.print()">In phiếu đơn</button>
+    </div>
+
+    <h1>be-wine — phiếu đơn hàng</h1>
+    <p class="ref">{order.reference}</p>
+    <span class={`status ${isPaid ? 'paid' : 'unpaid'}`}>
+      {isPaid ? 'ĐÃ THANH TOÁN' : 'CHƯA THANH TOÁN'}
+    </span>
+
+    <hr />
+
+    <p class="section-title">Giao đến</p>
+    <p style="font-weight:700; font-size:16px; margin:0 0 2px;">{order.delivery_full_name}</p>
+    <p style="margin:0 0 2px;">{order.delivery_phone}</p>
+    <p style="margin:0;">{order.delivery_address_line}, {order.delivery_city}</p>
+    {order.delivery_note && <p class="note">Ghi chú: {order.delivery_note}</p>}
+
+    <hr />
+
+    <p class="section-title">Sản phẩm</p>
+    <table>
+      {items.map((item) => (
+        <tr>
+          <td>{item.product_name_snapshot}{item.unit_price_vnd === 0 && <strong> (Quà tặng)</strong>}</td>
+          <td class="qty">&times;{item.quantity}</td>
+          <td class="amount">{item.line_total_vnd.toLocaleString('vi-VN')} ₫</td>
+        </tr>
+      ))}
+    </table>
+
+    {order.total_vnd > order.subtotal_vnd && (
+      <div class="row">
+        <span>Phí thu hộ (COD)</span>
+        <span>{(order.total_vnd - order.subtotal_vnd).toLocaleString('vi-VN')} ₫</span>
+      </div>
+    )}
+    <div class="row total-row">
+      <span>Tổng cộng</span>
+      <span>{order.total_vnd.toLocaleString('vi-VN')} ₫</span>
+    </div>
+  </body>
+</html>

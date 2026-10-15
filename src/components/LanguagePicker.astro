@@ -5,11 +5,88 @@ import { useTranslatedPath, getLangFromUrl } from 'src/i18n/utils';
 const lang = getLangFromUrl(Astro.url)
 const translatePath = useTranslatedPath(lang);
 
+// Switch to the same page in the other language when a translation exists
+// (only the about page so far); everything else falls back to the home page.
+const translatedPages = ['/about'];
+const pathWithoutLang = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
+const targetPath = translatedPages.includes(pathWithoutLang) ? pathWithoutLang : '/';
+
+// Accessible names for the flag buttons, in their own language.
+const names: Record<string, string> = { en: 'English', vn: 'Tiếng Việt' };
 ---
 <ul class="flex items-center gap-2 m-0 p-0 list-none">
-    {Object.entries(languages).filter((cur) => cur[0] !== lang ).map(([lang, label]) => (
-      <li class="text-sauvignon-700 hover:underline text-base font-sans font-medium">
-        <a href={translatePath('/', lang)}>{label}</a>
+    {Object.keys(languages).filter((code) => code !== lang ).map((code) => (
+      <li class="flex items-center">
+        <a href={translatePath(targetPath, code)} aria-label={names[code]} title={names[code]} class="block hover:opacity-80 transition-opacity">
+          {code === 'en' ? (
+            <svg viewBox="0 0 30 20" width="30" height="20" class="block rounded-[3px] outline outline-1 outline-white/70" aria-hidden="true">
+              <rect width="30" height="20" fill="#fff" />
+              <rect y="0.000" width="30" height="1.548" fill="#B22234" />
+              <rect y="3.077" width="30" height="1.548" fill="#B22234" />
+              <rect y="6.154" width="30" height="1.548" fill="#B22234" />
+              <rect y="9.231" width="30" height="1.548" fill="#B22234" />
+              <rect y="12.308" width="30" height="1.548" fill="#B22234" />
+              <rect y="15.385" width="30" height="1.548" fill="#B22234" />
+              <rect y="18.462" width="30" height="1.548" fill="#B22234" />
+              <rect width="12.0" height="10.769" fill="#3C3B6E" />
+              <circle cx="1.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="3.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="5.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="7.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="9.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="11.00" cy="0.60" r="0.42" fill="#fff" />
+              <circle cx="2.00" cy="1.79" r="0.42" fill="#fff" />
+              <circle cx="4.00" cy="1.79" r="0.42" fill="#fff" />
+              <circle cx="6.00" cy="1.79" r="0.42" fill="#fff" />
+              <circle cx="8.00" cy="1.79" r="0.42" fill="#fff" />
+              <circle cx="10.00" cy="1.79" r="0.42" fill="#fff" />
+              <circle cx="1.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="3.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="5.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="7.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="9.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="11.00" cy="2.99" r="0.42" fill="#fff" />
+              <circle cx="2.00" cy="4.19" r="0.42" fill="#fff" />
+              <circle cx="4.00" cy="4.19" r="0.42" fill="#fff" />
+              <circle cx="6.00" cy="4.19" r="0.42" fill="#fff" />
+              <circle cx="8.00" cy="4.19" r="0.42" fill="#fff" />
+              <circle cx="10.00" cy="4.19" r="0.42" fill="#fff" />
+              <circle cx="1.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="3.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="5.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="7.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="9.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="11.00" cy="5.38" r="0.42" fill="#fff" />
+              <circle cx="2.00" cy="6.58" r="0.42" fill="#fff" />
+              <circle cx="4.00" cy="6.58" r="0.42" fill="#fff" />
+              <circle cx="6.00" cy="6.58" r="0.42" fill="#fff" />
+              <circle cx="8.00" cy="6.58" r="0.42" fill="#fff" />
+              <circle cx="10.00" cy="6.58" r="0.42" fill="#fff" />
+              <circle cx="1.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="3.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="5.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="7.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="9.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="11.00" cy="7.78" r="0.42" fill="#fff" />
+              <circle cx="2.00" cy="8.97" r="0.42" fill="#fff" />
+              <circle cx="4.00" cy="8.97" r="0.42" fill="#fff" />
+              <circle cx="6.00" cy="8.97" r="0.42" fill="#fff" />
+              <circle cx="8.00" cy="8.97" r="0.42" fill="#fff" />
+              <circle cx="10.00" cy="8.97" r="0.42" fill="#fff" />
+              <circle cx="1.00" cy="10.17" r="0.42" fill="#fff" />
+              <circle cx="3.00" cy="10.17" r="0.42" fill="#fff" />
+              <circle cx="5.00" cy="10.17" r="0.42" fill="#fff" />
+              <circle cx="7.00" cy="10.17" r="0.42" fill="#fff" />
+              <circle cx="9.00" cy="10.17" r="0.42" fill="#fff" />
+              <circle cx="11.00" cy="10.17" r="0.42" fill="#fff" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 30 20" width="30" height="20" class="block rounded-[3px] outline outline-1 outline-white/70" aria-hidden="true">
+              <rect width="30" height="20" fill="#DA251D" />
+              <polygon points="15.00,4.00 16.35,8.15 20.71,8.15 17.18,10.71 18.53,14.85 15.00,12.29 11.47,14.85 12.82,10.71 9.29,8.15 13.65,8.15" fill="#FFFF00" />
+            </svg>
+          )}
+        </a>
       </li>
     ))}
 </ul>

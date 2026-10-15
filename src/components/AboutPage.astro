@@ -1,0 +1,172 @@
+---
+import { Image } from 'astro:assets';
+import { getLangFromUrl } from '../i18n/utils';
+import story1 from '../assets/about/story-1.jpg';
+import story2 from '../assets/about/story-2.jpg';
+import scenes2 from '../assets/about/scenes-2.jpg';
+import scenes3 from '../assets/about/scenes-3.jpg';
+import scenes4 from '../assets/about/scenes-4.jpg';
+import scenes5 from '../assets/about/scenes-5.jpg';
+
+// Content is taken from the three pinned posts on instagram.com/bewinevn.
+const copy = {
+  vn: {
+    heroEyebrow: 'Giới thiệu be-wine',
+    heroTitle: 'Vang lon đến từ một nhà rượu Việt',
+    heroLead:
+      'Những lon vang ra đời để mọi người được thưởng thức vang một cách đơn giản và thân thiện. Để mở ra một đời sống phong phú, vui vẻ và nhiều cảm xúc.',
+    reasons: [
+      'Với những người mới uống, đây là cơ hội thử vang dễ dàng và đa dạng.',
+      'Với những người uống hàng ngày, đây là lựa chọn tiện lợi và kinh tế.',
+    ],
+    scenesEyebrow: 'Be-wine the scenes',
+    scenesTitle: 'Có gì ở xưởng rượu Be-wine?',
+    scenesP1:
+      'Đằng sau mỗi mẻ rượu là một quy trình sản xuất nghiêm ngặt. Từ những chùm nho chín mọng tới những giọt vang tròn vị, mọi công đoạn làm rượu đều được kiểm soát kỹ lưỡng bởi đội ngũ sản xuất giàu kinh nghiệm của Be-wine.',
+    scenesP2:
+      'Với biết bao tâm huyết, Be-wine tự hào mang tới những hương vị tươi mới, trẻ trung trong từng ngụm, góp phần tạo nên một diện mạo mới cho vang Việt.',
+    sceneAlts: [
+      'Địa điểm: Bắc Ninh',
+      'Dây chuyền nhập khẩu',
+      'Con người Việt Nam',
+      'Trẻ trung, tươi mới — một diện mạo mới cho vang Việt',
+    ],
+    storyEyebrow: 'Câu chuyện be-wine',
+    storyTitle: 'Be-wine hướng tới điều gì?',
+    storyP1:
+      'Ai cũng có thể chạm được vang, có thể uống rượu vang như một thói quen hàng ngày, không quá cầu kỳ hay phức tạp.',
+    storyP2:
+      'Một lối sống thưởng thức mới — tươi trẻ, gần gũi và thường ngày; bên cạnh đời sống hưởng thụ trước đây — những dịp đặc biệt, sâu lắng và đáng nhớ.',
+  },
+  en: {
+    heroEyebrow: 'About be-wine',
+    heroTitle: 'Canned wine from a Vietnamese winery',
+    heroLead:
+      'Canned wine was created so that everyone can enjoy wine in a simple, friendly way — to open up a rich, joyful life full of feeling.',
+    reasons: [
+      'For people new to wine, it is a chance to try wine easily, with plenty of variety.',
+      'For everyday drinkers, it is a convenient and economical choice.',
+    ],
+    scenesEyebrow: 'Be-wine the scenes',
+    scenesTitle: 'What goes on inside the be-wine winery?',
+    scenesP1:
+      'Behind every batch of wine is a rigorous production process. From ripe bunches of grapes to well-rounded drops of wine, every stage is carefully controlled by be-wine’s experienced production team.',
+    scenesP2:
+      'With great dedication, be-wine proudly brings fresh, youthful flavors in every sip, helping to give Vietnamese wine a new face.',
+    sceneAlts: [
+      'Location: Bac Ninh',
+      'Imported production line',
+      'Vietnamese craftspeople',
+      'Young and fresh — a new face for Vietnamese wine',
+    ],
+    storyEyebrow: 'The be-wine story',
+    storyTitle: 'What is be-wine aiming for?',
+    storyP1:
+      'Anyone can reach wine — drink it as an everyday habit, without fuss or complexity.',
+    storyP2:
+      'A new way of enjoying wine — young, approachable and everyday — alongside the indulgent life of before: special, deep and memorable occasions.',
+  },
+};
+
+const lang = getLangFromUrl(Astro.url);
+const c = copy[lang === 'en' ? 'en' : 'vn'];
+
+const scenes = [
+  { image: scenes2 },
+  { image: scenes3 },
+  { image: scenes4 },
+  { image: scenes5 },
+];
+---
+
+  <main class="w-full">
+  <!-- 1. Giới thiệu be-wine — same layout as the story section, mirrored -->
+  <section class="w-full bg-sirah-50 px-6 py-12 md:px-20 md:py-24">
+    <div class="max-w-[1200px] mx-auto grid gap-10 lg:grid-cols-2 lg:gap-20 lg:items-center">
+      <Image
+        src={story2}
+        alt={c.heroTitle}
+        widths={[480, 720, 1000]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+        class="w-full h-auto rounded-xl object-cover"
+      />
+      <div>
+        <p class="m-0 mb-4 text-sm md:text-base font-bold uppercase tracking-widest text-[#A71E22]">{c.heroEyebrow}</p>
+        <h1 class="font-serif font-normal text-[#86181b] text-3xl md:text-5xl leading-tight m-0 mb-8" style="text-wrap: balance">
+          {c.heroTitle}
+        </h1>
+        <div class="flex flex-col gap-5 text-[#252525] text-base md:text-xl leading-relaxed font-medium">
+          <p class="m-0">
+            {c.heroLead}
+          </p>
+        </div>
+
+        <ol class="list-none m-0 mt-8 p-0 grid gap-6 sm:grid-cols-2">
+          {c.reasons.map((text, i) => (
+            <li class="border-t-2 border-[#A71E22] pt-4">
+              <span class="block font-serif text-[#A71E22] text-3xl leading-none mb-3">{i + 1}</span>
+              <p class="m-0 text-[#252525] text-base md:text-xl leading-relaxed font-medium">{text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Be-wine the scenes -->
+  <section class="w-full bg-[#A71E22] px-6 py-12 md:px-20 md:py-24">
+    <div class="max-w-[1200px] mx-auto">
+      <p class="m-0 mb-4 text-sm md:text-base font-bold uppercase tracking-widest text-sirah-200">{c.scenesEyebrow}</p>
+      <h2 class="font-serif font-normal text-sirah-50 text-3xl md:text-5xl leading-tight m-0 mb-8 max-w-[800px]">
+        {c.scenesTitle}
+      </h2>
+      <div class="grid gap-5 md:grid-cols-2 md:gap-12 mb-10 md:mb-14 text-sirah-50 text-base md:text-xl leading-relaxed font-medium">
+        <p class="m-0">
+          {c.scenesP1}
+        </p>
+        <p class="m-0">
+          {c.scenesP2}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+        {scenes.map((s, i) => (
+          <Image
+            src={s.image}
+            alt={c.sceneAlts[i]}
+            widths={[320, 480, 720]}
+            sizes="(min-width: 1024px) 280px, 50vw"
+            class="w-full h-auto aspect-square object-cover rounded-xl"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Câu chuyện be-wine -->
+  <section class="w-full bg-sirah-50 px-6 py-12 md:px-20 md:py-24">
+    <div class="max-w-[1200px] mx-auto grid gap-10 lg:grid-cols-2 lg:gap-20 lg:items-center">
+      <div>
+        <p class="m-0 mb-4 text-sm md:text-base font-bold uppercase tracking-widest text-[#A71E22]">{c.storyEyebrow}</p>
+        <h2 class="font-serif font-normal text-[#86181b] text-3xl md:text-5xl leading-tight m-0 mb-8">
+          {c.storyTitle}
+        </h2>
+        <div class="flex flex-col gap-5 text-[#252525] text-base md:text-xl leading-relaxed font-medium">
+          <p class="m-0">
+            {c.storyP1}
+          </p>
+          <p class="m-0">
+            {c.storyP2}
+          </p>
+        </div>
+      </div>
+      <Image
+        src={story1}
+        alt={c.storyTitle}
+        widths={[480, 720, 1000]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+        class="w-full h-auto rounded-xl object-cover"
+      />
+    </div>
+  </section>
+</main>

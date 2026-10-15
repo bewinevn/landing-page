@@ -1,0 +1,64 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSalesSummary, type OrderStatus } from '../../modules/orders';
+
+const summary = await getSalesSummary();
+
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  pending_payment: 'Chờ thanh toán',
+  paid: 'Đã thanh toán',
+  processing: 'Đang xử lý',
+  shipped: 'Đã giao vận chuyển',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
+  refunded: 'Đã hoàn tiền',
+};
+const STATUS_ORDER: OrderStatus[] = [
+  'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled', 'refunded',
+];
+---
+
+<AdminLayout title="be-wine admin — tổng quan">
+  <h1 style="font-size: 20px; margin: 0 0 16px;">Tổng quan</h1>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <p style="margin: 0 0 4px; font-size: 13px; color: #999;">Doanh thu</p>
+      <p style="margin: 0; font-size: 24px; font-weight: 800; color: #A71E22;">{summary.totalRevenueVnd.toLocaleString('vi-VN')} ₫</p>
+    </div>
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <p style="margin: 0 0 4px; font-size: 13px; color: #999;">Số đơn đã thanh toán</p>
+      <p style="margin: 0; font-size: 24px; font-weight: 800;">{summary.totalOrders}</p>
+    </div>
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <p style="margin: 0 0 4px; font-size: 13px; color: #999;">Số lon đã bán</p>
+      <p style="margin: 0; font-size: 24px; font-weight: 800;">{summary.totalCansSold}</p>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Theo sản phẩm</h2>
+      {summary.byProduct.length === 0 && <p style="color: #999; margin: 0;">Chưa có đơn nào được thanh toán.</p>}
+      {summary.byProduct.map((p) => (
+        <p style="display: flex; justify-content: space-between; margin: 0 0 8px; font-size: 14px;">
+          <span style="text-transform: capitalize;">{p.name} &times; {p.quantity}</span>
+          <span style="font-weight: 700;">{p.revenueVnd.toLocaleString('vi-VN')} ₫</span>
+        </p>
+      ))}
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px;">
+      <h2 style="font-size: 14px; text-transform: uppercase; color: #999; margin: 0 0 12px;">Đơn hàng theo trạng thái</h2>
+      {STATUS_ORDER.map((s) => (
+        <a
+          href={`/admin/orders?status=${s}`}
+          style="display: flex; justify-content: space-between; margin: 0 0 8px; font-size: 14px; text-decoration: none; color: inherit;"
+        >
+          <span>{STATUS_LABELS[s]}</span>
+          <span style="font-weight: 700;">{summary.statusCounts[s]}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</AdminLayout>
