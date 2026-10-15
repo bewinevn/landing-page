@@ -27,7 +27,7 @@ const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : transl
       >
         {t('nav.orderNow')}
       </a>
-      <a href="/about" class="text-white hover:underline text-base font-sans font-medium whitespace-nowrap">
+      <a href={translatePath('/about')} class="text-white hover:underline text-base font-sans font-medium whitespace-nowrap">
         {t('nav.about')}
       </a>
       <LanguagePicker />

@@ -5,13 +5,19 @@ import { useTranslatedPath, getLangFromUrl } from 'src/i18n/utils';
 const lang = getLangFromUrl(Astro.url)
 const translatePath = useTranslatedPath(lang);
 
+// Switch to the same page in the other language when a translation exists
+// (only the about page so far); everything else falls back to the home page.
+const translatedPages = ['/about'];
+const pathWithoutLang = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
+const targetPath = translatedPages.includes(pathWithoutLang) ? pathWithoutLang : '/';
+
 // Accessible names for the flag buttons, in their own language.
 const names: Record<string, string> = { en: 'English', vn: 'Tiếng Việt' };
 ---
 <ul class="flex items-center gap-2 m-0 p-0 list-none">
     {Object.keys(languages).filter((code) => code !== lang ).map((code) => (
       <li class="flex items-center">
-        <a href={translatePath('/', code)} aria-label={names[code]} title={names[code]} class="block hover:opacity-80 transition-opacity">
+        <a href={translatePath(targetPath, code)} aria-label={names[code]} title={names[code]} class="block hover:opacity-80 transition-opacity">
           {code === 'en' ? (
             <svg viewBox="0 0 30 20" width="30" height="20" class="block rounded-[3px] outline outline-1 outline-white/70" aria-hidden="true">
               <rect width="30" height="20" fill="#fff" />
