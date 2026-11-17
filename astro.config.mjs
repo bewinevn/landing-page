@@ -23,6 +23,7 @@ export default defineConfig({
     }
   },
   integrations: [tailwind(), sitemap(), robots()],
+  prefetch: true,
   output: "server",
   adapter: netlify(),
 });

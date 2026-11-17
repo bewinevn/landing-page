@@ -13,11 +13,21 @@ const products = await listProducts(locale);
 
 // Cache the rendered page at Netlify's edge so visitors don't wait on a
 // function + database round trip every time.
+// Only ?wine= changes the HTML — ignore other params (utm_*, fbclid, ...) so
+// they don't each miss the cache.
+Astro.response.headers.set('Netlify-Vary', 'query=wine');
 Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, max-age=60, stale-while-revalidate=86400, durable');
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=86400, must-revalidate');
 // Sold by stock, not by the "coming soon" flag — that flag now only drives
 // the "limited quantity" label on the homepage cards.
-const defaultProduct = products.find((p) => p.availableQty > 0) ?? products[0];
+// Homepage cards deep-link here with ?wine=<slug> so each opens on its own
+// wine. Falls back to the first wine in stock for a missing/unknown/sold-out
+// slug.
+const wineParam = Astro.url.searchParams.get('wine');
+const defaultProduct =
+  products.find((p) => p.slug === wineParam && p.availableQty > 0) ??
+  products.find((p) => p.availableQty > 0) ??
+  products[0];
 
 const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
 
@@ -139,7 +149,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
           class="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0068FF] text-[#0068FF] font-sans font-bold text-base px-8 py-4 hover:bg-[#0068FF]/5 transition"
         >
           {t('product.contactZaloPrefix')}
-          <Image src={zaloLogo} alt="Zalo" width={2000} height={2000} class="h-6 w-6" />
+          <Image src={zaloLogo} alt="Zalo" width={64} height={64} class="h-6 w-6" />
         </a>
       </div>
     </div>

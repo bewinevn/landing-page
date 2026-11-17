@@ -23,12 +23,13 @@ const products = await listProducts(locale);
           // instead of a dead /en/products link.
           const href = lang === 'en'
             ? 'https://zalo.me/3836034200863507097'
-            : translatePath('/products');
+            : translatePath('/products') + `?wine=${product.slug}`;
           return (
             <a
               href={href}
               target={lang === 'en' ? '_blank' : undefined}
               rel={lang === 'en' ? 'noopener' : undefined}
+              data-astro-prefetch={lang === 'en' ? undefined : 'viewport'}
               class="block transition-transform duration-200 hover:scale-[1.03] hover:shadow-lg rounded-lg"
             >
               <Card
