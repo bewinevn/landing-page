@@ -9,7 +9,7 @@ export const languages = {
   export const ui = {
     vn: {
         'winelist.title': 'các sản phẩm',
-        'winelist.comingsoon': 'sắp ra mắt',
+        'winelist.comingsoon': 'số lượng có hạn',
         'winelist.inStock': 'có hàng',
         'winelist.hsdLabel': 'HSD:',
         'winelist.hsdText': '8 tháng kể từ NSX (được in dưới đáy lon)',
@@ -35,7 +35,7 @@ export const languages = {
         'product.packageLabel': 'số lượng',
         'product.canUnit': 'lon',
         'product.perCan': '/ lon',
-        'product.freeShip': 'freeship từ 12 lon',
+        'product.freeShip': 'freeship',
         'product.contactZaloPrefix': 'liên hệ đặt hàng qua',
 
         'cart.title': 'Giỏ hàng của bạn',
@@ -84,7 +84,7 @@ export const languages = {
     },
     en: {
       'winelist.title': 'our products',
-      'winelist.comingsoon': 'coming soon',
+      'winelist.comingsoon': 'limited quantity',
       'winelist.inStock': 'in stock',
       'winelist.hsdLabel': 'Best before:',
       'winelist.hsdText': '8 months from production date (printed on the bottom of the can)',
@@ -110,7 +110,7 @@ export const languages = {
       'product.packageLabel': 'quantity',
       'product.canUnit': 'cans',
       'product.perCan': '/ can',
-      'product.freeShip': 'free shipping from 12 cans',
+      'product.freeShip': 'free shipping',
       'product.contactZaloPrefix': 'contact us to order via',
 
       'cart.title': 'Your cart',

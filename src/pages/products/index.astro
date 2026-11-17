@@ -15,7 +15,9 @@ const products = await listProducts(locale);
 // function + database round trip every time.
 Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, max-age=60, stale-while-revalidate=86400, durable');
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=86400, must-revalidate');
-const defaultProduct = products.find((p) => !p.isComingSoon) ?? products[0];
+// Sold by stock, not by the "coming soon" flag — that flag now only drives
+// the "limited quantity" label on the homepage cards.
+const defaultProduct = products.find((p) => p.availableQty > 0) ?? products[0];
 
 const petiteSirah = products.find((p) => p.slug === 'petite-sirah');
 
@@ -65,7 +67,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
                 data-unit-price={petiteSirah.effectivePriceVnd}
                 data-available-qty={petiteSirah.availableQty}
                 data-unit-suffix={t('product.perCan')}
-                disabled={petiteSirah.isComingSoon}
+                disabled={petiteSirah.availableQty <= 0}
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 data-selected={petiteSirah.id === defaultProduct?.id ? 'true' : 'false'}
               >
@@ -83,7 +85,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
                 data-unit-price={product.effectivePriceVnd}
                 data-available-qty={product.availableQty}
                 data-unit-suffix={t('product.perCan')}
-                disabled={product.isComingSoon}
+                disabled={product.availableQty <= 0}
                 class="px-4 py-2 rounded-full border-2 border-[#d1d5db] font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:border-[#A71E22] data-[selected=true]:text-[#A71E22]"
                 data-selected={product.id === defaultProduct?.id ? 'true' : 'false'}
               >
@@ -97,6 +99,15 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
 
           <div class="grid grid-cols-4 gap-2">
+            <div class="col-span-2 col-start-3 flex items-center justify-center gap-1.5 rounded-full border-2 border-[#3CAA44] bg-[#3CAA44]/10 px-2 py-1 font-sans font-bold text-xs text-[#3CAA44]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0" aria-hidden="true">
+                <path d="M1 3h15v13H1z" />
+                <path d="M16 8h4l3 3v5h-7z" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
+              </svg>
+              {t('product.freeShip')}
+            </div>
             {QUANTITY_TIERS.map((qty, i) => (
               <button
                 type="button"
@@ -112,16 +123,6 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
         </div>
 
         <p class="font-bold text-[#A71E22] text-xl m-0" id="configurator-total"></p>
-
-        <div class="inline-flex w-fit items-center gap-2 rounded-full border-2 border-[#3CAA44] bg-[#3CAA44]/10 px-4 py-2 font-sans font-bold text-sm text-[#3CAA44]">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0" aria-hidden="true">
-            <path d="M1 3h15v13H1z" />
-            <path d="M16 8h4l3 3v5h-7z" />
-            <circle cx="5.5" cy="18.5" r="2.5" />
-            <circle cx="18.5" cy="18.5" r="2.5" />
-          </svg>
-          {t('product.freeShip')}
-        </div>
 
         <button
           type="button"
