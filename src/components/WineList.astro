@@ -18,15 +18,12 @@ const products = await listProducts(locale);
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => {
-          // Sauvignon Blanc / Zinfandel aren't sold standalone — only the
-          // combo picker unlocks them — so their card deep-links straight
-          // into the combo option instead of landing on the default wine.
           // There's no English products/checkout flow yet (only the
           // English home page exists), so English visitors go to Zalo
           // instead of a dead /en/products link.
           const href = lang === 'en'
             ? 'https://zalo.me/3836034200863507097'
-            : translatePath('/products') + (product.isComingSoon ? '?combo=1' : '');
+            : translatePath('/products');
           return (
             <a
               href={href}
