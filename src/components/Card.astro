@@ -63,7 +63,6 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
   <div class="relative w-full h-[195px] p-2 rounded bg-[#f0f0f0] border border-[#ccc] overflow-y-auto">
     {notes.map(line => <p class="m-0 text-[#666] text-base uppercase leading-normal">{line}</p>)}
     <p class="m-0 text-base">&nbsp;</p>
-    <p class="m-0 font-bold text-[#A71E22] text-sm uppercase">{t('winelist.ingredients')}</p>
     <p class="m-0 text-[#A71E22] text-sm uppercase">
       <span class="font-bold">{t('winelist.hsdLabel')} </span>
       <span>{t('winelist.hsdText')}</span>
