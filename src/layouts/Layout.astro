@@ -8,10 +8,15 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import DiscountPopup from '../components/DiscountPopup.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
+import BlackFridayPopup from '../components/BlackFridayPopup.astro';
+import BlackFridayBar from '../components/BlackFridayBar.astro';
+import { isBlackFridayActive } from '../config/blackFriday';
 
 const { title } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
+// Black Friday (26/11 - 28/11): swap in the Black Friday popup and bar, then switch back automatically.
+const blackFriday = isBlackFridayActive();
 ---
 
 <!DOCTYPE html>
@@ -78,8 +83,8 @@ const lang = getLangFromUrl(Astro.url);
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
       <!-- <AgeVerification /> -->
-    <DiscountPopup />
-    <AnnouncementBar />
+    {blackFriday ? <BlackFridayPopup /> : <DiscountPopup />}
+    {blackFriday ? <BlackFridayBar /> : <AnnouncementBar />}
     <Header />
     <slot />
     <Footer />
