@@ -1,0 +1,48 @@
+---
+// Black Friday announcement bar: black background, white text.
+// Layout shows it in place of the regular AnnouncementBar only during 26/11 - 28/11.
+import { getLangFromUrl } from 'src/i18n/utils';
+import { BLACK_FRIDAY_END, blackFridayText } from 'src/config/blackFriday';
+
+const lang = getLangFromUrl(Astro.url);
+const text = blackFridayText(lang).bar;
+---
+
+<div class="bf-bar bg-black text-white font-sans font-medium overflow-hidden select-none" role="region" aria-label={text} data-promo-end={BLACK_FRIDAY_END}>
+  <div class="bf-bar-track flex items-center whitespace-nowrap py-2.5">
+    {Array.from({ length: 8 }).map(() => (
+      <span class="inline-flex items-center px-8 text-sm md:text-base">
+        {text}
+        <span class="mx-8 opacity-60" aria-hidden="true">•</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<script is:inline>
+  // Guard against a cached page still showing the bar after the campaign.
+  document.querySelectorAll('.bf-bar[data-promo-end]').forEach((el) => {
+    if (Date.now() >= Date.parse(el.dataset.promoEnd)) el.remove();
+  });
+</script>
+
+<style>
+  .bf-bar-track {
+    width: max-content;
+    animation: bf-bar-scroll 22s linear infinite;
+  }
+
+  @keyframes bf-bar-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .bf-bar:hover .bf-bar-track,
+  .bf-bar:focus-within .bf-bar-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bf-bar-track { animation: none; }
+  }
+</style>

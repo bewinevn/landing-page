@@ -1,0 +1,53 @@
+---
+// Black Friday popup with the campaign banner.
+// Layout shows it in place of the regular DiscountPopup only during 26/11 - 28/11.
+import { Image } from "astro:assets";
+import { getLangFromUrl } from 'src/i18n/utils';
+import { BLACK_FRIDAY_END, blackFridayText } from 'src/config/blackFriday';
+import coverImg from '../assets/black-friday-cover.jpg';
+
+const lang = getLangFromUrl(Astro.url);
+const text = blackFridayText(lang);
+---
+<dialog id="bf-popup" class="rounded-2xl backdrop:bg-black/50 backdrop:backdrop-blur-md p-0 border-0 max-w-sm md:max-w-md lg:max-w-lg w-[90vw]" data-promo-end={BLACK_FRIDAY_END}>
+    <div class="relative bg-black rounded-2xl overflow-hidden">
+        <button type="button" id="bf-popup-close" aria-label={text.close} class="absolute top-2 right-2 z-10 flex items-center justify-center w-8 h-8 rounded-full bg-black/40 text-white text-lg hover:bg-black/60 focus:outline-none">
+            &times;
+        </button>
+
+        <a href="#black-friday-combo" id="bf-popup-link" class="block">
+            <Image src={coverImg} alt={text.popupAlt} class="w-full h-auto" widths={[480, 720, 1080]} sizes="(min-width: 1024px) 512px, 90vw" />
+        </a>
+    </div>
+</dialog>
+
+<script is:inline>
+    (function () {
+        const dialog = document.querySelector("#bf-popup");
+        if (!dialog) return;
+        // Guard against a cached page still showing the popup after the campaign.
+        if (Date.now() >= Date.parse(dialog.dataset.promoEnd)) return;
+
+        window.addEventListener("load", () => {
+            if (!dialog.open) setTimeout(() => dialog.showModal(), 800);
+        });
+
+        document.querySelector("#bf-popup-close")?.addEventListener("click", (event) => {
+            event.preventDefault();
+            dialog.close();
+        });
+
+        // Clicking the banner closes the popup and scrolls to the combo section.
+        document.querySelector("#bf-popup-link")?.addEventListener("click", () => dialog.close());
+
+        dialog.addEventListener("click", (event) => {
+            const rect = dialog.getBoundingClientRect();
+            const clickedOutside =
+                event.clientY < rect.top ||
+                event.clientY > rect.top + rect.height ||
+                event.clientX < rect.left ||
+                event.clientX > rect.left + rect.width;
+            if (clickedOutside) dialog.close();
+        });
+    })();
+</script>

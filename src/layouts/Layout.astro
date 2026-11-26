@@ -6,10 +6,14 @@ import { getLangFromUrl } from '../i18n/utils';
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import PageLoader from "../components/PageLoader.astro";
+import BlackFridayBar from "../components/BlackFridayBar.astro";
+import { isBlackFridayActive } from "../config/blackFriday";
 
 const { title } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
+// Black Friday announcement bar, shown 26/11 - 28/11 (Vietnam time) only.
+const blackFriday = isBlackFridayActive();
 ---
 
 <!DOCTYPE html>
@@ -75,6 +79,7 @@ const lang = getLangFromUrl(Astro.url);
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
     <PageLoader />
+    {blackFriday && <BlackFridayBar />}
     <Header />
     <slot />
     <Footer />
