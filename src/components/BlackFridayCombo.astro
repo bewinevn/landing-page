@@ -16,6 +16,10 @@ const t = (key: string) => text[key.replace('blackfriday.', '') as keyof typeof 
 
 // Rendered only during the Black Friday window (26/11 - 28/11, Vietnam time).
 const active = isBlackFridayActive();
+// "Đặt ngay" opens the combo on /products; English has no products page yet, so it goes to Zalo.
+const orderHref = lang === 'en' ? ZALO_ORDER_LINK : '/products?combo=black-friday';
+const orderExternal = lang === 'en';
+const orderLinkAttrs = orderExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 
 {active && (
@@ -25,7 +29,7 @@ const active = isBlackFridayActive();
     data-promo-end={BLACK_FRIDAY_END}
   >
     <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-      <a href={ZALO_ORDER_LINK} target="_blank" rel="noopener noreferrer" class="block rounded-2xl overflow-hidden shadow-2xl">
+      <a href={orderHref} {...orderLinkAttrs} class="block rounded-2xl overflow-hidden shadow-2xl">
         <Image
           src={coverImg}
           alt="be-wine Black Friday combo 6 lon: Sauvignon Blanc, Zinfandel, 2 Petite Sirah, 2 Cabernet Sauvignon"
@@ -62,9 +66,8 @@ const active = isBlackFridayActive();
         </div>
 
         <a
-          href={ZALO_ORDER_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={orderHref}
+          {...orderLinkAttrs}
           class="inline-flex self-start items-center justify-center bg-[#A71E22] hover:bg-sirah-800 text-white font-sans font-bold uppercase text-lg rounded-xl px-8 py-4 shadow-lg"
         >
           {t('blackfriday.cta')}

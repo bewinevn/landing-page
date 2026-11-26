@@ -1,0 +1,103 @@
+---
+// Black Friday combo option for the /products picker (26/11 - 28/11 only).
+// Renders the "combo black friday" button (placed before Petite Sirah) and the
+// 1/2/3/4-combo quantity row. src/scripts/black-friday-combo-picker.ts wires
+// them into the existing configurator without changing how single wines work.
+import type { Product } from '../modules/products/domain/product.types';
+import { getLangFromUrl } from 'src/i18n/utils';
+import {
+  BLACK_FRIDAY_COMBO_LINES,
+  BLACK_FRIDAY_COMBO_PRICE_VND,
+  BLACK_FRIDAY_COMBO_OLD_PRICE_VND,
+  BLACK_FRIDAY_COMBO_QTY_OPTIONS,
+  BLACK_FRIDAY_COMBO_FREESHIP_FROM,
+  BLACK_FRIDAY_END,
+  isBlackFridayActive,
+} from 'src/config/blackFriday';
+
+interface Props {
+  products: Product[];
+  part: 'option' | 'quantity';
+}
+
+const { products, part } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const en = lang === 'en';
+
+const active = isBlackFridayActive();
+const lines = BLACK_FRIDAY_COMBO_LINES.map((l) => ({ ...l, product: products.find((p) => p.slug === l.slug) }));
+const ready = lines.every((l) => l.product);
+// How many combos current stock can cover, capped at the largest option.
+const maxCombos = ready
+  ? Math.min(
+      Math.max(...BLACK_FRIDAY_COMBO_QTY_OPTIONS),
+      ...lines.map((l) => Math.floor((l.product!.availableQty ?? 0) / l.cans)),
+    )
+  : 0;
+const linesJson = JSON.stringify(
+  lines.filter((l) => l.product).map((l) => ({ productId: l.product!.id, cans: l.cans, unitPriceVnd: l.unitPriceVnd })),
+);
+const name = 'combo black friday';
+const unitSuffix = en ? '/ combo' : '/ combo';
+const comboUnit = 'combo';
+const freeShip = en ? 'free shipping' : 'freeship';
+---
+
+{active && part === 'option' && (
+  <button
+    type="button"
+    id="bf-combo-option"
+    data-bf-combo
+    data-product-name={name}
+    data-product-image="/images/products/black-friday-combo.jpg"
+    data-unit-price={BLACK_FRIDAY_COMBO_PRICE_VND}
+    data-old-price={BLACK_FRIDAY_COMBO_OLD_PRICE_VND}
+    data-available-qty={maxCombos}
+    data-unit-suffix={unitSuffix}
+    data-lines={linesJson}
+    data-promo-end={BLACK_FRIDAY_END}
+    disabled={maxCombos <= 0}
+    data-selected="false"
+    class="px-4 py-2 rounded-full border-2 border-black text-black font-sans font-bold text-sm capitalize disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:bg-black data-[selected=true]:text-white"
+  >
+    {name}
+  </button>
+)}
+
+{active && part === 'quantity' && (
+  <div id="bf-combo-qty-section" hidden>
+    <div class="grid grid-cols-4 gap-2">
+      {BLACK_FRIDAY_COMBO_QTY_OPTIONS.map((qty, i) => (
+        <button
+          type="button"
+          data-bf-combo-qty
+          data-qty={qty}
+          data-selected={i === 0 ? 'true' : 'false'}
+          class="px-2 py-2 rounded-full border-2 border-black text-black font-sans font-bold text-sm text-center disabled:opacity-50 disabled:cursor-not-allowed data-[selected=true]:bg-black data-[selected=true]:text-white"
+        >
+          {`${qty} ${comboUnit}`}
+        </button>
+      ))}
+      {BLACK_FRIDAY_COMBO_QTY_OPTIONS.map((qty) => (
+        qty >= BLACK_FRIDAY_COMBO_FREESHIP_FROM ? (
+          <p class="m-0 flex flex-wrap items-center justify-center gap-x-1 font-sans font-bold text-xs text-[#3CAA44]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0" aria-hidden="true">
+              <path d="M1 3h15v13H1z" />
+              <path d="M16 8h4l3 3v5h-7z" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+            {freeShip}
+          </p>
+        ) : (
+          <span aria-hidden="true"></span>
+        )
+      ))}
+    </div>
+    <p class="m-0 mt-3 text-sm text-[#666]">
+      {en
+        ? 'Each combo: 1 Sauvignon Blanc + 1 Zinfandel + 2 Petite Sirah + 2 Cabernet Sauvignon.'
+        : 'Mỗi combo: 1 Sauvignon Blanc + 1 Zinfandel + 2 Petite Sirah + 2 Cabernet Sauvignon.'}
+    </p>
+  </div>
+)}
