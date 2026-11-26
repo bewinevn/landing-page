@@ -4,16 +4,22 @@ import Hero from '../components/Hero.astro';
 import AboutUs from '../components/AboutUs.astro';
 import OurQuality from '../components/OurQuality.astro';
 import WineList from '../components/WineList.astro';
+import BlackFridayCombo from '../components/BlackFridayCombo.astro';
+import BlackFridayPopup from '../components/BlackFridayPopup.astro';
+import { isBlackFridayActive } from '../config/blackFriday';
 
 // Cache the rendered page at Netlify's edge so visitors don't wait on a
 // function + database round trip every time.
 Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, max-age=300, stale-while-revalidate=86400, durable');
 Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400, must-revalidate');
+const blackFriday = isBlackFridayActive();
 ---
 
 <Layout title="be-wine">
+  {blackFriday && <BlackFridayPopup />}
   <div class="relative">
     <Hero />
+    <BlackFridayCombo />
     <AboutUs />
     <OurQuality />
     <WineList />
