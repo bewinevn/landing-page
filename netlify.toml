@@ -4,3 +4,20 @@
 
 [functions]
   directory = "netlify/functions"
+
+# Let browsers reuse static images/icons from /public on repeat visits
+# (revalidated in the background) instead of re-checking on every page view.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/figma/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/favicon.png"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=604800"

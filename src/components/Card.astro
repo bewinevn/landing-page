@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from "src/i18n/utils";
+import { cdnImage } from "src/shared/images/cdn";
 
 interface Props {
   title: string;
@@ -48,7 +49,7 @@ const notes = subtitle ? subtitle.split('\n').filter(Boolean) : [];
   </div>
 
   <div class="relative w-full h-[260px] md:h-[300px] flex items-center justify-center">
-    <img class="w-auto h-full object-contain" loading="lazy" alt={title} src={image} />
+    <img class="w-auto h-full object-contain" loading="lazy" decoding="async" alt={title} src={cdnImage(image, 600)} />
   </div>
 
   <div class="relative flex gap-2 items-center w-full">

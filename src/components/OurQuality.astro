@@ -34,7 +34,7 @@ const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : transl
   <div class="w-full max-w-[1440px] flex md:grid md:grid-cols-3 overflow-x-auto snap-x snap-mandatory gap-0 md:gap-0 px-5 md:px-0 -mx-5 md:mx-0">
     {items.map((item) => (
       <div class="relative shrink-0 w-[85vw] md:w-auto h-[420px] md:h-[617px] snap-center p-4 flex items-end justify-center overflow-hidden">
-        <Image src={item.image} alt="" class="absolute inset-0 w-full h-full object-cover" />
+        <Image src={item.image} alt="" class="absolute inset-0 w-full h-full object-cover" widths={[480, 720, 1080, 1500]} sizes="(min-width: 768px) 480px, 85vw" />
         <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(134,24,27,0.5) 67.788%)"></div>
         <h2 class="relative text-sirah-50 text-lg md:text-2xl font-medium uppercase text-center m-0 pb-2" style="text-shadow: 0px 4px 4px rgba(0,0,0,0.25)">
           {item.caption}

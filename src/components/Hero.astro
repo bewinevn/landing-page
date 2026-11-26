@@ -10,6 +10,10 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
+// 1x1 transparent GIF: lets each <picture> skip downloading the hero variant
+// that is hidden at the current breakpoint (mobile vs desktop layout).
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
 // There's no English products/checkout flow yet (only the English home
 // page exists) — send English visitors straight to Zalo instead of a
 // dead /en/products link.
@@ -19,17 +23,29 @@ const orderHref = lang === 'en' ? 'https://zalo.me/3836034200863507097' : transl
 <div>
   <div class="relative left-1/2 right-1/2 -mx-[50vw] w-screen h-screen md:h-[903px] overflow-hidden">
     <div class="relative h-full md:hidden overflow-hidden">
-      <Image src={heroMobile} alt="be-wine" class="w-full h-full object-cover object-[center_25%]" loading="eager" />
+      <picture class="contents">
+        <source media="(min-width: 768px)" srcset={BLANK} />
+        <Image src={heroMobile} alt="be-wine" class="w-full h-full object-cover object-[center_25%]" loading="eager" fetchpriority="high" widths={[540, 828, 1080]} sizes="max(100vw, 56.25vh)" />
+      </picture>
     </div>
     <div class="hidden md:grid grid-cols-3 h-full">
       <div class="relative h-full overflow-hidden">
-        <Image src={hero1} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+        <picture class="contents">
+          <source media="(max-width: 767.98px)" srcset={BLANK} />
+          <Image src={hero1} alt="" class="w-full h-full object-cover object-bottom" loading="eager" fetchpriority="high" widths={[480, 720, 1000, 1500]} sizes="max(34vw, 640px)" />
+        </picture>
       </div>
       <div class="relative h-full overflow-hidden">
-        <Image src={hero2} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+        <picture class="contents">
+          <source media="(max-width: 767.98px)" srcset={BLANK} />
+          <Image src={hero2} alt="" class="w-full h-full object-cover object-bottom" loading="eager" fetchpriority="high" widths={[480, 720, 1000, 1500]} sizes="max(34vw, 640px)" />
+        </picture>
       </div>
       <div class="relative h-full overflow-hidden">
-        <Image src={hero3} alt="" class="w-full h-full object-cover object-bottom" loading="eager" />
+        <picture class="contents">
+          <source media="(max-width: 767.98px)" srcset={BLANK} />
+          <Image src={hero3} alt="" class="w-full h-full object-cover object-bottom" loading="eager" fetchpriority="high" widths={[480, 720, 1000, 1500]} sizes="max(34vw, 640px)" />
+        </picture>
       </div>
     </div>
     <div class="hidden md:block absolute inset-0 pointer-events-none" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(134,24,27,0.8) 67.788%)"></div>
