@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { listProducts } from '../../modules/products';
 import zaloLogo from '../../assets/zalo-combined.webp';
+import BlackFridayComboPicker from '../../components/BlackFridayComboPicker.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -66,6 +67,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
         <div>
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.wineType')}</p>
           <div class="flex flex-wrap gap-2">
+            <BlackFridayComboPicker products={products} part="option" />
             {petiteSirah && (
               <button
                 type="button"
@@ -108,7 +110,9 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
         <div>
           <p class="m-0 mb-2 text-sm text-[#666]">{t('product.packageLabel')}</p>
 
-          <div class="grid grid-cols-4 gap-2">
+          <BlackFridayComboPicker products={products} part="quantity" />
+
+          <div id="can-qty-section" class="grid grid-cols-4 gap-2">
             {QUANTITY_TIERS.map((qty, i) => (
               <button
                 type="button"
@@ -166,3 +170,4 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
 </Layout>
 
 <script src="../../scripts/product-configurator.ts"></script>
+<script src="../../scripts/black-friday-combo-picker.ts"></script>

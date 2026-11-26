@@ -33,7 +33,7 @@ export const BLACK_FRIDAY_TEXT = {
     subtitle: '06 lon vang đặc sắc',
     unit: '/pack',
     includes: 'Trong combo có',
-    cta: 'Đặt combo qua Zalo',
+    cta: 'Đặt ngay',
     note: 'Thời gian áp dụng: 26/11 - 28/11. Số lượng có hạn.',
     popupAlt: 'be-wine Black Friday: combo 6 lon vang chỉ 250k, áp dụng 26/11 - 28/11',
     close: 'Đóng',
@@ -46,7 +46,7 @@ export const BLACK_FRIDAY_TEXT = {
     subtitle: '6 signature cans of wine',
     unit: '/pack',
     includes: "What's inside",
-    cta: 'Order the combo on Zalo',
+    cta: 'Order now',
     note: 'Valid 26/11 - 28/11. While supplies last.',
     popupAlt: 'be-wine Black Friday: 6-can combo for 250k, valid 26/11 - 28/11',
     close: 'Close',
@@ -56,3 +56,18 @@ export const BLACK_FRIDAY_TEXT = {
 export function blackFridayText(lang: string) {
   return lang === 'en' ? BLACK_FRIDAY_TEXT.en : BLACK_FRIDAY_TEXT.vn;
 }
+
+// Black Friday combo on /products: what one combo puts in the cart.
+// Per-can prices add up to the 250k combo price (2x45k + 2x45k + 35k + 35k);
+// the listed price is 6 x 50k = 300k.
+export const BLACK_FRIDAY_COMBO_PRICE_VND = 250_000;
+export const BLACK_FRIDAY_COMBO_OLD_PRICE_VND = 300_000;
+export const BLACK_FRIDAY_COMBO_LINES = [
+  { slug: 'sauvignon-blanc', cans: 1, unitPriceVnd: 35_000 },
+  { slug: 'zinfandel', cans: 1, unitPriceVnd: 35_000 },
+  { slug: 'petite-sirah', cans: 2, unitPriceVnd: 45_000 },
+  { slug: 'cabernet-sauvignon', cans: 2, unitPriceVnd: 45_000 },
+] as const;
+export const BLACK_FRIDAY_COMBO_QTY_OPTIONS = [1, 2, 3, 4];
+// Free shipping badge from this many combos (12 cans and up).
+export const BLACK_FRIDAY_COMBO_FREESHIP_FROM = 2;
