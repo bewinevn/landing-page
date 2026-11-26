@@ -11,9 +11,29 @@
         try { sessionStorage.setItem('bwLoaded', '1'); } catch (e) {}
       }, wait);
     }
-    if (document.readyState === 'complete') done();
-    else window.addEventListener('load', done);
-    setTimeout(done, 6000);
+    var finished = false;
+    function finish() { if (finished) return; finished = true; done(); }
+    // Hide as soon as the above-the-fold images (fetchpriority="high") are
+    // ready, instead of waiting for window "load" (analytics tags, lazy
+    // sections, ...). Pages without such images fall back to "load".
+    function whenCriticalReady() {
+      var imgs = Array.prototype.filter.call(
+        document.querySelectorAll('img[fetchpriority="high"]'),
+        function (img) { return img.currentSrc.indexOf('data:') !== 0 && img.getClientRects().length; }
+      );
+      if (!imgs.length) return;
+      var left = imgs.length;
+      function one() { if (--left <= 0) finish(); }
+      imgs.forEach(function (img) {
+        if (img.complete) one();
+        else { img.addEventListener('load', one); img.addEventListener('error', one); }
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', whenCriticalReady);
+    else whenCriticalReady();
+    if (document.readyState === 'complete') finish();
+    else window.addEventListener('load', finish);
+    setTimeout(finish, 6000);
   })();
 </script>
 

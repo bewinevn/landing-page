@@ -1,6 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import { GoogleFontsOptimizer } from "astro-google-fonts-optimizer";
+import GoogleFonts from "../components/GoogleFonts.astro";
 
 import { getLangFromUrl } from '../i18n/utils';
 import Header from "../components/Header.astro";
@@ -60,8 +60,7 @@ const blackFriday = isBlackFridayActive();
 
     <!-- Meta Tags Generated with https://metatags.io -->
 
-    <GoogleFontsOptimizer url="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Yeseva+One&display=swap" rel="stylesheet">
-    </GoogleFontsOptimizer>
+    <GoogleFonts url="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Yeseva+One&display=swap" />
 
     <ViewTransitions />
   </head>

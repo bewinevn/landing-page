@@ -1,0 +1,13 @@
+---
+import { getGoogleFontsCss } from '../shared/fonts/google-fonts';
+
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+const css = await getGoogleFontsCss(url);
+---
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+{css ? <style is:inline set:html={css}></style> : <link rel="stylesheet" href={url} />}

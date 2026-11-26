@@ -5,6 +5,7 @@ import { getLangFromUrl, useTranslations } from 'src/i18n/utils';
 import { listProducts } from '../../modules/products';
 import zaloLogo from '../../assets/zalo-combined.webp';
 import BlackFridayComboPicker from '../../components/BlackFridayComboPicker.astro';
+import { cdnImage } from '../../shared/images/cdn';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -50,7 +51,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
       <div id="configurator-image-frame" class="relative overflow-hidden rounded-lg bg-[#EFEDE9] flex items-center justify-center h-[320px] md:h-[440px] p-6">
         <div id="configurator-image-texture" class="card-texture absolute inset-0 pointer-events-none"></div>
-        <img id="configurator-image" src={defaultProduct?.imageUrl ?? ''} alt="" class="relative max-h-full w-auto object-contain" />
+        <img id="configurator-image" src={cdnImage(defaultProduct?.imageUrl, 800)} alt="" fetchpriority="high" class="relative max-h-full w-auto object-contain" />
       </div>
 
       <div class="flex flex-col gap-6">
@@ -75,7 +76,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
                 data-product-id={petiteSirah.id}
                 data-product-slug={petiteSirah.slug}
                 data-product-name={petiteSirah.name}
-                data-product-image={petiteSirah.imageUrl ?? ''}
+                data-product-image={cdnImage(petiteSirah.imageUrl, 800)}
                 data-unit-price={petiteSirah.effectivePriceVnd}
                 data-available-qty={petiteSirah.availableQty}
                 data-unit-suffix={t('product.perCan')}
@@ -93,7 +94,7 @@ const QUANTITY_TIERS = [3, 6, 12, 24];
                 data-product-id={product.id}
                 data-product-slug={product.slug}
                 data-product-name={product.name}
-                data-product-image={product.imageUrl ?? ''}
+                data-product-image={cdnImage(product.imageUrl, 800)}
                 data-unit-price={product.effectivePriceVnd}
                 data-available-qty={product.availableQty}
                 data-unit-suffix={t('product.perCan')}
