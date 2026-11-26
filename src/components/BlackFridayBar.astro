@@ -8,7 +8,7 @@ const lang = getLangFromUrl(Astro.url);
 const text = blackFridayText(lang).bar;
 ---
 
-<div class="bf-bar bg-black text-white font-sans font-medium overflow-hidden select-none" role="region" aria-label={text} data-promo-end={BLACK_FRIDAY_END}>
+<div class="bf-bar bg-black text-white uppercase font-sans font-medium overflow-hidden select-none" role="region" aria-label={text} data-promo-end={BLACK_FRIDAY_END}>
   <div class="bf-bar-track flex items-center whitespace-nowrap py-2.5">
     {Array.from({ length: 8 }).map(() => (
       <span class="inline-flex items-center px-8 text-sm md:text-base">
